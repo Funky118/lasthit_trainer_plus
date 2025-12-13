@@ -1,0 +1,432 @@
+"DOTAAbilities"
+{
+  // -----------------------------------------------------------
+  // - REMOVE ANY ITEM YOU DON'T WANT TO BE BUYABLE IN THE SHOP -
+  // -----------------------------------------------------------
+
+  //"item_blink"                    "REMOVE"
+  //"item_blades_of_attack"         "REMOVE"
+  //"item_broadsword"               "REMOVE"
+  //"item_chainmail"                "REMOVE"
+  //"item_claymore"                 "REMOVE"
+  //"item_helm_of_iron_will"        "REMOVE"
+  //"item_javelin"                  "REMOVE"
+  //"item_mithril_hammer"           "REMOVE"
+  //"item_platemail"                "REMOVE"
+  //"item_quarterstaff"             "REMOVE"
+  //"item_quelling_blade"           "REMOVE"
+  //"item_ring_of_protection"       "REMOVE"
+  //"item_gauntlets"                "REMOVE"
+  //"item_slippers"                 "REMOVE"
+  //"item_mantle"                   "REMOVE"
+  //"item_branches"                 "REMOVE"
+  //"item_belt_of_strength"         "REMOVE"
+  //"item_boots_of_elves"           "REMOVE"
+  //"item_robe"                     "REMOVE"
+  //"item_circlet"                  "REMOVE"
+  //"item_ogre_axe"                 "REMOVE"
+  //"item_blade_of_alacrity"        "REMOVE"
+  //"item_staff_of_wizardry"        "REMOVE"
+  //"item_ultimate_orb"             "REMOVE"
+  //"item_gloves"                   "REMOVE"
+  //"item_lifesteal"                "REMOVE"
+  //"item_ring_of_regen"            "REMOVE"
+  //"item_sobi_mask"                "REMOVE"
+  //"item_boots"                    "REMOVE"
+  //"item_gem"                      "REMOVE"
+  //"item_orb_of_venom"             "REMOVE"
+  //"item_cloak"                    "REMOVE"
+  //"item_talisman_of_evasion"      "REMOVE"
+  //"item_cheese"                   "REMOVE"
+  //"item_magic_stick"              "REMOVE"
+  //"item_recipe_magic_wand"        "REMOVE"
+  //"item_magic_wand"               "REMOVE"
+  //"item_ghost"                    "REMOVE"
+  //"item_clarity"                  "REMOVE"
+  //"item_flask"                    "REMOVE"
+  //"item_dust"                     "REMOVE"
+  //"item_bottle"                   "REMOVE"
+  //"item_ward_observer"            "REMOVE"
+  //"item_ward_sentry"              "REMOVE"
+  //"item_smoke_of_deceit"          "REMOVE"
+  //"item_tango"                    "REMOVE"
+  //"item_tango_single"             "REMOVE"
+  //"item_tpscroll"                 "REMOVE" // DO NOT REMOVE THIS BEFORE DISABLING/CHANGING TP SCROLL SLOT
+  //"item_recipe_travel_boots"      "REMOVE"
+  //"item_travel_boots"             "REMOVE"
+  //"item_recipe_phase_boots"       "REMOVE"
+  //"item_phase_boots"              "REMOVE"
+  //"item_demon_edge"               "REMOVE"
+  //"item_eagle"                    "REMOVE"
+  //"item_reaver"                   "REMOVE"
+  //"item_relic"                    "REMOVE"
+  //"item_hyperstone"               "REMOVE"
+  //"item_ring_of_health"           "REMOVE"
+  //"item_void_stone"               "REMOVE"
+  //"item_mystic_staff"             "REMOVE"
+  //"item_energy_booster"           "REMOVE"
+  //"item_point_booster"            "REMOVE"
+  //"item_vitality_booster"         "REMOVE"
+  //"item_recipe_power_treads"      "REMOVE"
+  //"item_power_treads"             "REMOVE"
+  //"item_recipe_hand_of_midas"     "REMOVE"
+  //"item_hand_of_midas"            "REMOVE"
+  //"item_recipe_oblivion_staff"    "REMOVE"
+  //"item_oblivion_staff"           "REMOVE"
+  //"item_recipe_pers"              "REMOVE"
+  //"item_pers"                     "REMOVE"
+  //"item_recipe_bracer"            "REMOVE"
+  //"item_bracer"                   "REMOVE"
+  //"item_recipe_wraith_band"       "REMOVE"
+  //"item_wraith_band"              "REMOVE"
+  //"item_recipe_null_talisman"     "REMOVE"
+  //"item_null_talisman"            "REMOVE"
+  //"item_recipe_mekansm"           "REMOVE"
+  //"item_mekansm"                  "REMOVE"
+  //"item_recipe_vladmir"           "REMOVE"
+  //"item_vladmir"                  "REMOVE"
+  //"item_recipe_buckler"           "REMOVE"
+  //"item_buckler"                  "REMOVE"
+  //"item_recipe_ring_of_basilius"  "REMOVE"
+  //"item_ring_of_basilius"         "REMOVE"
+  //"item_recipe_pipe"              "REMOVE"
+  //"item_pipe"                     "REMOVE"
+  //"item_recipe_urn_of_shadows"    "REMOVE"
+  //"item_urn_of_shadows"           "REMOVE"
+  //"item_recipe_headdress"         "REMOVE"
+  //"item_headdress"                "REMOVE"
+  //"item_recipe_sheepstick"        "REMOVE"
+  //"item_sheepstick"               "REMOVE"
+  //"item_recipe_orchid"            "REMOVE"
+  //"item_orchid"                   "REMOVE"
+  //"item_recipe_cyclone"           "REMOVE"
+  //"item_cyclone"                  "REMOVE"
+  //"item_recipe_force_staff"       "REMOVE"
+  //"item_force_staff"              "REMOVE"
+  //"item_recipe_dagon"             "REMOVE"
+  //"item_recipe_dagon_2"           "REMOVE"
+  //"item_recipe_dagon_3"           "REMOVE"
+  //"item_recipe_dagon_4"           "REMOVE"
+  //"item_recipe_dagon_5"           "REMOVE"
+  //"item_dagon"                    "REMOVE"
+  //"item_dagon_2"                  "REMOVE"
+  //"item_dagon_3"                  "REMOVE"
+  //"item_dagon_4"                  "REMOVE"
+  //"item_dagon_5"                  "REMOVE"
+  //"item_recipe_necronomicon"      "REMOVE" // disabled
+  //"item_recipe_necronomicon_2"    "REMOVE" // disabled
+  //"item_recipe_necronomicon_3"    "REMOVE" // disabled
+  //"item_necronomicon"             "REMOVE" // disabled
+  //"item_necronomicon_2"           "REMOVE" // disabled
+  //"item_necronomicon_3"           "REMOVE" // disabled
+  //"item_recipe_ultimate_scepter"  "REMOVE"
+  //"item_ultimate_scepter"         "REMOVE"
+  //"item_recipe_refresher"         "REMOVE"
+  //"item_refresher"                "REMOVE"
+  //"item_recipe_assault"           "REMOVE"
+  //"item_assault"                  "REMOVE"
+  //"item_recipe_heart"             "REMOVE"
+  //"item_heart"                    "REMOVE"
+  //"item_recipe_black_king_bar"    "REMOVE"
+  //"item_black_king_bar"           "REMOVE"
+  //"item_aegis"                    "REMOVE"
+  //"item_recipe_shivas_guard"      "REMOVE"
+  //"item_shivas_guard"             "REMOVE"
+  //"item_recipe_bloodstone"        "REMOVE"
+  //"item_bloodstone"               "REMOVE"
+  //"item_recipe_sphere"            "REMOVE"
+  //"item_sphere"                   "REMOVE"
+  //"item_vanguard"                 "REMOVE"
+  //"item_recipe_blade_mail"        "REMOVE"
+  //"item_blade_mail"               "REMOVE"
+  //"item_recipe_soul_booster"      "REMOVE"
+  //"item_soul_booster"             "REMOVE"
+  //"item_recipe_hood_of_defiance"  "REMOVE"
+  //"item_hood_of_defiance"         "REMOVE"
+  //"item_recipe_rapier"            "REMOVE"
+  //"item_rapier"                   "REMOVE"
+  //"item_recipe_monkey_king_bar"   "REMOVE"
+  //"item_monkey_king_bar"          "REMOVE"
+  //"item_recipe_radiance"          "REMOVE"
+  //"item_radiance"                 "REMOVE"
+  //"item_recipe_butterfly"         "REMOVE"
+  //"item_butterfly"                "REMOVE"
+  //"item_recipe_greater_crit"      "REMOVE"
+  //"item_greater_crit"             "REMOVE"
+  //"item_recipe_basher"            "REMOVE"
+  //"item_basher"                   "REMOVE"
+  //"item_recipe_bfury"             "REMOVE"
+  //"item_bfury"                    "REMOVE"
+  //"item_recipe_manta"             "REMOVE"
+  //"item_manta"                    "REMOVE"
+  //"item_recipe_lesser_crit"       "REMOVE"
+  //"item_lesser_crit"              "REMOVE"
+  //"item_recipe_armlet"            "REMOVE"
+  //"item_armlet"                   "REMOVE"
+  //"item_recipe_invis_sword"       "REMOVE"
+  //"item_invis_sword"              "REMOVE"
+  //"item_recipe_sange_and_yasha"   "REMOVE"
+  //"item_sange_and_yasha"          "REMOVE"
+  //"item_recipe_satanic"           "REMOVE"
+  //"item_satanic"                  "REMOVE"
+  //"item_recipe_mjollnir"          "REMOVE"
+  //"item_mjollnir"                 "REMOVE"
+  //"item_recipe_skadi"             "REMOVE"
+  //"item_skadi"                    "REMOVE"
+  //"item_recipe_sange"             "REMOVE"
+  //"item_sange"                    "REMOVE"
+  //"item_recipe_helm_of_the_dominator"  "REMOVE"
+  //"item_helm_of_the_dominator"    "REMOVE"
+  //"item_recipe_maelstrom"         "REMOVE"
+  //"item_maelstrom"                "REMOVE"
+  //"item_recipe_desolator"         "REMOVE"
+  //"item_desolator"                "REMOVE"
+  //"item_recipe_yasha"             "REMOVE"
+  //"item_yasha"                    "REMOVE"
+  //"item_recipe_mask_of_madness"   "REMOVE"
+  //"item_mask_of_madness"          "REMOVE"
+  //"item_recipe_diffusal_blade"    "REMOVE"
+  //"item_diffusal_blade"           "REMOVE"
+  //"item_recipe_ethereal_blade"    "REMOVE"
+  //"item_ethereal_blade"           "REMOVE"
+  //"item_recipe_soul_ring"         "REMOVE"
+  //"item_soul_ring"                "REMOVE"
+  //"item_recipe_arcane_boots"      "REMOVE"
+  //"item_arcane_boots"             "REMOVE"
+  //"item_recipe_ancient_janggo"    "REMOVE"
+  //"item_ancient_janggo"           "REMOVE"
+  //"item_recipe_medallion_of_courage"  "REMOVE"
+  //"item_medallion_of_courage"     "REMOVE"
+  //"item_recipe_veil_of_discord"   "REMOVE"
+  //"item_veil_of_discord"          "REMOVE"
+  //"item_recipe_rod_of_atos"       "REMOVE"
+  //"item_rod_of_atos"              "REMOVE"
+  //"item_recipe_abyssal_blade"     "REMOVE"
+  //"item_abyssal_blade"            "REMOVE"
+  //"item_recipe_heavens_halberd"   "REMOVE"
+  //"item_heavens_halberd"          "REMOVE"
+  //"item_recipe_tranquil_boots"    "REMOVE"
+  //"item_tranquil_boots"           "REMOVE"
+  //"item_shadow_amulet"            "REMOVE"
+
+  //"item_recipe_moon_shard"        "REMOVE"
+  //"item_moon_shard"               "REMOVE"  
+  //"item_enchanted_mango"          "REMOVE"  
+  //"item_recipe_travel_boots_2"    "REMOVE"  
+  //"item_travel_boots_2"           "REMOVE"  
+  //"item_recipe_lotus_orb"         "REMOVE"  
+  //"item_lotus_orb"                "REMOVE"  
+  //"item_recipe_crimson_guard"     "REMOVE"  
+  //"item_crimson_guard"            "REMOVE"  
+  //"item_recipe_silver_edge"       "REMOVE"  
+  //"item_silver_edge"              "REMOVE"  
+  //"item_recipe_octarine_core"     "REMOVE"  
+  //"item_octarine_core"            "REMOVE"  
+  //"item_recipe_solar_crest"       "REMOVE"  
+  //"item_solar_crest"              "REMOVE"  
+  //"item_recipe_guardian_greaves"  "REMOVE"  
+  //"item_guardian_greaves"         "REMOVE"  
+  //"item_recipe_glimmer_cape"      "REMOVE"  
+  //"item_glimmer_cape"             "REMOVE"  
+
+  //"item_faerie_fire"              "REMOVE"
+  //"item_recipe_aether_lens"       "REMOVE"
+  //"item_aether_lens"              "REMOVE"
+  //"item_recipe_dragon_lance"      "REMOVE"
+  //"item_dragon_lance"             "REMOVE"
+
+  //"item_recipe_bloodthorn"        "REMOVE"
+  //"item_bloodthorn"               "REMOVE"
+  //"item_wind_lace"                "REMOVE"
+  //"item_infused_raindrop"         "REMOVE"
+  //"item_blight_stone"             "REMOVE"
+  //"item_recipe_echo_sabre"        "REMOVE"
+  //"item_echo_sabre"               "REMOVE"
+  //"item_tome_of_knowledge"        "REMOVE"
+  //"item_recipe_hurricane_pike"    "REMOVE"
+  //"item_hurricane_pike"           "REMOVE"
+
+  //"item_recipe_aeon_disk"         "REMOVE"
+  //"item_aeon_disk"                "REMOVE"
+  //"item_recipe_holy_locket"       "REMOVE"
+  //"item_holy_locket"              "REMOVE"
+  //"item_recipe_kaya"              "REMOVE"
+  //"item_kaya"                     "REMOVE"
+  //"item_recipe_kaya_and_sange"    "REMOVE"
+  //"item_kaya_and_sange"           "REMOVE"
+  //"item_recipe_meteor_hammer"     "REMOVE"
+  //"item_meteor_hammer"            "REMOVE"
+  //"item_recipe_nullifier"         "REMOVE"
+  //"item_nullifier"                "REMOVE"
+  //"item_recipe_spirit_vessel"     "REMOVE"
+  //"item_spirit_vessel"            "REMOVE"
+  //"item_recipe_yasha_and_kaya"    "REMOVE"
+  //"item_yasha_and_kaya"           "REMOVE"
+
+  //"item_aghanims_shard"           "REMOVE"
+  //"item_crown"                    "REMOVE"
+  //"item_blitz_knuckles"           "REMOVE"
+  //"item_fluffy_hat"               "REMOVE"
+  //"item_ring_of_tarrasque"        "REMOVE"
+  //"item_voodoo_mask"              "REMOVE"
+  //"item_tiara_of_selemene"        "REMOVE"
+  //"item_cornucopia"               "REMOVE"
+  //"item_recipe_orb_of_corrosion"  "REMOVE"
+  //"item_orb_of_corrosion"         "REMOVE"
+  //"item_recipe_falcon_blade"      "REMOVE"
+  //"item_falcon_blade"             "REMOVE"
+  //"item_recipe_witch_blade"       "REMOVE"
+  //"item_witch_blade"              "REMOVE"
+  //"item_recipe_gungir"            "REMOVE"
+  //"item_gungir"                   "REMOVE"
+  //"item_recipe_wind_waker"        "REMOVE"
+  //"item_wind_waker"               "REMOVE"
+  //"item_recipe_eternal_shroud"    "REMOVE"
+  //"item_eternal_shroud"           "REMOVE"
+  //"item_recipe_mage_slayer"       "REMOVE"
+  //"item_mage_slayer"              "REMOVE"
+  //"item_recipe_overwhelming_blink"    "REMOVE"
+  //"item_overwhelming_blink"       "REMOVE"
+  //"item_recipe_swift_blink"       "REMOVE"
+  //"item_swift_blink"              "REMOVE"
+  //"item_recipe_arcane_blink"      "REMOVE"
+  //"item_arcane_blink"             "REMOVE"
+  //"item_recipe_boots_of_bearing"  "REMOVE"
+  //"item_boots_of_bearing"         "REMOVE"
+  //"item_recipe_wraith_pact"       "REMOVE" // disabled
+  //"item_wraith_pact"              "REMOVE" // disabled
+  //"item_recipe_revenants_brooch"  "REMOVE"
+  //"item_revenants_brooch"         "REMOVE"
+  //"item_recipe_helm_of_the_overlord"  "REMOVE"
+  //"item_helm_of_the_overlord"     "REMOVE"
+  //"item_recipe_harpoon"           "REMOVE"
+  //"item_harpoon"                  "REMOVE"
+  //"item_recipe_disperser"         "REMOVE"
+  //"item_disperser"                "REMOVE"
+  //"item_recipe_angels_demise"     "REMOVE"
+  //"item_angels_demise"            "REMOVE" // Khanda
+  //"item_recipe_devastator"        "REMOVE"
+  //"item_devastator"               "REMOVE" // Parasma
+
+  // Neutral items - DO NOT REMOVE NEUTRAL ITEMS, IT CAN CAUSE CRASHES, YOU CAN DISABLE THEM in neutral_items.txt
+  //"item_ancient_perseverance"     "REMOVE" // unreleased
+  //"item_apex"                     "REMOVE"
+  //"item_arcane_ring"              "REMOVE"
+  //"item_ascetic_cap"              "REMOVE"
+  //"item_ballista"                 "REMOVE" // disabled
+  //"item_barricade"                "REMOVE" // unreleased
+  //"item_black_powder_bag"         "REMOVE" // disabled
+  //"item_book_of_shadows"          "REMOVE"
+  //"item_bottomless_chalice"       "REMOVE" // unreleased
+  //"item_broom_handle"             "REMOVE"
+  //"item_bullwhip"                 "REMOVE"
+  //"item_ceremonial_robe"          "REMOVE"
+  //"item_chipped_vest"             "REMOVE" // disabled
+  //"item_cloak_of_flames"          "REMOVE"
+  //"item_clumsy_net"               "REMOVE" // disabled
+  //"item_craggy_coat"              "REMOVE"
+  //"item_dagger_of_ristul"         "REMOVE" // disabled
+  //"item_demonicon"                "REMOVE" // Book of the Dead
+  //"item_desolator_2"              "REMOVE" // Stygian Desolator
+  //"item_dimensional_doorway"      "REMOVE" // unreleased
+  //"item_dragon_scale"             "REMOVE"
+  //"item_elixer"                   "REMOVE" // disabled
+  //"item_elven_tunic"              "REMOVE"
+  //"item_enchanted_quiver"         "REMOVE"
+  //"item_essence_ring"             "REMOVE" // disabled
+  //"item_ex_machina"               "REMOVE" // disabled
+  //"item_eye_of_the_vizier"        "REMOVE"
+  //"item_faded_broach"             "REMOVE"
+  //"item_fallen_sky"               "REMOVE"
+  //"item_flicker"                  "REMOVE" // disabled
+  //"item_force_boots"              "REMOVE"
+  //"item_force_field"              "REMOVE" // Arcanist's Armor
+  //"item_fortitude_ring"           "REMOVE" // unreleased
+  //"item_fusion_rune"              "REMOVE" // disabled
+  //"item_giants_ring"              "REMOVE"
+  //"item_gladiator_helm"           "REMOVE" // unreleased
+  //"item_gloves_of_travel"         "REMOVE" // unreleased
+  //"item_greater_faerie_fire"      "REMOVE" // disabled
+  //"item_greater_mango"            "REMOVE" // unreleased
+  //"item_grove_bow"                "REMOVE"
+  //"item_guardian_shell"           "REMOVE" // unreleased
+  //"item_havoc_hammer"             "REMOVE"
+  //"item_heavy_blade"              "REMOVE" // Witchbane
+  //"item_helm_of_the_undying"      "REMOVE" // disabled
+  //"item_horizon"                  "REMOVE" // unreleased
+  //"item_icarus_wings"             "REMOVE" // unreleased
+  //"item_illusionsts_cape"         "REMOVE" // disabled
+  //"item_imp_claw"                 "REMOVE" // disabled
+  //"item_iron_talon"               "REMOVE" // disabled
+  //"item_ironwood_tree"            "REMOVE" // disabled
+  //"item_keen_optic"               "REMOVE" // disabled
+  //"item_lance_of_pursuit"         "REMOVE"
+  //"item_manacles_of_power"        "REMOVE" // unreleased
+  //"item_mango_tree"               "REMOVE" // disabled
+  //"item_mind_breaker"             "REMOVE"
+  //"item_minotaur_horn"            "REMOVE" // disabled
+  //"item_mirror_shield"            "REMOVE"
+  //"item_misericorde"              "REMOVE" // Brigand's Blade
+  //"item_mysterious_hat"           "REMOVE" // Fairy's Trinket
+  //"item_nether_shawl"             "REMOVE"
+  //"item_ninja_gear"               "REMOVE"
+  //"item_oakheart"                 "REMOVE" // unreleased
+  //"item_occult_bracelet"          "REMOVE"
+  //"item_ocean_heart"              "REMOVE" // disabled
+  //"item_ogre_seal_totem"          "REMOVE"
+  //"item_orb_of_destruction"       "REMOVE" // disabled
+  //"item_overflowing_elixir"       "REMOVE" // unreleased
+  //"item_paintball"                "REMOVE" // Fae Grenade, disabled
+  //"item_paladin_sword"            "REMOVE"
+  //"item_panic_button"             "REMOVE" // Magic Lamp
+  //"item_penta_edged_sword"        "REMOVE"
+  //"item_philosophers_stone"       "REMOVE"
+  //"item_phoenix_ash"              "REMOVE" // disabled
+  //"item_pirate_hat"               "REMOVE"
+  //"item_pogo_stick"               "REMOVE" // Tumbler's Toy
+  //"item_poor_mans_shield"         "REMOVE" // disabled
+  //"item_possessed_mask"           "REMOVE"
+  //"item_princes_knife"            "REMOVE" // disabled
+  //"item_psychic_headband"         "REMOVE"
+  //"item_pupils_gift"              "REMOVE"
+  //"item_quickening_charm"         "REMOVE" // disabled
+  //"item_quicksilver_amulet"       "REMOVE" // disabled
+  //"item_recipe_fallen_sky"        "REMOVE" // disabled
+  //"item_recipe_iron_talon"        "REMOVE" // disabled
+  //"item_recipe_ironwood_tree"     "REMOVE" // disabled
+  //"item_recipe_poor_mans_shield"  "REMOVE" // disabled
+  //"item_recipe_ring_of_aquila"    "REMOVE" // disabled
+  //"item_recipe_trident"           "REMOVE" // disabled
+  //"item_recipe_vambrace"          "REMOVE" // disabled
+  //"item_repair_kit"               "REMOVE" // disabled
+  //"item_ring_of_aquila"           "REMOVE"
+  //"item_royal_jelly"              "REMOVE" // disabled
+  //"item_satchel"                  "REMOVE" // unreleased
+  //"item_seeds_of_serenity"        "REMOVE"
+  //"item_seer_stone"               "REMOVE"
+  //"item_slime_vial"               "REMOVE" // unreleased
+  //"item_specialists_array"        "REMOVE"
+  //"item_spell_prism"              "REMOVE" // disabled
+  //"item_spider_legs"              "REMOVE" // disabled
+  //"item_spy_gadget"               "REMOVE"
+  //"item_star_mace"                "REMOVE" // unreleased
+  //"item_stormcrafter"             "REMOVE"
+  //"item_the_leveller"             "REMOVE" // disabled
+  //"item_third_eye"                "REMOVE" // disabled
+  //"item_timeless_relic"           "REMOVE"
+  //"item_titan_sliver"             "REMOVE" // disabled
+  //"item_tome_of_aghanim"          "REMOVE" // disabled
+  //"item_trickster_cloak"          "REMOVE"
+  //"item_trident"                  "REMOVE" // disabled
+  //"item_trusty_shovel"            "REMOVE"
+  //"item_unstable_wand"            "REMOVE" // Pig Pole
+  //"item_vambrace"                 "REMOVE"
+  //"item_vampire_fangs"            "REMOVE"
+  //"item_vengeances_shadow"        "REMOVE" // unreleased
+  //"item_venom_gland"              "REMOVE" // unreleased
+  //"item_wand_of_sanctitude"       "REMOVE" // unreleased
+  //"item_warhammer"                "REMOVE" // unreleased
+  //"item_witless_shako"            "REMOVE" // disabled
+  //"item_wizard_glass"             "REMOVE" // unreleased
+  //"item_woodland_striders"        "REMOVE" // disabled
+}

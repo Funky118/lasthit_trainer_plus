@@ -1,0 +1,56 @@
+"DOTAAbilities"
+{
+	//=================================================================================================================
+	// Detonator: Conjure Image - ability_lua example
+	//=================================================================================================================
+	"detonator_conjure_image"
+	{
+		"BaseClass"						"ability_lua"
+		"ScriptFile"                	"ability_example/detonator_conjure_image.lua"
+		"AbilityTextureName"			"terrorblade_conjure_image"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_BOTH"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetFlags"		"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_YES"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_NO"
+		"MaxLevel"               		"1"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"900"
+		"AbilityCastPoint"				"0.3"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"60.0"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"150"
+
+		"precache"
+		{
+			"soundfile"		"soundevents/game_sounds_heroes/game_sounds_terrorblade.vsndevts"
+		}
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityValues"
+		{
+			"duration"							"60"
+			"illusion_damage_out"				"-20"
+			"illusion_damage_in"				"100"
+			"illusion_damage_dealt" // tooltip only (illusion_damage_out + 100)
+			{
+				"value"							"80"
+				"CalculateSpellDamageTooltip"	"0"
+			}
+			"illusion_damage_taken" // tooltip only (illusion_damage_in + 100)
+			{
+				"value"							"200"
+				"CalculateSpellDamageTooltip"	"0"
+			}
+		}
+	}
+}

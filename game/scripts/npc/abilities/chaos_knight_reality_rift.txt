@@ -1,0 +1,50 @@
+"DOTAAbilities"
+{
+	//=================================================================================================================
+	// Chaos Knight: Reality Rift - ability_lua example
+	//=================================================================================================================
+	"chaos_knight_reality_rift_barebones"
+	{
+		"BaseClass"						"ability_lua"
+		"ScriptFile"                	"ability_example/chaos_knight_reality_rift.lua"
+		"AbilityTextureName"			"chaos_knight_reality_rift"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_UNIT_TARGET | DOTA_ABILITY_BEHAVIOR_ROOT_DISABLES"
+		"AbilityUnitTargetTeam"			"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"			"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"SpellImmunityType"				"SPELL_IMMUNITY_ENEMIES_NO"
+		"SpellDispellableType"			"SPELL_DISPELLABLE_YES"
+
+		// Casting
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCastRange"				"600 650 700 750"
+		"AbilityCastPoint"				"0.25"
+
+		// Time		
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityCooldown"				"18 14 10 6"
+
+		// Cost
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityManaCost"				"50"
+		
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityValues"
+		{
+			"armor_reduction"
+			{
+				"value"			"-4 -5 -6 -7"
+				"special_bonus_unique_chaos_knight_custom_1"		"-3"
+			}
+			"reduction_duration"		"6"
+			"illusion_search_radius"	"1375"
+			"min_range"					"0.3" // 30% of the distance between
+			"max_range"					"0.8" // 80% of the distance between
+			"pierces_immunity"
+			{
+				"value"					"0"
+				"special_bonus_unique_chaos_knight_custom_2"		"=1"
+			}
+		}
+	}
+}

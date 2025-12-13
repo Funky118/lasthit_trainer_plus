@@ -1,0 +1,31 @@
+<root> 
+	<scripts>
+		<!-- <include src="file://{resources}/scripts/custom_game/init.js" /> -->
+		<!-- <include src="file://{resources}/scripts/playertables/playertables_base.js"/> -->
+		<include src="file://{resources}/scripts/custom_game/ui_element_disable.js"/>
+		<include src="file://{resources}/scripts/custom_game/test.js"/>
+	</scripts>
+
+	<Panel>
+		<!-- CustomUIElements go here.-->
+		<!-- <CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/selection.xml"/> -->
+		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/interactive_panels.xml"/>
+		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/hud_scores.xml"/>
+		<CustomUIElement type="Hud" layoutfile="file://{resources}/layout/custom_game/combat_hud.xml"/>
+
+		<!-- From Overthrow:
+        <CustomUIElement type="HudTopBar"           layoutfile="file://{resources}/layout/custom_game/multiteam_top_scoreboard.xml"/>
+        <CustomUIElement type="Hud"                 layoutfile="file://{resources}/layout/custom_game/overthrow_item_notification.xml"/>
+        <CustomUIElement type="GameSetup"           layoutfile="file://{resources}/layout/custom_game/team_select.xml"/>
+        <CustomUIElement type="FlyoutScoreboard"    layoutfile="file://{resources}/layout/custom_game/multiteam_flyout_scoreboard.xml"/>
+        <CustomUIElement type="EndScreen"           layoutfile="file://{resources}/layout/custom_game/multiteam_end_screen.xml"/>
+        <CustomUIElement type="GameInfo"            layoutfile="file://{resources}/layout/custom_game/overthrow_game_info.xml"/>
+		-->
+	</Panel>
+</root>
+
+<!-- 
+TODO: Add hide panel button just like in hero demo
+TODO: Potential add:
+		-timer mode (increasingly more difficult last hitting on a timer, each creep gains you some time)
+-->	

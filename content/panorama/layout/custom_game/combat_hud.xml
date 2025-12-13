@@ -1,0 +1,13 @@
+<root>
+    <scripts>   
+		<include src="file://{resources}/scripts/custom_game/combat_hud.js"/>
+    </scripts>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/dota_hud_combat_event_row.css"/>
+        <include src="file://{resources}/styles/custom_game/dota_hud_combat_events.css"/>
+        <include src="file://{resources}/styles/custom_game/combat_hud.css"/>
+    </styles>
+    <Panel hittest = "false" class = "Main">
+        <Panel id = "popup"></Panel>
+    </Panel>
+</root>

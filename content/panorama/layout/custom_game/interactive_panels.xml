@@ -1,0 +1,50 @@
+<root>
+    <scripts>   
+		<include src="file://{resources}/scripts/custom_game/interactive_panel.js"/>
+    </scripts>
+    <styles>
+        <include src="file://{resources}/styles/custom_game/last_hit_trainer.css"/>
+    </styles>
+    <Panel hittest="false" class="CustomHudRoot">
+        <Panel id="ControlPanel">
+			<Panel class="ControlPanelContainer">
+				<Panel id="Maximized">
+					<Panel class="BorderTitle">
+						<Label text="#Flyout_Panel_Title" />
+						<Panel id="ControlPanelSlideThumbContainer" require-composition-layer="true">
+							<Button id="ControlPanelSlideThumb" acceptsjoyfocus="true" onactivate="SlideThumbActivate()">
+								<Panel class="RightArrowButtonIcon" />
+							</Button>
+						</Panel>
+					</Panel>
+					<Panel class="Category">
+						<Label text="" />
+						<Panel class="Row">
+							<Button class="DemoButton" onactivate="$.DispatchEvent(&apos;FireCustomGameEvent_Str&apos;, &apos;RoundRestartButtonPressed&apos;, &apos;&apos; );">
+								<Label text="#Flyout_Restart_Round_Button" />
+							</Button>
+						</Panel>
+						<Panel class="Row">
+							<Button id="NewHeroButton" class="DemoButton" onactivate="ToggleHeroPicker()">
+								<Label text="#Flyout_Choose_New_Hero_Button" />
+							</Button>
+						</Panel>
+					</Panel>
+					<Panel class="Category">
+						<Label text="" />
+						<Panel class="QuitPanel">
+							<Button class="QuitButton" onactivate="FireCustomGameEvent_Str( LeaveButtonPressed )">
+								<Label text="#Quit_Button" />
+							</Button>
+						</Panel>
+					</Panel>
+				</Panel>
+			</Panel>
+			<Panel id="SelectHeroContainer">
+				<DOTAUIHeroPicker id="HeroPicker" />
+			</Panel>
+			
+		</Panel>
+		
+    </Panel>
+</root>

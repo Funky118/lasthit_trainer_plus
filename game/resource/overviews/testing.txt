@@ -1,0 +1,8 @@
+testing
+{
+	material materials/overviews/testing.vmat
+	pos_x -2048
+	pos_y 2048
+	scale 4.000
+}
+

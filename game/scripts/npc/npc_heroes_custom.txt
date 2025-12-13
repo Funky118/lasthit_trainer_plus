@@ -1,0 +1,10 @@
+// NOTE: This can be used for creating new heroes, or for taking a currently existing hero as a template and overriding
+// the specified key-value combinations.  Use override_hero <hero_to_override> for this.
+// Tutorial how to use #base:
+// https://moddota.com/tools/combining-kv-files-using-base
+// #base "heroes/chaos_knight.txt"
+
+"DOTAHeroes"
+{
+	
+}

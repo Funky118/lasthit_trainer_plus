@@ -1,0 +1,67 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	GoodCS0 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/items/clarity_potion.vsnd"
+		pitch = 1
+		volume = 0.5
+	}
+
+	GoodCS1 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/ui/economy/tbell_1.vsnd"
+		pitch = 1
+		volume = 0.5
+	}
+
+	BadCS0 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/weapons/hero/sniper/duck_target.vsnd"
+		pitch = 1
+		volume = 0.5
+	}
+
+	BadCS1 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/weapons/creep/greevil/yoink.vsnd"
+		pitch = 1
+		volume = 0.5
+	}
+
+	BadCS2 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/misc/crownfall/enc/charge_gained.vsnd"
+		pitch = 1
+		volume = 0.5
+	}
+
+	RoundStart0 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/misc/aghanim/agh_broentrance_02.vsnd"
+		pitch = 1
+		volume = 0.9
+	}
+
+	RoundStart1 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/misc/aghanim/agh_event_room_intro_03.vsnd"
+		pitch = 1
+		volume = 0.9
+	}
+
+	RoundStart2 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/misc/aghanim/agh_session_intro_04.vsnd"
+		pitch = 1
+		volume = 0.9
+	}
+
+}

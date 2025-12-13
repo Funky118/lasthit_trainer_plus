@@ -1,0 +1,66 @@
+"DOTAAbilities"
+{
+	"miniboss_unyielding_shield_custom"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"ability_example/miniboss_unyielding_shield.lua"
+		"AbilityTextureName"			"miniboss_unyielding_shield"
+		"MaxLevel"						"1"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityValues"
+		{
+			"damage_absorb"				"2000"
+			"absorb_bonus_per_death"	"200"
+			"regen_per_second"			"40"
+			"regen_bonus_per_death"		"100"
+			"min_armor"                 "0"
+		}
+	}
+
+	"miniboss_reflect_custom"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"						"ability_lua"
+		"ScriptFile"					"ability_example/miniboss_reflect.lua"
+		"AbilityTextureName"			"miniboss_reflect"
+		"MaxLevel"						"1"
+		"AbilityBehavior"				"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityValues"
+		{
+			"passive_reflection_pct"				"50"
+			"passive_reflection_bonus_per_death"	"20"
+
+			"radius"								"1200" // This for some reason is not in the original ability
+			"illusion_damage_pct"					"200" // This for some reason is not in the original ability
+		}
+	}
+
+	"miniboss_radiance_custom"
+	{
+		// General
+		//-------------------------------------------------------------------------------------------------------------
+		"BaseClass"                     "ability_lua"
+		"ScriptFile"                    "ability_example/miniboss_radiance.lua"
+		"AbilityTextureName"            "miniboss_radiance"
+		"MaxLevel"                      "1"
+		"AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_PASSIVE"
+
+		// Special
+		//-------------------------------------------------------------------------------------------------------------
+		"AbilityValues"
+		{
+			"aura_radius"			"1200"
+			"aura_damage"			"60"
+			"aura_interval"			"0.2"
+		}
+	}
+}

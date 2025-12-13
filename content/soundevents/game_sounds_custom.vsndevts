@@ -1,0 +1,48 @@
+
+  Creature.Whoosh = {
+    type = "dota_src1_3d"
+    vsnd_files =
+    [
+      "sounds/weapons/hero/shared/small_blade/whoosh01.vsnd",
+      "sounds/weapons/hero/shared/small_blade/whoosh02.vsnd",
+      "sounds/weapons/hero/shared/small_blade/whoosh03.vsnd",
+      "sounds/weapons/hero/shared/small_blade/whoosh04.vsnd",
+    ]
+    volume = "1.400000"
+    pitch_rand_min = "0"
+    pitch_rand_max = "0.030000"
+    pitch = "0.300000"
+    soundlevel = "100.000000"
+    distance_max = "1600.000000"
+    mixgroup = "Weapons"
+  }
+
+  Creature.Lotus = {
+    type = "dota_update_default"
+    vsnd_files =
+    [
+      "sounds/items/lotus_cast.vsnd"
+    ]
+    volume = "0.400000"
+    pitch_rand_min = "0"
+    pitch_rand_max = "0.030000"
+    pitch = "2.400000"
+    soundlevel = "100.000000"
+    distance_max = "1600.000000"
+    mixgroup = "Weapons"
+  }
+  
+  Creature.FireBreath.Cast = {
+    type = "dota_update_default"
+	vsnd_files =
+	[
+		"sounds/mini_rosh_firebreath.vsnd"
+	]
+	volume = "1.000000"
+	pitch_rand_min = "0.950000"
+    pitch_rand_max = "1.050000"
+	soundlevel = "90.000000"
+	distance_max = "1600.000000"
+	event_type = "6.000000"
+	mixgroup = "Ultimates"
+  }
