@@ -6,8 +6,16 @@ gStats = {
     "CumLasthitTime": 0
 };
 
-$.RegisterForUnhandledEvent("DOTAHUDShopOpened", () => {$.Msg("Shop opened!")});
-$.RegisterForUnhandledEvent("DOTAHUDShopOpened", () => {$.Msg("Shop closed!")});
+$.RegisterForUnhandledEvent("DOTAHUDShopOpened", () => 
+	{
+		$.Msg("Shop opened!")
+		$("#LastHitTrainerPanel").SetHasClass("Minimized", true)
+	});
+$.RegisterForUnhandledEvent("DOTAHUDShopClosed", () => 
+	{
+		$.Msg("Shop closed!")
+		$("#LastHitTrainerPanel").RemoveClass("Minimized")
+	});
 
 function SetText(name, value)
 {
@@ -24,7 +32,11 @@ function UpdateScores()
 	SetText('#CreepsLastHit', gStats["LastHitCount"] + "/" + gStats["LastHitTotal"]);
 	SetText('#CreepsDenied', gStats["DenyCount"] + "/" + gStats["DenyTotal"]);
 	var avg_cs_time = gStats["CumLasthitTime"]/(gStats["LastHitCount"]+gStats["DenyCount"])
-    SetText('#AverageLasthitTime', avg_cs_time.toFixed(3));
+	if (isNaN(avg_cs_time))
+		SetText('#AverageLasthitTime', "waiting");
+	else
+		SetText('#AverageLasthitTime', avg_cs_time.toFixed(3));
+		
 }
 
 function OnLastHitTrainerStatsUpdated( tableName, key, data )

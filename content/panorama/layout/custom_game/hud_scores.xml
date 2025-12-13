@@ -6,14 +6,14 @@
         <include src="file://{resources}/styles/custom_game/last_hit_trainer.css"/>
     </styles>
     <Panel hittest="false" class="CustomHudRoot">
-        <Panel class="LastHitTrainerPanel">
+        <Panel class="LastHitTrainerPanel" id="LastHitTrainerPanel">
 			<Panel class="horizontal_container score">
 				<Panel class="label">
 					<Label text="#DOTA_HUD_Score" />
 				</Panel>
-				<!-- <Panel class="value">
-					<Label id="Score" text="0" />
-				</Panel> -->
+				<Panel class="value">
+					<Label id="Score" text="hit/all" />
+				</Panel>
 			</Panel>
 			<Panel class="horizontal_container positive">
 				<Panel class="label">

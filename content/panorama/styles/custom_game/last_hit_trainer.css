@@ -307,7 +307,7 @@
 	horizontal-align: right;
 	vertical-align: top;
 	flow-children: down;
-	width: 290px;
+	width: 320px;
 	padding-bottom: 8px;
 }
 
@@ -321,7 +321,7 @@
 {
 	width: fill-parent-flow( 1.0 );
 	color: #ffffff;
-	font-size: 18px;
+	font-size: 24px;
 	font-family: Radiance,FZKai-Z03,TH Sarabun New,YDYGO 540;
 	letter-spacing: 1px;
 	text-shadow: -1px 2px 1px 2.0 #111111b0;
@@ -346,10 +346,15 @@
 .LastHitTrainerPanel .horizontal_container.score Label
 {
 	color: #eec41d;
-	font-size: 20px;
+	font-size: 24px;
 	vertical-align: middle;
 	padding-left: 15px;
 	padding-right: 15px;
 	padding-top: 12px;
 	padding-bottom: 11px;
+}
+
+#LastHitTrainerPanel.Minimized
+{
+	transform: translateX( -512px ) translateY(-14px);
 }

@@ -70,7 +70,8 @@ function barebones:InitGameMode()
 	local nemesis_spawn = Entities:FindByName(nil,"dire_nemesis")
 	self.HeroSpawnPos = hero_spawn:GetAbsOrigin()
 	self.NemesisSpawnPos = nemesis_spawn:GetAbsOrigin()
-	self.HeroDamage = 0
+	-- HeroDamage plays role in Nemesis' last hitting logic
+	self.HeroDamage = 40 -- Updates when Hero spawns but in case something goes wrong, this is a good default
 
 	-- Starting positions of the creeps defined in Hammer
 	local rms = Entities:FindByName(nil,"radiant_melee")
@@ -210,14 +211,13 @@ function barebones:InitGameMode()
 
 	ListenToGameEvent("dota_player_selected_custom_team", Dynamic_Wrap(barebones, 'OnPlayerSelectedCustomTeam'), self)
 	ListenToGameEvent("dota_npc_goal_reached", Dynamic_Wrap(barebones, 'OnNPCGoalReached'), self)
-	ListenToGameEvent("dota_tutorial_shop_toggled", Dynamic_Wrap(barebones, 'On_dota_tutorial_shop_toggled'), self)
-	ListenToGameEvent("dota_player_shop_changed", Dynamic_Wrap(barebones, 'On_dota_player_shop_changed'), self)
-	ListenToGameEvent("dota_link_clicked", Dynamic_Wrap(barebones, 'On_dota_link_clicked'), self)
+	ListenToGameEvent("dota_item_purchased", Dynamic_Wrap(barebones, 'OnItemPurcahsed'), self)
 
 	-- Panorama listeners
 	CustomGameEventManager:RegisterListener( "LeaveButtonPressed", function(...) return self:OnLeaveButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "SwitchToNewHero", function(...) return self:OnSwitchToNewHero( ... ) end )
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
+	
 
 	-- Change random seed for math.random function
 	local timeTxt = string.gsub(string.gsub(GetSystemTime(), ':', ''), '0','')

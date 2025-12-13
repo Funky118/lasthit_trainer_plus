@@ -95,7 +95,7 @@ function barebones:OnNPCSpawned(keys)
 	if not self.PlayerHero then
 		if npc:IsRealHero() and npc:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
 			self.PlayerHero = npc
-			self.HeroDamage = npc:GetBaseDamageMin() + (npc:GetBaseDamageMax() - npc:GetBaseDamageMin())/2
+			self.HeroDamage = npc:GetAverageTrueAttackDamage(nil)--GetBaseDamageMin() + (npc:GetBaseDamageMax() - npc:GetBaseDamageMin())/2
 			local nemesis = "npc_dota_hero_sniper"
 			PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
 			self:SpawnLaneCreeps()
@@ -770,8 +770,8 @@ function barebones:SpawnNemesis(sHero)
 	
 	Timers:CreateTimer(1, function ()
 		-- Set damage to be competetive with Hero
-		local nemesis_damage = self.HeroDamage - self.NemesisHero:GetBaseDamageMin()
-		print("Nemesis damage: "..nemesis_damage)
+		local nemesis_damage = self.HeroDamage - self.NemesisHero:GetAverageTrueAttackDamage(nil)
+		-- print("Nemesis damage: "..nemesis_damage)
 		-- TODO: Add option for a harder opponent with higher attack speed
 		-- note: with some tinkering, the bot could achieve perfect last hitting if given higher damage
 		-- that would likely become unfair though
@@ -820,7 +820,7 @@ function barebones:NemesisMove()
 			end
 		end
 
-	local const_distance = 800
+	local const_distance = 700
 	local hyst = 100
 	local creep_center = self:CreepsCenter()
 	local new_pos = self.NemesisHero:GetAbsOrigin()
@@ -828,7 +828,7 @@ function barebones:NemesisMove()
 	if chicken_out then
 		-- bok bok 
 		print("RUN AWAY!")
-		new_pos = new_pos + 150
+		new_pos = new_pos + 290
 	elseif dist <= const_distance-hyst then
 		new_pos = new_pos + (const_distance-dist)
 		new_pos.z = 0
@@ -945,8 +945,7 @@ function barebones:AssignNewHero(sHero, iPlayerID)
 	newHero:SetAcquisitionRange(0)
 	player:SetAssignedHeroEntity(newHero)
 	self.PlayerHero = newHero
-	self.HeroDamage = newHero:GetBaseDamageMin() + (newHero:GetBaseDamageMax() - newHero:GetBaseDamageMin())/2
-	print(self.HeroDamage)
+	self.HeroDamage = newHero:GetAverageTrueAttackDamage(nil)
 
 	-- ...alternatively use DebugCreateHeroWithVariant()
 
@@ -993,19 +992,17 @@ end
 function barebones:SendStatisticsToClient()
 	CustomNetTables:SetTableValue( "last_hit_trainer_stats", "stats", self.NetTableStats )
 end
-
--- TODO: Figure out which API signals shop being open and hide score in Panorama
-function barebones:On_dota_tutorial_shop_toggled(data)
-  print("[BAREBONES] dota_tutorial_shop_toggled")
-  PrintTable(data)
-end
-
-function barebones:On_dota_player_shop_changed(data)
-  print("[BAREBONES] dota_player_shop_changed")
-  PrintTable(data)
-end
-
-function barebones:On_dota_link_clicked(data)
-  print("[BAREBONES] dota_link_clicked")
-  PrintTable(data)
+function barebones:OnItemPurcahsed(keys)
+	-- HAHA! No cheating allowed! Nemesis now tracks Hero damage dynamically.
+	self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
+	self.NemesisHero:RemoveModifierByName("modifier_nemesis")
+	local nemesis_damage = self.HeroDamage - self.NemesisHero:GetAverageTrueAttackDamage(nil)
+	-- print("Nemesis damage diff: "..nemesis_damage)
+	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = 1000,
+																					bonus_damage = nemesis_damage,
+																					bonus_attack_speed = 0,
+																					bonus_projectile_speed = 5000,
+																					-- attack_point = 0,
+																					-- BAT = 1,
+																				})
 end
