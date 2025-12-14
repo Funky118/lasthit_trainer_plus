@@ -137,7 +137,7 @@ function barebones:OnHeroInGame(hero)
 	Timers:CreateTimer(0.5, function()
 		local playerID = hero:GetPlayerID()	-- never nil (-1 by default), needs delay 1 or more frames
 
-		if PlayerResource:IsFakeClient(playerID) then
+		if PlayerResource:IsFakeClient(playerID) or playerID == nil or playerID == -1 then
 			-- This is happening only for bots
 			DebugPrint("[BAREBONES] OnHeroInGame - Bot hero "..hero:GetUnitName().." (re)spawned in the game.")
 			-- Set starting gold for bots
@@ -780,7 +780,7 @@ function barebones:SpawnNemesis(sHero)
 																					bonus_attack_speed = 0,
 																					bonus_projectile_speed = 5000,
 																					-- attack_point = 0,
-																					-- BAT = 1,
+																					-- BAT = 0.1,
 																				})
 	end)
 	self.NemesisHero:SetIdleAcquire(false)
@@ -806,7 +806,7 @@ function barebones:NemesisThink()
 end
 
 function barebones:NemesisMove()
-	-- Nemesis tries to stay ~800 range from the mean of positions of all creeps
+	-- Nemesis tries to stay const_distance range from the mean of positions of all creeps
 	-- There is some asymetrical hysterisis in this range to vary the lasthit timing
 	if self.NemesisHero == nil then
 		return 1
@@ -815,10 +815,10 @@ function barebones:NemesisMove()
 	local creeps = Entities:FindAllByClassnameWithin("npc_dota_creep_lane", self.NemesisHero:GetAbsOrigin(), 500)
 	local chicken_out = false
 	for k,v in pairs(creeps) do
-			if v:GetTeam() == DOTA_TEAM_GOODGUYS then
-				chicken_out = true
-			end
+		if v:GetTeam() == DOTA_TEAM_GOODGUYS then
+			chicken_out = true
 		end
+	end
 
 	local const_distance = 700
 	local hyst = 100

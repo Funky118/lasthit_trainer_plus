@@ -7,11 +7,11 @@ ALLOW_SAME_HERO_SELECTION = false  -- Should we let people select the same hero 
 LOCK_TEAMS = false                 -- Should we Lock (true) or unlock (false) team assignemnt. If team assignment is locked players cannot change teams.
 
 CUSTOM_GAME_SETUP_TIME = 0.0      -- How long should custom game setup last - the screen where players pick a team?
-HERO_SELECTION_TIME = 0.0         -- How long should we let people select their hero? Should be at least 5 seconds.
-HERO_SELECTION_PENALTY_TIME = 30.0 -- How long should the penalty time for not picking a hero last? During this time player loses gold.
+HERO_SELECTION_TIME = 10.0         -- How long should we let people select their hero? Should be at least 5 seconds.
+HERO_SELECTION_PENALTY_TIME = 0.0 -- How long should the penalty time for not picking a hero last? During this time player loses gold.
 ENABLE_BANNING_PHASE = false       -- Should we enable banning phase? Set to true if "EnablePickRules" is "1" in 'addoninfo.txt'
 BANNING_PHASE_TIME = 20.0          -- How long should the banning phase last? This will work only if "EnablePickRules" is "1" in 'addoninfo.txt'
-STRATEGY_TIME = 0              -- How long should strategy time last? Bug: You can buy items during strategy time and it will not be spent!
+STRATEGY_TIME = 6.0              -- How long should strategy time last? Bug: You can buy items during strategy time and it will not be spent!
 SHOWCASE_TIME = 0               -- How long should show case time be?
 PRE_GAME_TIME = 0               -- How long after showcase time should the horn blow and the game start?
 POST_GAME_TIME = 2.0              -- How long should we let people stay around before closing the server automatically?
@@ -52,7 +52,7 @@ DISABLE_ALL_GOLD_FROM_HERO_KILLS = false -- Should we remove gold gain from hero
 -- NOTE: DISABLE_ALL_GOLD_FROM_HERO_KILLS requires GoldFilter.
 USE_CUSTOM_HERO_LEVELS = false           -- Should the heroes give a custom amount of XP when killed? Can malfunction for levels above 30!
 
-USE_CUSTOM_TOP_BAR_VALUES = true         -- Should we do customized top bar values or use the default kill count per team?
+USE_CUSTOM_TOP_BAR_VALUES = false         -- Should we do customized top bar values or use the default kill count per team?
 TOP_BAR_VISIBLE = true                   -- Should we display the top bar score/count at all?
 SHOW_KILLS_ON_TOPBAR = true              -- Should we display kills only on the top bar? (No denies, suicides, kills by neutrals)  Requires USE_CUSTOM_TOP_BAR_VALUES
 
@@ -80,7 +80,7 @@ LOSE_GOLD_ON_DEATH = false          -- Should we have players lose the normal am
 SHOW_ONLY_PLAYER_INVENTORY = false -- Should we allow players to only see their own inventory even when selecting other units?
 DISABLE_STASH_PURCHASING = false   -- Should we prevent players from being able to buy items into their stash when not at a shop?
 DISABLE_ANNOUNCER = true          -- Should we disable the announcer from working in the game?
-FORCE_PICKED_HERO = "npc_dota_hero_invoker"            -- What hero should we force all players to spawn as? (e.g. "npc_dota_hero_axe").  Use nil to allow players to pick their own hero.
+FORCE_PICKED_HERO = nil--"npc_dota_hero_invoker"            -- What hero should we force all players to spawn as? (e.g. "npc_dota_hero_axe").  Use nil to allow players to pick their own hero.
 -- This will not work if "EnablePickRules" is "1" in 'addoninfo.txt'!
 
 ADD_ITEM_TO_HERO_ON_SPAWN = false  -- Add an example item to the picked hero when he spawns?
@@ -127,7 +127,7 @@ end
 FOUNTAIN_CONSTANT_MANA_REGEN                 = -1    -- What should we use for the constant fountain mana regen?  Use -1 to keep the default dota behavior.
 FOUNTAIN_PERCENTAGE_MANA_REGEN               = -1    -- What should we use for the percentage fountain mana regen?  Use -1 to keep the default dota behavior.
 FOUNTAIN_PERCENTAGE_HEALTH_REGEN             = -1    -- What should we use for the percentage fountain health regen?  Use -1 to keep the default dota behavior.
-MAXIMUM_ATTACK_SPEED                         = 700   -- What should we use for the maximum attack speed?
+MAXIMUM_ATTACK_SPEED                         = 5000   -- What should we use for the maximum attack speed?
 MINIMUM_ATTACK_SPEED                         = 10    -- What should we use for the minimum attack speed?
 
 DISABLE_DAY_NIGHT_CYCLE                      = true -- Should we disable the day night cycle from naturally occurring? (Manual adjustment still possible)

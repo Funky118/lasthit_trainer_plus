@@ -84,6 +84,12 @@ function barebones:InitGameMode()
 	self.DireMeeleePos = dms:GetOrigin()
 	self.DireRangedPos = drs:GetOrigin()
 
+	-- Give towers health regen
+	local towers = Entities:FindAllByClassname("npc_dota_tower")
+	for _,v in pairs(towers) do
+		v:SetBaseHealthRegen(100)
+	end
+
 	-- Colors for last hit particle (same as Valve's last hit trainer) TODO: UNUSED
 	self.CSTier1 = Vector( 100, 250, 30 )
 	self.CSTier2 = Vector( 180, 190, 30 )

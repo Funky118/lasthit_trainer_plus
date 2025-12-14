@@ -43,9 +43,9 @@
 	RoundStart0 =
 	{
 		type = "dota_update_default"
-		vsnd_files = "sounds/misc/aghanim/agh_broentrance_02.vsnd"
+		vsnd_files = "sounds/misc/aghanim/agh_session_intro_01.vsnd_c"
 		pitch = 1
-		volume = 0.9
+		volume = 3
 	}
 
 	RoundStart1 =
@@ -53,7 +53,7 @@
 		type = "dota_update_default"
 		vsnd_files = "sounds/misc/aghanim/agh_event_room_intro_03.vsnd"
 		pitch = 1
-		volume = 0.9
+		volume = 3
 	}
 
 	RoundStart2 =
@@ -61,7 +61,23 @@
 		type = "dota_update_default"
 		vsnd_files = "sounds/misc/aghanim/agh_session_intro_04.vsnd"
 		pitch = 1
-		volume = 0.9
+		volume = 3
+	}
+
+	RoundStart3 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/misc/aghanim/agh_event_room_intro_08.vsnd"
+		pitch = 1
+		volume = 3
+	}
+
+	RoundStart4 =
+	{
+		type = "dota_update_default"
+		vsnd_files = "sounds/misc/soundboard/sleighbells.vsnd"
+		pitch = 1
+		volume = 3
 	}
 
 }
