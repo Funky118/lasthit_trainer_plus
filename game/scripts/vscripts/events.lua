@@ -366,6 +366,8 @@ function barebones:OnLastHit(keys)
 			tmpMelee = 1
 			tmpRanged = 0
 		end
+	else
+		return
 	end
 
 	-- If player 0 got the kill award cs/deny, otherwise missed cs/deny (PlayerID includes LD's bear - for now)
@@ -739,7 +741,9 @@ function barebones:OnSwitchToNewHero(keys, data)
 	for _,v in pairs(creeps) do
 		v:ForceKill(false)
 	end
+	-- Reset Nemesis' target and hitlist
 	self.LowHealthTargets = {}
+	self.CurrentTarget = nil
 
 	-- Precache the new hero and nemesis and call their spawning functions
 	local nHeroID = tonumber( data.str )
@@ -799,6 +803,7 @@ function barebones:NemesisThink()
 				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
 				TargetIndex = self.CurrentTarget:entindex()
 			})
+			--DebugDrawCircle(self.CurrentTarget:GetAbsOrigin(), Vector(0,0,255), 20, 20, true, 5) -- TODO: Add helper functions to highlight lasthittable creep and almost lasthittable creep
 			print("Nemesis attacked at: "..(Time() - v[2]))
 		end
 	end
@@ -812,7 +817,7 @@ function barebones:NemesisMove()
 		return 1
 	end
 
-	local creeps = Entities:FindAllByClassnameWithin("npc_dota_creep_lane", self.NemesisHero:GetAbsOrigin(), 500)
+	local creeps = Entities:FindAllByClassnameWithin("npc_dota_creep_lane", self.NemesisHero:GetAbsOrigin(), 450)
 	local chicken_out = false
 	for k,v in pairs(creeps) do
 		if v:GetTeam() == DOTA_TEAM_GOODGUYS then
@@ -820,7 +825,7 @@ function barebones:NemesisMove()
 		end
 	end
 
-	local const_distance = 700
+	local const_distance = 600
 	local hyst = 100
 	local creep_center = self:CreepsCenter()
 	local new_pos = self.NemesisHero:GetAbsOrigin()
@@ -828,11 +833,11 @@ function barebones:NemesisMove()
 	if chicken_out then
 		-- bok bok 
 		print("RUN AWAY!")
-		new_pos = new_pos + 290
+		new_pos = new_pos + 290 -- Sniper's speed, this updates every 1 second
 	elseif dist <= const_distance-hyst then
 		new_pos = new_pos + (const_distance-dist)
 		new_pos.z = 0
-	elseif dist >= const_distance+hyst*4 then
+	elseif dist >= const_distance+hyst*2 then
 		new_pos = new_pos - (dist-const_distance)
 		new_pos.z = 0
 	else
@@ -895,7 +900,7 @@ end
 function barebones:OnEntityHurt(keys)
 	-- Calculate effective HP of the damaged creep and add it to Nemesis's list if below average Hero base damage
 	local victim = EntIndexToHScript(keys.entindex_killed)
-	if victim:IsRealHero() then
+	if victim:GetClassname() ~= "npc_dota_creep_lane" then
 		return
 	end
 	local victim_armor = victim:GetPhysicalArmorBaseValue()

@@ -43,7 +43,7 @@
 	RoundStart0 =
 	{
 		type = "dota_update_default"
-		vsnd_files = "sounds/misc/aghanim/agh_session_intro_01.vsnd_c"
+		vsnd_files = "sounds/misc/aghanim/agh_session_intro_01.vsnd"
 		pitch = 1
 		volume = 3
 	}
