@@ -1,5 +1,31 @@
 ✔ Add popups with time @done(25-12-12 16:18)
-    ✔ Add cat images @done(25-12-12 16:18)
-☐ Add sound and effect for nemesis deny
-☐ Implement restart button
+✔ Add cat images @done(25-12-12 16:18)
+✔ Add sound and effect for nemesis deny @done(25-12-15 11:33)
+✔ Implement restart button @done(25-12-15 11:33)
 ✔ Implement average time @done(25-12-12 16:18)
+
+Likely add:
+    ✔ Flagbearer creep waves @done(25-12-16 17:22)
+    ☐ Add a variable to enable experience gain (Nemesis needs to update damage on hero level up)
+    ☐ Add side neutral camps
+    ☐ Show amount of denied/gained experience and gold
+    ☐ Allow player to choose oppotent (including vanilla without modifier)
+    ☐ Add option for a harder opponent with higher attack speed
+    ☐ Add helper functions to highlight lasthittable creep and almost lasthittable creep
+    ☐ Add particle effects and stuff (me like shiny)
+    ☐ Show remaining health on missed creeps
+    
+Potential add:
+    ☐ timer mode (increasingly more difficult last hitting on a timer, each creep gains you some time)
+    ☐ under tower last hits/missed
+    ☐ average miss time
+    ☐ runes picked/missed (spawn enemies that kill runes after a delay)
+    ☐ idling time (not moving, preparing to cs)
+    ☐ creep aggro
+    ☐ creep blocking
+    ☐ enemy hero damage
+    ☐ damage received
+    ☐ wave clear speed
+    ☐ minimap awareness (spawn pudge and hook the hero)
+    ☐ tower damage dealt/received
+    ☐ apm

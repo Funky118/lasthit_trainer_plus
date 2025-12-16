@@ -89,8 +89,7 @@ function barebones:OnNPCSpawned(keys)
 		return
 	end
 
-	-- This will automatically assign new hero from DebugCreateHeroWithVariant() to PlayerHero TODO: Maybe scrap?
-	-- And also spawn Nemesis
+	-- This also spawns Nemesis
 	-- And sends the creep wave (I used to do this in GameInit but on server the first wave wouldn't move)
 	if not self.PlayerHero then
 		if npc:IsRealHero() and npc:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
@@ -344,16 +343,18 @@ function barebones:OnLastHit(keys)
 	local tmpMelee = 0
 	local tmpRanged = 0
 	local delay_time = -1
-	if victim:GetClassname() == "npc_dota_creep_lane" then
+	local attacker = 0 -- The unit which got the creep below HP threshold
+	if victim:GetClassname() == "npc_dota_creep_lane" or victim:GetClassname() == "npc_dota_creep_siege" then
 		-- Nemesis hit list update
 		for k, v in pairs(self.LowHealthTargets) do
-			if v[1] == victim then -- v contains [~, CreepID, TimeSinceLasthittable, Unused]
+			if v[1] == victim then -- v contains [~, CreepID, TimeSinceLasthittable, HeroOrNot]
 				table.remove(self.LowHealthTargets, k)
 				-- If victim was his current target, set to nil
 				if victim == self.CurrentTarget then
 					self.CurrentTarget = nil
 				end
 				delay_time = Time() - v[2]
+				attacker = v[3]
 				break
 			end
 		end
@@ -400,11 +401,12 @@ function barebones:OnLastHit(keys)
 			end
 		end
 	else
+		local popup_text = (attacker) and "Too early " or "Too late " -- Lil ternary operator magic (I'm suprised Lua has it)
 		if player:GetTeamNumber() == victim:GetTeamNumber() then
 			-- MISSED DENIES
 			self.NetTableStats["DenyTotal"] = self.NetTableStats["DenyTotal"] + 1
 			if delay_time ~= -1 then
-				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text="Missed window: ", time=delay_time, killer="other"})
+				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text=popup_text, time=delay_time, killer="other"})
 			else
 				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text="Impossible cs", killer="other"})
 			end
@@ -412,7 +414,7 @@ function barebones:OnLastHit(keys)
 			-- MISSED LASTHITS
 			self.NetTableStats["LastHitTotal"] = self.NetTableStats["LastHitTotal"] + 1
 			if delay_time ~= -1 then
-				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text="Missed window: ", time=delay_time, killer="other"})
+				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text=popup_text, time=delay_time, killer="other"})
 			else
 				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text="Impossible cs", killer="other"})
 			end
@@ -737,10 +739,12 @@ function barebones:OnSwitchToNewHero(keys, data)
 	end
 
 	-- Kill all creeps and erase nemesis' target list
-	local creeps = Entities:FindAllByName("npc_dota_creep_lane")
+	local creeps = self:FindAllCreeps(self.PlayerHero)
+
 	for _,v in pairs(creeps) do
 		v:ForceKill(false)
 	end
+
 	-- Reset Nemesis' target and hitlist
 	self.LowHealthTargets = {}
 	self.CurrentTarget = nil
@@ -759,6 +763,7 @@ function barebones:OnSwitchToNewHero(keys, data)
 	self:InitializeNetworkStats()
 	self:SendStatisticsToClient()
 	self.LastWaveSpawnTime = -self.CreepSpawnInterval
+	self.CreepWavesSpawned = 0
 	print("Hero: "..sHeroClass)
 end
 
@@ -779,10 +784,10 @@ function barebones:SpawnNemesis(sHero)
 		-- TODO: Add option for a harder opponent with higher attack speed
 		-- note: with some tinkering, the bot could achieve perfect last hitting if given higher damage
 		-- that would likely become unfair though
-		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = 1000,
+		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
 																					bonus_damage = nemesis_damage,
-																					bonus_attack_speed = 0,
-																					bonus_projectile_speed = 5000,
+																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
+																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
 																					-- attack_point = 0,
 																					-- BAT = 0.1,
 																				})
@@ -817,12 +822,12 @@ function barebones:NemesisMove()
 		return 1
 	end
 
-	local creeps = Entities:FindAllByClassnameWithin("npc_dota_creep_lane", self.NemesisHero:GetAbsOrigin(), 450)
+	local creeps = self:FindEnemyCreeps(self.NemesisHero, 450)
+
 	local chicken_out = false
 	for k,v in pairs(creeps) do
-		if v:GetTeam() == DOTA_TEAM_GOODGUYS then
-			chicken_out = true
-		end
+		chicken_out = true
+		break
 	end
 
 	local const_distance = 600
@@ -860,10 +865,12 @@ end
 
 function barebones:CreepsCenter()
 	-- Calculate waypoint for Nemesis, either middle of creep wave or inbetween towers
-	local creeps = Entities:FindAllByName("npc_dota_creep_lane")
+	local creeps = self:FindAllCreeps(self.NemesisHero)
+
 	local center_of_gravity = 0
 	local num_creeps = 0
-	if creeps ~= nil then
+
+	if creeps ~= nil then--or siege_creeps ~= nil then
 		for _,v in pairs(creeps) do
 			if v:IsAlive() then
 				center_of_gravity = center_of_gravity + v:GetAbsOrigin()
@@ -876,6 +883,7 @@ function barebones:CreepsCenter()
 		print("Creeps nil!")
 		center_of_gravity = self.NemesisSpawnPos-VectorDistance(self.HeroSpawnPos,self.NemesisSpawnPos)/2 -- Set default to halfway between radiant and dire
 	end
+
 	if num_creeps <= 0 then
 		center_of_gravity = self.NemesisSpawnPos-VectorDistance(self.HeroSpawnPos,self.NemesisSpawnPos)/2
 	end
@@ -900,18 +908,27 @@ end
 function barebones:OnEntityHurt(keys)
 	-- Calculate effective HP of the damaged creep and add it to Nemesis's list if below average Hero base damage
 	local victim = EntIndexToHScript(keys.entindex_killed)
-	if victim:GetClassname() ~= "npc_dota_creep_lane" then
-		return
+	local attacker = EntIndexToHScript(keys.entindex_attacker)
+
+	if victim:GetClassname() == "npc_dota_creep_lane" then
+		local victim_armor = victim:GetPhysicalArmorBaseValue()
+		local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
+		local eHP = victim:GetHealth() / armor_factor
+		if eHP <= (self.HeroDamage) then
+			self:AddCreepToTable(victim, attacker:IsRealHero())
+		end
+	elseif victim:GetClassname() == "npc_dota_creep_siege" then
+		local victim_armor = victim:GetPhysicalArmorBaseValue()
+		local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
+		local eHP = victim:GetHealth() / armor_factor / 0.5 -- Reinforced unit
+		if eHP <= (self.HeroDamage) then
+			self:AddCreepToTable(victim, attacker:IsRealHero())
+		end
 	end
-	local victim_armor = victim:GetPhysicalArmorBaseValue()
-	local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
-	local eHP = victim:GetHealth() / armor_factor
-	if eHP <= (self.HeroDamage) then --TODO: later update HeroDamage OnItemPurchase (dota_inventory_changed/dota_inventory_item_added/dota_inventory_item_changed/dota_inventory_player_got_item/dota_item_purchase)
-		self:AddCreepToTable(victim)
-	end
+	
 end
 
-function barebones:AddCreepToTable(eCreep)
+function barebones:AddCreepToTable(eCreep, isAttackerHero)
 	-- Traverse LowHealthTargets of Nemesis and append new target and time if not present
 	if self.LowHealthTargets ~= nil then
 		for _, v in pairs(self.LowHealthTargets) do
@@ -920,7 +937,7 @@ function barebones:AddCreepToTable(eCreep)
 			end
 		end
 	end
-	local tmp = {eCreep, Time(), -1} -- TODO: Third index will be creep HP since last hero hit
+	local tmp = {eCreep, Time(), isAttackerHero}
 	table.insert(self.LowHealthTargets, tmp)
 end
 
@@ -1003,10 +1020,10 @@ function barebones:OnItemPurcahsed(keys)
 	self.NemesisHero:RemoveModifierByName("modifier_nemesis")
 	local nemesis_damage = self.HeroDamage - self.NemesisHero:GetAverageTrueAttackDamage(nil)
 	-- print("Nemesis damage diff: "..nemesis_damage)
-	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = 1000,
+	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
 																					bonus_damage = nemesis_damage,
-																					bonus_attack_speed = 0,
-																					bonus_projectile_speed = 5000,
+																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
+																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
 																					-- attack_point = 0,
 																					-- BAT = 1,
 																				})

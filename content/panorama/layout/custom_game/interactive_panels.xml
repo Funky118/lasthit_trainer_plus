@@ -19,15 +19,17 @@
 					</Panel>
 					<Panel class="Category">
 						<Label text="" />
-						<Panel class="Row">
-							<Button class="DemoButton" onactivate="$.DispatchEvent(&apos;FireCustomGameEvent_Str&apos;, &apos;RoundRestartButtonPressed&apos;, &apos;&apos; );">
-								<Label text="#Flyout_Restart_Round_Button" />
-							</Button>
-						</Panel>
-						<Panel class="Row">
-							<Button id="NewHeroButton" class="DemoButton" onactivate="ToggleHeroPicker()">
-								<Label text="#Flyout_Choose_New_Hero_Button" />
-							</Button>
+						<Button class="DemoButton" onactivate="$.DispatchEvent(&apos;FireCustomGameEvent_Str&apos;, &apos;RoundRestartButtonPressed&apos;, &apos;&apos; );">
+							<Label text="#Flyout_Restart_Round_Button" />
+						</Button>
+						<Button id="NewHeroButton" class="DemoButton" onactivate="ToggleHeroPicker()">
+							<Label text="#Flyout_Choose_New_Hero_Button" />
+						</Button>
+						<Panel class="NemesisSetting">
+							<Label text="threshold"></Label>
+							<Panel class="value">
+								<Label id="AverageLasthitTime" text="0" />
+							</Panel>
 						</Panel>
 					</Panel>
 					<Panel class="Category">

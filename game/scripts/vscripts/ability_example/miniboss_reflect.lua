@@ -61,7 +61,6 @@ function modifier_miniboss_reflect_custom:OnCreated()
 	}
 
 	self.parent.tormentorTeam = DOTA_TEAM_GOODGUYS
-	-- TODO: Change tormentor team depending on tormentor location
 
 	-- This delay is required because the tormentor team is not set yet when the modifier is created
 	GameRules:GetGameModeEntity():SetContextThink(DoUniqueString("delay"), function()

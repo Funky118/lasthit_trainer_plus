@@ -209,6 +209,51 @@
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #777777 ), to( #999999 ) );
 }
 
+.NemesisSetting
+{
+	background-color: #33333300;
+	height: 80px;
+	width: 140px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	margin-left: 3px;
+	margin-right: 3px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #444444;
+	flow-children: down;
+
+}
+
+.Category .NemesisSetting Label
+{
+	vertical-align: top;
+	color: #cccccc;
+	font-size: 15;
+	font-weight: thin;
+}
+/*TODO: CONT HERE*/
+.Category .NemesisSetting .value
+{
+	vertical-align: top;
+	horizontal-align: middle;
+}
+
+.Category .NemesisSetting .plus
+{
+	vertical-align: top;
+}
+
+.Category .NemesisSetting .minus
+{
+	vertical-align: top;
+}
+
+.Category .NemesisSetting .text_window
+{
+	vertical-align: top;
+}
+
 /*Quit panel*/
 .QuitPanel
 {

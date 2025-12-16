@@ -23,14 +23,6 @@
 					<Label id="CreepsLastHit" text="0/0" />
 				</Panel>
 			</Panel>
-			<!-- <Panel class="horizontal_container positive">
-				<Panel class="label">
-					<Label text="#DOTA_HUD_Current_Last_Hit_Streak" />
-				</Panel>
-				<Panel class="value">
-					<Label id="CurrentLastHitStreak" text="0" />
-				</Panel>
-			</Panel> -->
 			<Panel class="horizontal_container positive">
 				<Panel class="label">
 					<Label text="#DOTA_HUD_Denies" />
@@ -39,14 +31,6 @@
 					<Label id="CreepsDenied" text="0/0" />
 				</Panel>
 			</Panel>
-			<!-- <Panel class="horizontal_container positive">
-				<Panel class="label">
-					<Label text="#DOTA_HUD_Percentage" />
-				</Panel>
-				<Panel class="value">
-					<Label id="TotalLastHitOrDenyPct" text="0" />
-				</Panel>
-			</Panel> -->
 			<Panel class="horizontal_container positive">
 				<Panel class="label">
 					<Label text="#DOTA_HUD_Average_Time" />
@@ -58,19 +42,3 @@
 		</Panel>
     </Panel>
 </root>
-
-<!-- TODO: potential adds:
-			-under tower last hits/missed
-			-average miss time
-			-experience gained/lost/denied
-			-gold gained/lost/denied
-			-runes picked/missed (spawn enemies that kill runes after a delay)
-			-idling time (not moving, preparing to cs)
-			-creep agro
-			-enemy hero damage
-			-damage received
-			-wave clear speed
-			-minimap awareness
-			-tower damage dealt/received
-			-apm
--->

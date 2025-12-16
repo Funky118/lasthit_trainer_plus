@@ -72,6 +72,9 @@ function barebones:InitGameMode()
 	self.NemesisSpawnPos = nemesis_spawn:GetAbsOrigin()
 	-- HeroDamage plays role in Nemesis' last hitting logic
 	self.HeroDamage = 40 -- Updates when Hero spawns but in case something goes wrong, this is a good default
+	self.NemesisBonusAttackRange = 1000
+	self.NemesisBonusAttackSpeed = 0
+	self.NemesisBonusProjectileSpeed = 5000
 
 	-- Starting positions of the creeps defined in Hammer
 	local rms = Entities:FindByName(nil,"radiant_melee")
@@ -106,6 +109,8 @@ function barebones:InitGameMode()
 	self.CreepWavesSpawned = 0
 	self.MeleeCreepsSpawned = 0
 	self.RangedCreepsSpawned = 0
+	self.FlagbearerCreepsSpawned = 0
+	self.SiegeCreepsSpawned = 0
 	self.LowHealthTargets = {}
 	self.CurrentTarget = nil
 
@@ -145,23 +150,6 @@ function barebones:InitGameMode()
 	GameRules:SetHideKillMessageHeaders(HIDE_KILL_BANNERS)
 	GameRules:LockCustomGameSetupTeamAssignment(LOCK_TEAMS)
 	GameRules:FinishCustomGameSetup() -- We're done here, launch the game -- FROM lasthit_trainer
-	
-	-- TO TEST:
-	--GameRules:SetAllowOutpostBonuses(true)
-	--GameRules:SetEnableAlternateHeroGrids(false) -- disable alternate hero grids to be used (DOTA+, etc) useful when you have custom heroes
-	--GameRules:SetSuggestItemsEnabled(false)
-	-- HERO BLACK LIST
-	--GameRules:SetHideBlacklistedHeroes(true) -- true is hidden, false is dimmed during hero selection
-	--GameRules:AddHeroIDToBlacklist(int)
-	--GameRules:AddHeroToBlacklist(string)
-	--GameRules:ClearHeroBlacklist()
-	--GameRules:RemoveHeroFromBlacklist(string)
-	--GameRules:RemoveHeroIDFromBlacklist(int)
-	-- ITEM WHITE LIST
-	--GameRules:SetWhiteListEnabled(true)
-	--GameRules:AddItemToWhiteList(string)
-	--GameRules:IsItemInWhiteList(string)
-	--GameRules:RemoveItemFromWhiteList(string)
 
 	-- This is multi-team configuration stuff
 	if USE_AUTOMATIC_PLAYERS_PER_TEAM then
@@ -392,13 +380,48 @@ end
 -- Creep spawning function, I am using Timers to delay attack orders because otherwise they didn't go through at game start
 function barebones:SpawnLaneCreeps()
 	local spawn_delay = 0.5
+	local meleeToSpawn = 3
+	self.CreepWavesSpawned = self.CreepWavesSpawned + 1
+
+	-- Spawn flagbearers
+	if self.CreepWavesSpawned >= 5 then
+		if ((self.CreepWavesSpawned - 5) % 2) == 0 then
+			local creep_flag_good = CreateUnitByName("npc_dota_creep_goodguys_flagbearer", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+			if creep_flag_good ~= nil then
+				Timers:CreateTimer(spawn_delay, function ()
+					ExecuteOrderFromTable({
+					UnitIndex = creep_flag_good:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+					Position = self.DireMeeleePos,
+					Queue = true
+				})
+				end)
+				self.FlagbearerCreepsSpawned = self.FlagbearerCreepsSpawned + 1
+			end
+			local creep_flag_bad = CreateUnitByName("npc_dota_creep_badguys_flagbearer", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
+			if creep_flag_bad ~= nil then
+				Timers:CreateTimer(spawn_delay, function ()
+					ExecuteOrderFromTable({
+					UnitIndex = creep_flag_bad:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+					Position = self.RadiantMeeleePos,
+					Queue = true
+				})
+				end)
+				self.FlagbearerCreepsSpawned = self.FlagbearerCreepsSpawned + 1
+			end
+			meleeToSpawn = meleeToSpawn - 1
+		end
+	end
+
+
 	-- Spawn 3 melee radiant creeps and send them to attack dire spawn point
-	for i = 1, 3 do
-		local creep = CreateUnitByName("npc_dota_creep_goodguys_melee", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
-		if creep ~= nil then
+	for i = 1, meleeToSpawn do
+		local creep_melee_good = CreateUnitByName("npc_dota_creep_goodguys_melee", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+		if creep_melee_good ~= nil then
 			Timers:CreateTimer(spawn_delay, function ()
 				ExecuteOrderFromTable({
-				UnitIndex = creep:entindex(),
+				UnitIndex = creep_melee_good:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
 				Position = self.DireMeeleePos,
 				Queue = true
@@ -411,11 +434,11 @@ function barebones:SpawnLaneCreeps()
 	end
 
 	-- Spawn 1 ranged randiant creep
-	local creep = CreateUnitByName("npc_dota_creep_goodguys_ranged", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
-	if creep ~= nil then
+	local creep_ranged_good = CreateUnitByName("npc_dota_creep_goodguys_ranged", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+	if creep_ranged_good ~= nil then
 		Timers:CreateTimer(spawn_delay, function ()
 			ExecuteOrderFromTable({
-			UnitIndex = creep:entindex(),
+			UnitIndex = creep_ranged_good:entindex(),
 			OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
 			Position = self.DireMeeleePos,
 			Queue = true
@@ -427,12 +450,12 @@ function barebones:SpawnLaneCreeps()
 	end
 
 	-- Spawn 3 melee dire creeps and send them to attack radiant spawn point
-	for i = 1, 3 do
-		local creep = CreateUnitByName("npc_dota_creep_badguys_melee", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
-		if creep ~= nil then
+	for i = 1, meleeToSpawn do
+		local creep_melee_bad = CreateUnitByName("npc_dota_creep_badguys_melee", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
+		if creep_melee_bad ~= nil then
 			Timers:CreateTimer(1, function ()
 				ExecuteOrderFromTable({
-				UnitIndex = creep:entindex(),
+				UnitIndex = creep_melee_bad:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
 				Position = self.RadiantMeeleePos,
 				Queue = true
@@ -445,11 +468,11 @@ function barebones:SpawnLaneCreeps()
 	end
 
 	-- Spawn 1 ranged dire creep
-	local creep = CreateUnitByName("npc_dota_creep_badguys_ranged", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
-	if creep ~= nil then
+	local creep_ranged_bad = CreateUnitByName("npc_dota_creep_badguys_ranged", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
+	if creep_ranged_bad ~= nil then
 		Timers:CreateTimer(1, function ()
 			ExecuteOrderFromTable({
-			UnitIndex = creep:entindex(),
+			UnitIndex = creep_ranged_bad:entindex(),
 			OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
 			Position = self.RadiantMeeleePos,
 			Queue = true
@@ -460,5 +483,80 @@ function barebones:SpawnLaneCreeps()
 		self.RangedCreepsSpawned = self.RangedCreepsSpawned	+ 1
 	end
 
+	-- Siege spawn
+	if self.CreepWavesSpawned >= 11 then
+		if ((self.CreepWavesSpawned - 11) % 10) == 0 then
+			local creep_siege_good = CreateUnitByName("npc_dota_goodguys_siege", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+			if creep_siege_good ~= nil then
+				Timers:CreateTimer(spawn_delay, function ()
+					ExecuteOrderFromTable({
+					UnitIndex = creep_siege_good:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+					Position = self.DireMeeleePos,
+					Queue = true
+				})
+				end)
+				self.SiegeCreepsSpawned = self.SiegeCreepsSpawned + 1
+			end
+			local creep_siege_bad = CreateUnitByName("npc_dota_badguys_siege", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
+			if creep_siege_bad ~= nil then
+				Timers:CreateTimer(spawn_delay, function ()
+					ExecuteOrderFromTable({
+					UnitIndex = creep_siege_bad:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+					Position = self.RadiantMeeleePos,
+					Queue = true
+				})
+				end)
+				self.SiegeCreepsSpawned = self.SiegeCreepsSpawned + 1
+			end
+		end
+	end
+
 	self.LastWaveSpawnTime = GameRules:GetGameTime()
+end
+
+function barebones:FindEnemyCreeps(eUnit, iRange)
+	local ret = FindUnitsInRadius(
+		eUnit:GetTeamNumber(),
+		eUnit:GetAbsOrigin(),
+		nil,
+		iRange,
+		DOTA_UNIT_TARGET_TEAM_ENEMY,
+		DOTA_UNIT_TARGET_CREEP,
+		DOTA_UNIT_TARGET_FLAG_NONE,
+		FIND_ANY_ORDER,
+		false
+	)
+	return ret
+end
+
+function barebones:FindFriendlyCreeps(eUnit)
+	local ret = FindUnitsInRadius(
+		eUnit:GetTeamNumber(),
+		eUnit:GetAbsOrigin(),
+		nil,
+		9999,
+		DOTA_UNIT_TARGET_TEAM_FRIENDLY,
+		DOTA_UNIT_TARGET_CREEP,
+		DOTA_UNIT_TARGET_FLAG_NONE,
+		FIND_ANY_ORDER,
+		false
+	)
+	return ret
+end
+
+function barebones:FindAllCreeps(eUnit)
+	local ret = FindUnitsInRadius(
+		eUnit:GetTeamNumber(),
+		eUnit:GetAbsOrigin(),
+		nil,
+		9999,
+		DOTA_UNIT_TARGET_TEAM_BOTH,
+		DOTA_UNIT_TARGET_CREEP,
+		DOTA_UNIT_TARGET_FLAG_NONE,
+		FIND_ANY_ORDER,
+		false
+	)
+	return ret
 end
