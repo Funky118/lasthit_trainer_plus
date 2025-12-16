@@ -779,13 +779,16 @@ function barebones:SpawnNemesis(sHero)
 	
 	Timers:CreateTimer(1, function ()
 		-- Set damage to be competetive with Hero
-		local nemesis_damage = self.HeroDamage - self.NemesisHero:GetAverageTrueAttackDamage(nil)
+		local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
+		local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
+		self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
 		-- print("Nemesis damage: "..nemesis_damage)
 		-- TODO: Add option for a harder opponent with higher attack speed
 		-- note: with some tinkering, the bot could achieve perfect last hitting if given higher damage
 		-- that would likely become unfair though
+		CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
-																					bonus_damage = nemesis_damage,
+																					bonus_damage = nemesis_bonus_damage,
 																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
 																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
 																					-- attack_point = 0,
@@ -1014,14 +1017,33 @@ end
 function barebones:SendStatisticsToClient()
 	CustomNetTables:SetTableValue( "last_hit_trainer_stats", "stats", self.NetTableStats )
 end
-function barebones:OnItemPurcahsed(keys)
+
+function barebones:OnItemPurchased(keys)
 	-- HAHA! No cheating allowed! Nemesis now tracks Hero damage dynamically.
 	self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
 	self.NemesisHero:RemoveModifierByName("modifier_nemesis")
-	local nemesis_damage = self.HeroDamage - self.NemesisHero:GetAverageTrueAttackDamage(nil)
+	local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
+	local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
+	self.NemesisDamage = nemesis_damage+nemesis_bonus_damage
+	--CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 	-- print("Nemesis damage diff: "..nemesis_damage)
 	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
-																					bonus_damage = nemesis_damage,
+																					bonus_damage = nemesis_bonus_damage,
+																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
+																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
+																					-- attack_point = 0,
+																					-- BAT = 1,
+																				})
+end
+
+function barebones:OnNemesisAttackSpeedChange(keys, data)
+	self.NemesisHero:RemoveModifierByName("modifier_nemesis")
+	local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
+	local nemesis_bonus_damage =  self.HeroDamage - nemesis_damage
+	self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
+	self.NemesisBonusAttackSpeed = 0+data.str -- Really? The INT variable is retyped to string, come on...
+	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
+																					bonus_damage = nemesis_bonus_damage,
 																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
 																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
 																					-- attack_point = 0,

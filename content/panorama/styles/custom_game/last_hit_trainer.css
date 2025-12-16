@@ -180,7 +180,7 @@
 	border-width: 0%;
 	box-shadow: fill #00000011 -4px -4px 8px 9px;
 	padding: 5px;
-	padding-top: -26px;
+	padding-top: -31px;
 	background-color: #11111166;
 	visibility:visible;
 }
@@ -204,54 +204,109 @@
 	pre-transform-scale2d: 1.02;
 }
 
-.Category .DemoButton:selected
+/* .Category .DemoButton:selected
 {
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #777777 ), to( #999999 ) );
-}
+} */
 
 .NemesisSetting
 {
 	background-color: #33333300;
-	height: 80px;
+	height: 30px;
 	width: 140px;
-	margin-top: 3px;
-	margin-bottom: 3px;
+	margin-top: 0px;
+	margin-bottom: 0px;
 	margin-left: 3px;
 	margin-right: 3px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: #444444;
-	flow-children: down;
+	flow-children: right;
 
 }
 
 .Category .NemesisSetting Label
 {
+	vertical-align: middle;
+	horizontal-align: middle;
+	text-align: center;
+
+	color: #cccccc;
+	font-size: 18;
+	font-weight: bold;
+	width: 140px;
+	height: 100%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-top: 7px;
+}
+
+.Category .NemesisSetting .Text
+{
+
+	height: 35px;
+	width: 60%;
+	text-align: center;
+}
+
+.Category .NemesisSetting .Text Label
+{
+
+	height: 35px;
+	width: 100%;
+	padding-top: 3px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	font-size: 18;
+	font-weight: bold;
+	background-color: #000000ad;
+	
+}
+
+.Category .NemesisSetting .SettingButton
+{
+
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #333333), to( #444444 ) );
+	height: 100%;
+	width: 20%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-top-color: #444444;
+	border-left-color: #494949;
+	border-bottom-color: #111111;
+	border-right-color: #404040;
+	transition-property: background-color;
+	transition-duration: 0.05s;
+	transition-timing-function: linear;
+
+}
+
+.Category .NemesisSetting .SettingButton Label
+{
 	vertical-align: top;
 	color: #cccccc;
-	font-size: 15;
+	font-size: 20;
 	font-weight: thin;
-}
-/*TODO: CONT HERE*/
-.Category .NemesisSetting .value
-{
-	vertical-align: top;
-	horizontal-align: middle;
+	width: 30px;
+	height: 100%;
+	padding-top: 0px;
+
 }
 
-.Category .NemesisSetting .plus
+.Category .NemesisSetting .SettingButton:hover
 {
-	vertical-align: top;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #444444 ), to( #555555 ) );
 }
 
-.Category .NemesisSetting .minus
+.Category .NemesisSetting .SettingButton:active
 {
-	vertical-align: top;
-}
-
-.Category .NemesisSetting .text_window
-{
-	vertical-align: top;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #888888 ), to( #aaaaaa ) );
+	pre-transform-scale2d: 1.02;
 }
 
 /*Quit panel*/

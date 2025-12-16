@@ -10,6 +10,11 @@ gStats = {
 	"RangedCreepsDenied": 0,
 	"GoldSecured": 0
 };
+var nemesisAttackSpeed = 0
+var attackSpeedTimer = null
+var attackSpeedDelta = 0
+
+SetText("#AttackSpeedTextBox", nemesisAttackSpeed)
 
 // Unused, maybe I will add splash screen back for info (in which case go to Valve's source code)
 function HideSplashScreen()
@@ -50,6 +55,47 @@ function SwitchToNewHero( nHeroID )
 {
 	$('#ControlPanel').RemoveClass('HeroPickerVisible');
 	$.DispatchEvent('FireCustomGameEvent_Str', 'SwitchToNewHero', String(nHeroID));
+}
+
+function Start_AttackSpeedChange(delta)
+{
+	if(attackSpeedTimer != null)
+		return;
+	attackSpeedDelta = delta;
+	AttackSpeedChange();
+}
+
+function AttackSpeedChange()
+{
+	if(attackSpeedDelta < 0 && nemesisAttackSpeed > -700)
+	{
+		nemesisAttackSpeed-=10;
+		SetText("#AttackSpeedTextBox",nemesisAttackSpeed);
+		$.DispatchEvent('FireCustomGameEvent_Str', "NemesisAttackSpeedChange", String(nemesisAttackSpeed));
+	}
+	else if(attackSpeedDelta > 0 && nemesisAttackSpeed < 700)
+	{
+		nemesisAttackSpeed+=10;
+		SetText("#AttackSpeedTextBox",nemesisAttackSpeed);
+		$.DispatchEvent('FireCustomGameEvent_Str', "NemesisAttackSpeedChange", String(nemesisAttackSpeed));
+	}
+	attackSpeedTimer = $.Schedule(0.15, AttackSpeedChange);
+}
+
+function Stop_AttackSpeedChange()
+{
+	attackSpeedDelta = 0;
+	if(attackSpeedTimer != null)
+	{
+		$.CancelScheduled(attackSpeedTimer);
+	}
+	attackSpeedTimer = null;
+}
+
+function UpdateNemesisAttackSpeed(data)
+{
+	nemesisAttackSpeed = data.attack_speed
+	SetText("#AttackSpeedTextBox",nemesisAttackSpeed);
 }
 
 function SetText(name, value)
@@ -96,6 +142,7 @@ function SlideThumbActivate()
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
 
 	GameEvents.Subscribe( "round_ended", OnRoundEnded );
+	GameEvents.Subscribe("update_nemesis_attack_speed", UpdateNemesisAttackSpeed)
 
 	// CustomNetTables.SubscribeNetTableListener("last_hit_trainer_stats", OnLastHitTrainerStatsUpdated);
 

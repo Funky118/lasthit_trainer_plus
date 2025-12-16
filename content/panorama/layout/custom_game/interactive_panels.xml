@@ -26,10 +26,24 @@
 							<Label text="#Flyout_Choose_New_Hero_Button" />
 						</Button>
 						<Panel class="NemesisSetting">
-							<Label text="threshold"></Label>
-							<Panel class="value">
-								<Label id="AverageLasthitTime" text="0" />
+							<Label text="Bot attack speed"></Label>
+						</Panel>
+						<Panel class="NemesisSetting">
+							<Button id="ButtonMinus" class="SettingButton" 
+								onmousedown="Start_AttackSpeedChange(-1)"
+								onmouseup="Stop_AttackSpeedChange()"
+								onmouseout="Stop_AttackSpeedChange()">
+								<Label text="-"/>
+							</Button>
+							<Panel class="Text">
+								<Label id="AttackSpeedTextBox" text="text" />
 							</Panel>
+							<Button id="ButtonPlus" class="SettingButton"
+								onmousedown="Start_AttackSpeedChange(1)"
+								onmouseup="Stop_AttackSpeedChange()"
+								onmouseout="Stop_AttackSpeedChange()">
+								<Label  text="+"/>
+							</Button>
 						</Panel>
 					</Panel>
 					<Panel class="Category">

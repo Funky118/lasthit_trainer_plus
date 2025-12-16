@@ -10,10 +10,11 @@ Likely add:
     ☐ Add side neutral camps
     ☐ Show amount of denied/gained experience and gold
     ☐ Allow player to choose oppotent (including vanilla without modifier)
-    ☐ Add option for a harder opponent with higher attack speed
+    ✔ Add option for a harder opponent with higher attack speed @done(25-12-16 23:56)
     ☐ Add helper functions to highlight lasthittable creep and almost lasthittable creep
     ☐ Add particle effects and stuff (me like shiny)
     ☐ Show remaining health on missed creeps
+    ☐ Prevent Invoker and Lone Druid from cheating
     
 Potential add:
     ☐ timer mode (increasingly more difficult last hitting on a timer, each creep gains you some time)

@@ -72,6 +72,7 @@ function barebones:InitGameMode()
 	self.NemesisSpawnPos = nemesis_spawn:GetAbsOrigin()
 	-- HeroDamage plays role in Nemesis' last hitting logic
 	self.HeroDamage = 40 -- Updates when Hero spawns but in case something goes wrong, this is a good default
+	self.NemesisDamage = 40
 	self.NemesisBonusAttackRange = 1000
 	self.NemesisBonusAttackSpeed = 0
 	self.NemesisBonusProjectileSpeed = 5000
@@ -205,13 +206,13 @@ function barebones:InitGameMode()
 
 	ListenToGameEvent("dota_player_selected_custom_team", Dynamic_Wrap(barebones, 'OnPlayerSelectedCustomTeam'), self)
 	ListenToGameEvent("dota_npc_goal_reached", Dynamic_Wrap(barebones, 'OnNPCGoalReached'), self)
-	ListenToGameEvent("dota_item_purchased", Dynamic_Wrap(barebones, 'OnItemPurcahsed'), self)
+	ListenToGameEvent("dota_item_purchased", Dynamic_Wrap(barebones, 'OnItemPurchased'), self)
 
 	-- Panorama listeners
 	CustomGameEventManager:RegisterListener( "LeaveButtonPressed", function(...) return self:OnLeaveButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "SwitchToNewHero", function(...) return self:OnSwitchToNewHero( ... ) end )
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
-	
+	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
 
 	-- Change random seed for math.random function
 	local timeTxt = string.gsub(string.gsub(GetSystemTime(), ':', ''), '0','')
