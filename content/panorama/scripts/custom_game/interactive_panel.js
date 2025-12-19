@@ -137,6 +137,7 @@ function OnLastHitTrainerStatsUpdated( tableName, key, data )
 function SlideThumbActivate()
 {
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
+	$('#ControlPanel').RemoveClass('HeroPickerVisible');
 }
 
 (function()

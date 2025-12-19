@@ -809,6 +809,8 @@ function barebones:NemesisMove()
 	if self.NemesisHero == nil then
 		return 1
 	end
+	print("Forward vec: ")
+	print(self.NemesisHero:GetForwardVector())
 
 	local creeps = self:FindEnemyCreeps(self.NemesisHero, 450)
 
@@ -823,15 +825,24 @@ function barebones:NemesisMove()
 	local creep_center = self:CreepsCenter()
 	local new_pos = self.NemesisHero:GetAbsOrigin()
 	local dist = VectorDistance(creep_center,new_pos)
+	-- Fortunately the lane is on the diagonal of 1. and 3. quadrant, so direction is easy
+	local away_from_center = (new_pos-creep_center):Normalized()
+	local towards_center = (creep_center-new_pos):Normalized()
+
+	print("Creep center: ")
+	print(creep_center)
+	print("Sniper pos: ")
+	print(new_pos)
+	print("Distance from center: ".. dist)
 	if chicken_out then
 		-- bok bok 
 		print("RUN AWAY!")
-		new_pos = new_pos + 290 -- Sniper's speed, this updates every 1 second
+		new_pos = self.DireRangedPos + 290 -- Sniper's speed, this updates every 1 second
 	elseif dist <= const_distance-hyst then
-		new_pos = new_pos + (const_distance-dist)
+		new_pos = new_pos + (const_distance-dist) * away_from_center
 		new_pos.z = 0
 	elseif dist >= const_distance+hyst*2 then
-		new_pos = new_pos - (dist-const_distance)
+		new_pos = new_pos + (dist-const_distance) * towards_center
 		new_pos.z = 0
 	else
 		--new_pos = new_pos + Vector(math.random(50,100), math.random(50,100), 0) -- simulate midlaner adhd
