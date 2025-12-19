@@ -517,6 +517,15 @@ function barebones:OnEntityKilled(keys)
     if inflictor_index then
       killing_ability = EntIndexToHScript(inflictor_index)
     end
+	
+	-- Non-barebones: When Nemesis gets the last hit show a little indication
+	if killer_unit:IsRealHero() and killer_unit:GetPlayerID() == -1 then
+			local gold = ParticleManager:CreateParticle("particles/generic_gameplay/lasthit_coins.vpcf", PATTACH_CUSTOMORIGIN, self)
+			ParticleManager:SetParticleControl(gold, 0, killer_unit:GetAbsOrigin())
+			ParticleManager:SetParticleControl(gold, 1, killer_unit:GetAbsOrigin())
+			ParticleManager:SetParticleControl(gold, 3, killer_unit:GetAbsOrigin())
+			ParticleManager:ReleaseParticleIndex(gold)
+	end
 
     -- For Meepo clones, find the original
     if killed_unit:IsClone() then
@@ -567,30 +576,6 @@ function barebones:OnEntityKilled(keys)
 			if killed_unit_level > 30 and respawn_time ~= respawn_time_after_30 and not USE_CUSTOM_RESPAWN_TIMES then
 				respawn_time = respawn_time_after_30
 			end
-
-			-- Old Bloodstone respawn reduction (this example doesn't check items in backpack because bloodstone cannot go in backpack)
-			-- for i = DOTA_ITEM_SLOT_1, DOTA_ITEM_SLOT_6 do
-				-- local item = killed_unit:GetItemInSlot(i)
-				-- if item then
-					-- if item:GetName() == "item_bloodstone" then
-						-- local current_charges = item:GetCurrentCharges()
-						-- local charges_before_death = math.ceil(current_charges*1.5)
-						-- local reduction_per_charge = item:GetLevelSpecialValueFor("respawn_time_reduction", item:GetLevel() - 1)
-						-- local respawn_reduction = charges_before_death*reduction_per_charge
-						-- respawn_time = math.max(1, respawn_time-respawn_reduction)
-						-- break -- break 'for' loop, to prevent multiple bloodstones granting respawn reduction
-					-- end
-				-- end
-			-- end
-
-			-- Old Reaper's Scythe respawn time increase
-			-- if killing_ability then
-				-- if killing_ability:GetAbilityName() == "necrolyte_reapers_scythe" then
-					-- DebugPrint("[BAREBONES] OnEntityKilled - A hero was killed by a Necro Reaper's Scythe. Increasing respawn time!")
-					-- local respawn_extra_time = killing_ability:GetLevelSpecialValueFor("respawn_constant", killing_ability:GetLevel() - 1)
-					-- respawn_time = respawn_time + respawn_extra_time
-				-- end
-			-- end
 
 			-- Killer is a neutral creep
 			if killer_unit:IsNeutralUnitType() then
@@ -899,11 +884,7 @@ end
 
 function barebones:OnRoundRestartButtonPressed(keys)
 	print("Restart button pressed")
-	-- local gold = ParticleManager:CreateParticle("particles/units/heroes/hero_alchemist/alchemist_lasthit_coins.vpcf", PATTACH_CUSTOMORIGIN, self)
-	-- ParticleManager:SetParticleControl(gold, 0, self.HeroSpawnPos)
-	-- ParticleManager:SetParticleControl(gold, 1, self.HeroSpawnPos)
-	-- ParticleManager:SetParticleControl(gold, 3, self.HeroSpawnPos)
-	-- ParticleManager:ReleaseParticleIndex(gold)
+	
 
 	self:RoundRestart()
 end

@@ -13,6 +13,7 @@ gStats = {
 var nemesisAttackSpeed = 0
 var attackSpeedTimer = null
 var attackSpeedDelta = 0
+var expChange = 0
 
 SetText("#AttackSpeedTextBox", nemesisAttackSpeed)
 
@@ -79,7 +80,9 @@ function AttackSpeedChange()
 		SetText("#AttackSpeedTextBox",nemesisAttackSpeed);
 		$.DispatchEvent('FireCustomGameEvent_Str', "NemesisAttackSpeedChange", String(nemesisAttackSpeed));
 	}
-	attackSpeedTimer = $.Schedule(0.15, AttackSpeedChange);
+	expChange++;
+	var delay = 0.15 - 0.1*(1/(Math.exp(1/(expChange*0.1))));
+	attackSpeedTimer = $.Schedule(delay, AttackSpeedChange);
 }
 
 function Stop_AttackSpeedChange()
@@ -90,6 +93,7 @@ function Stop_AttackSpeedChange()
 		$.CancelScheduled(attackSpeedTimer);
 	}
 	attackSpeedTimer = null;
+	expChange = 0;
 }
 
 function UpdateNemesisAttackSpeed(data)

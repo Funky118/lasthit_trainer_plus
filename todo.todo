@@ -13,14 +13,16 @@ Likely add:
     ✔ Add option for a harder opponent with higher attack speed @done(25-12-16 23:56)
     ☐ Add helper functions to highlight lasthittable creep and almost lasthittable creep
     ☐ Add particle effects and stuff (me like shiny)
-    ☐ Show remaining health upon hitting a creep
+    ✔ Show remaining health upon hitting a creep @done(25-12-19 19:37)
     ☐ Prevent Invoker and Shadow Fiend from cheating (add Nemesis damage update timer every second or so)
     ☐ Prevent Lone Druid and Meepo from cheating (don't really care about Arc Warden clone)
+    ☐ Add post-game stats
+    ☐ Fix sniper walking in wrong direction when hooked past creep wave
     
 Potential add:
     ☐ timer mode (increasingly more difficult last hitting on a timer, each creep gains you some time)
-    ☐ force kill creeps after a certain delay (very unfun, don't implement)
-    ☐ under tower last hits/missed
+    ☐ force kill creeps after an adjustable delay (very unfun, don't implement)
+    ☐ log under tower last hits/missed into stats
     ☐ average miss time
     ☐ runes picked/missed (spawn enemies that kill runes after a delay)
     ☐ idling time (not moving, preparing to cs)
