@@ -29,6 +29,12 @@ function Precache(context)
 	-- Particles can be precached individually or by folder
 	-- It it likely that precaching a single particle system will precache all of its children, but this may not be guaranteed
 	PrecacheResource("particle", "particles/econ/generic/generic_aoe_explosion_sphere_1/generic_aoe_explosion_sphere_1.vpcf", context)
+	PrecacheResource("particle", "particles/units/heroes/hero_alchemist/alchemist_lasthit_coins.vpcf", context)
+	PrecacheResource("particle", "particles/msg_fx/msg_lasthitcounter_ones_plus.vpcf", context)
+	PrecacheResource("particle", "particles/msg_fx/msg_lasthitcounter_tens_plus.vpcf", context)
+	PrecacheResource("particle", "particles/msg_fx/msg_lasthitcounter_hundreds_plus.vpcf", context)
+	
+	
 	PrecacheResource("particle_folder", "particles/test_particle", context)
 
 	-- Models can also be precached by folder or individually

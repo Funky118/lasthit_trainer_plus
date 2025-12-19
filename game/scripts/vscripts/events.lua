@@ -899,7 +899,41 @@ end
 
 function barebones:OnRoundRestartButtonPressed(keys)
 	print("Restart button pressed")
+	-- local gold = ParticleManager:CreateParticle("particles/units/heroes/hero_alchemist/alchemist_lasthit_coins.vpcf", PATTACH_CUSTOMORIGIN, self)
+	-- ParticleManager:SetParticleControl(gold, 0, self.HeroSpawnPos)
+	-- ParticleManager:SetParticleControl(gold, 1, self.HeroSpawnPos)
+	-- ParticleManager:SetParticleControl(gold, 3, self.HeroSpawnPos)
+	-- ParticleManager:ReleaseParticleIndex(gold)
+
 	self:RoundRestart()
+end
+
+function barebones:WriteRedTempNumber(iNum, ent)
+	local ones_path = "particles/msg_fx/msg_lasthitcounter_ones_plus.vpcf"
+	local tens_path = "particles/msg_fx/msg_lasthitcounter_tens_plus.vpcf"
+	local hundreds_path = "particles/msg_fx/msg_lasthitcounter_hundreds_plus.vpcf"
+
+	-- print(math.floor(iNum/100))
+	-- print(math.floor((iNum%100)/10))
+	-- print(math.floor(iNum%10))
+	
+	-- ONEDS AND HUNDREDS ARE SWAPPED HERE! I couldn't be bothered to figure out why, so I just kept it like this
+	if math.floor(iNum/100) > 0 then
+		local ones = ParticleManager:CreateParticle(ones_path, PATTACH_CUSTOMORIGIN, self)
+		ParticleManager:SetParticleControl(ones, 3, ent:GetAbsOrigin() + Vector(0, 0,200))
+		ParticleManager:SetParticleControl(ones, 1, Vector( 0, 0, math.floor(iNum/100))) -- This is actually hundreds
+		ParticleManager:ReleaseParticleIndex(ones)
+	end
+	if math.floor(iNum/100) > 0 or math.floor((iNum%100)/10) > 0 then
+		local tens = ParticleManager:CreateParticle(tens_path, PATTACH_CUSTOMORIGIN, self)
+		ParticleManager:SetParticleControl(tens, 3, ent:GetAbsOrigin() + Vector(0, 0,200))
+		ParticleManager:SetParticleControl(tens, 1, Vector( 0, math.floor((iNum%100)/10), 0))
+		ParticleManager:ReleaseParticleIndex(tens)
+	end
+	local hundreds = ParticleManager:CreateParticle(hundreds_path, PATTACH_CUSTOMORIGIN, self)
+	ParticleManager:SetParticleControl(hundreds, 3, ent:GetAbsOrigin() + Vector(0, 0,200))
+	ParticleManager:SetParticleControl(hundreds, 1, Vector( math.floor(iNum%10), 0, 0)) -- This is actually ones
+	ParticleManager:ReleaseParticleIndex(hundreds)
 end
 
 function barebones:RoundRestart()
@@ -942,6 +976,10 @@ function barebones:AddCreepToTable(eCreep, isAttackerHero)
 	end
 	local tmp = {eCreep, Time(), isAttackerHero}
 	table.insert(self.LowHealthTargets, tmp)
+	-- If creep fell below threshold HP by player's attack, it means the player attacked too early
+	if isAttackerHero and eCreep:GetHealth() > 0 then
+		self:WriteRedTempNumber(eCreep:GetHealth(), eCreep)
+	end
 end
 
 -- Unused for now, for later error handling
