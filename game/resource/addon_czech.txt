@@ -4,9 +4,9 @@
 "Tokens"
 {
 "addon_game_name"	"Trénink Last Hitů"
-"[english]addon_game_name"	"Last-Hit Trainer"
+"[english]addon_game_name"	"Lasthit Trainer+"
 "DOTA_HUD_Mode_Start_Welcome"	"TRÉNINK LAST HITŮ"
-"[english]DOTA_HUD_Mode_Start_Welcome"	"LAST-HIT TRAINER"
+"[english]DOTA_HUD_Mode_Start_Welcome"	"LASTHIT TRAINER+"
 "DOTA_HUD_Mode_Start_Description"	"• Získávej body za provádění Last Hitů a Denyů"
 "[english]DOTA_HUD_Mode_Start_Description"	"• Get last hits and denies to raise your score"
 "DOTA_HUD_Mode_Start_Scoring"	"• Za Last Hit je 100 bodů, za Deny 50"

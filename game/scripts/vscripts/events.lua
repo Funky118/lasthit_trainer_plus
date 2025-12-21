@@ -791,14 +791,21 @@ function barebones:NemesisThink()
 	for k, v in pairs(self.LowHealthTargets) do
 		if self.CurrentTarget == nil then
 			self.CurrentTarget = v[1]
-			ExecuteOrderFromTable({
+			ExecuteOrderFromTable({ --This should probably be in another if (otherwise sniper gets stuck when unit is in fog)
 				UnitIndex = self.NemesisHero:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
 				TargetIndex = self.CurrentTarget:entindex()
 			})
 			--DebugDrawCircle(self.CurrentTarget:GetAbsOrigin(), Vector(0,0,255), 20, 20, true, 5) -- TODO: Add helper functions to highlight lasthittable creep and almost lasthittable creep
 			print("Nemesis attacked at: "..(Time() - v[2]))
+		elseif not self.NemesisHero:IsAttacking() then
+			ExecuteOrderFromTable({
+				UnitIndex = self.NemesisHero:entindex(),
+				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
+				TargetIndex = self.CurrentTarget:entindex()
+			})
 		end
+
 	end
 	return 0
 end
