@@ -309,6 +309,18 @@
 	pre-transform-scale2d: 1.02;
 }
 
+.Category .OptionsToggleButton
+{
+	padding: 0px;
+	padding-top: 0px;
+	width: 100%;
+}
+
+.Category .OptionsToggleButton Label
+{
+	font-size: 14;
+}
+
 /*Quit panel*/
 .QuitPanel
 {

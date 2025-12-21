@@ -114,6 +114,7 @@ function barebones:InitGameMode()
 	self.SiegeCreepsSpawned = 0
 	self.LowHealthTargets = {}
 	self.CurrentTarget = nil
+	self.HighlightEnabled = false
 
 
 	-- Setup rules
@@ -213,6 +214,7 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "SwitchToNewHero", function(...) return self:OnSwitchToNewHero( ... ) end )
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
+	CustomGameEventManager:RegisterListener( "HighlightCreepsButtonPressed", function(...) return self:OnHighlightCreepsButtonPressed( ... ) end )
 
 	-- Change random seed for math.random function
 	local timeTxt = string.gsub(string.gsub(GetSystemTime(), ':', ''), '0','')

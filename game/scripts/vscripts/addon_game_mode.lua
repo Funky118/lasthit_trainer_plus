@@ -33,8 +33,14 @@ function Precache(context)
 	PrecacheResource("particle", "particles/msg_fx/msg_lasthitcounter_ones_plus.vpcf", context)
 	PrecacheResource("particle", "particles/msg_fx/msg_lasthitcounter_tens_plus.vpcf", context)
 	PrecacheResource("particle", "particles/msg_fx/msg_lasthitcounter_hundreds_plus.vpcf", context)
-	
-	
+
+	-- Creep highlight particles
+	PrecacheResource("particle", "particles/ui_mouseactions/range_finder_tower_experimental_pulse_glow.vpcf", context) -- use this to point from nemesis to creep
+	-- Lasthittable creep highlight
+	PrecacheResource("particle", "particles/ui_mouseactions/range_finder_cp_color_creep_plus.vpcf", context) -- unused red aim target
+	PrecacheResource("particle", "particles/ui_mouseactions/ping_waypoint_vertical_energy_plus.vpcf", context)
+
+
 	PrecacheResource("particle_folder", "particles/test_particle", context)
 
 	-- Models can also be precached by folder or individually

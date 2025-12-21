@@ -4,6 +4,7 @@
     </scripts>
     <styles>
         <include src="file://{resources}/styles/custom_game/last_hit_trainer.css"/>
+		<include src="s2r://panorama/styles/dotastyles.css" />
     </styles>
     <Panel hittest="false" class="CustomHudRoot">
         <Panel id="ControlPanel">
@@ -45,6 +46,9 @@
 								<Label  text="+"/>
 							</Button>
 						</Panel>
+						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( HighlightCreepsButtonPressed )">
+							<Label text="Highlight creeps"></Label>
+						</ToggleButton>
 					</Panel>
 					<Panel class="Category">
 						<Label text="" />

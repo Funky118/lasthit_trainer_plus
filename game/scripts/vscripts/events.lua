@@ -809,16 +809,26 @@ function barebones:NemesisMove()
 	if self.NemesisHero == nil then
 		return 1
 	end
-	print("Forward vec: ")
-	print(self.NemesisHero:GetForwardVector())
 
-	local creeps = self:FindEnemyCreeps(self.NemesisHero, 450)
-
+	
+	local creeps_450 = self:FindEnemyCreeps(self.NemesisHero, 450)
 	local chicken_out = false
-	for k,v in pairs(creeps) do
-		chicken_out = true
+
+	for k,v in pairs(creeps_450) do
+			chicken_out = true
 		break
 	end
+	if chicken_out == false then
+		-- Special case for ranged creeps (siege creeps have higher range but are rare)
+		local creeps_600 = self:FindEnemyCreeps(self.NemesisHero, 600)
+		for k,v in pairs(creeps_600) do
+			if v:IsRangedAttacker() then
+				chicken_out = true
+			end
+			break
+		end
+	end
+	
 
 	local const_distance = 600
 	local hyst = 100
@@ -829,15 +839,10 @@ function barebones:NemesisMove()
 	local away_from_center = (new_pos-creep_center):Normalized()
 	local towards_center = (creep_center-new_pos):Normalized()
 
-	print("Creep center: ")
-	print(creep_center)
-	print("Sniper pos: ")
-	print(new_pos)
-	print("Distance from center: ".. dist)
 	if chicken_out then
 		-- bok bok 
 		print("RUN AWAY!")
-		new_pos = self.DireRangedPos + 290 -- Sniper's speed, this updates every 1 second
+		new_pos = self.DireRangedPos
 	elseif dist <= const_distance-hyst then
 		new_pos = new_pos + (const_distance-dist) * away_from_center
 		new_pos.z = 0
@@ -893,10 +898,23 @@ function barebones:CreepsCenter()
 	return center_of_gravity
 end
 
+function barebones:highlightUnit(ent)
+	-- local highlight = ParticleManager:CreateParticle("particles/ui_mouseactions/range_finder_cp_color_creep_plus.vpcf", PATTACH_ABSORIGIN_FOLLOW, ent)
+	-- ParticleManager:SetParticleControl( highlight, 6, Vector( 1,0,0 ) )
+	-- ParticleManager:SetParticleControl(highlight, 7, ent:GetAbsOrigin())
+
+	local highlight = ParticleManager:CreateParticle("particles/ui_mouseactions/ping_waypoint_vertical_energy_plus.vpcf", PATTACH_ABSORIGIN_FOLLOW, ent)
+	ParticleManager:SetParticleControl(highlight, 0, ent:GetAbsOrigin())
+	-- ParticleManager:SetParticleControl(highlight, 2, Vector(0,2,0)) -- First emission duration
+	-- ParticleManager:SetParticleControl(highlight, 3, Vector(0,0,0)) -- Enabled x=0
+	ParticleManager:SetParticleControl(highlight, 7, Vector(1,0,0)) -- Color RGB 0-1
+	ParticleManager:SetParticleControl(highlight, 21, Vector(0,0,0)) -- Alpha x
+
+	ParticleManager:ReleaseParticleIndex(highlight)
+end
+
 function barebones:OnRoundRestartButtonPressed(keys)
 	print("Restart button pressed")
-	
-
 	self:RoundRestart()
 end
 
@@ -965,6 +983,12 @@ function barebones:AddCreepToTable(eCreep, isAttackerHero)
 				return 0
 			end
 		end
+	end
+	if self.HighlightEnabled then
+		self:highlightUnit(eCreep)
+		-- One day I will figure out how mouseover highlights work for creeps!
+		--DebugDrawSphere(eCreep:GetAbsOrigin() + Vector(0,0,100), Vector(255,0,0), 1, 10, true, 2)
+		--eCreep:SetRenderColor(255,0,0)
 	end
 	local tmp = {eCreep, Time(), isAttackerHero}
 	table.insert(self.LowHealthTargets, tmp)
@@ -1079,4 +1103,13 @@ function barebones:OnNemesisAttackSpeedChange(keys, data)
 																					-- attack_point = 0,
 																					-- BAT = 1,
 																				})
+end
+
+-- 
+function barebones:OnHighlightCreepsButtonPressed(keys)
+	if self.HighlightEnabled == true then
+		self.HighlightEnabled = false
+	else
+		self.HighlightEnabled = true
+	end
 end
