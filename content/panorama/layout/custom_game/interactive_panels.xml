@@ -49,6 +49,9 @@
 						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( HighlightCreepsButtonPressed )">
 							<Label text="Highlight creeps"></Label>
 						</ToggleButton>
+						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( EnableExperienceButtonPressed )">
+							<Label text="Enable experience"></Label>
+						</ToggleButton>
 					</Panel>
 					<Panel class="Category">
 						<Label text="" />

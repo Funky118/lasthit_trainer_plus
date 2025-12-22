@@ -83,7 +83,10 @@ function barebones:OnNPCSpawned(keys)
 	local npc 
 	if keys.entindex then
 		npc = EntIndexToHScript(keys.entindex)
-		npc:SetDeathXP( 0 ) -- TODO: Add a variable to enable experience gain
+		local npc_name = npc:GetUnitName()
+		if not self.ExperienceGainEnabled or npc_name == "npc_dota_creep_goodguys_melee" or npc_name == "npc_dota_creep_goodguys_ranged" or npc_name == "npc_dota_creep_goodguys_flagbearer" or npc_name == "npc_dota_goodguys_siege" then
+			npc:SetDeathXP( 0 ) -- TODO: Add a variable to enable experience gain
+		end
 	else
 		print("npc_spawned event doesn't have entindex key")
 		return
@@ -284,6 +287,11 @@ function barebones:OnPlayerLevelUp(keys)
 	DebugPrint("[BAREBONES] OnPlayerLevelUp event")
 	--PrintTable(keys)
 
+	-- Non-barebones edit: Ensure Nemesis can keep up with hero
+	self:OnItemPurchased(keys) -- refresh Nemesis damage
+	local maxHP = self.NemesisHero:GetMaxHealth()
+	self.NemesisHero:SetMaxHealth(maxHP+150)
+
 	local level = keys.level
 	local playerID = keys.player_id or keys.PlayerID
 
@@ -330,7 +338,7 @@ end
 -- A unit last hit a creep, a tower, or a hero
 function barebones:OnLastHit(keys)
 	-- Non-barebones: This function has been edited
-
+	
 	--print("Who got the lasthit: "..keys.PlayerID)
 	local playerID = 0
 	local player = PlayerResource:GetPlayer(playerID)
@@ -1128,5 +1136,60 @@ function barebones:OnHighlightCreepsButtonPressed(keys)
 		self.HighlightEnabled = false
 	else
 		self.HighlightEnabled = true
+	end
+end
+
+function barebones:OnEnableExperienceButtonPressed(keys)
+	if self.ExperienceGainEnabled == true then
+		self.ExperienceGainEnabled = false
+		self:ZeroExpValues()
+	else
+		self.ExperienceGainEnabled = true
+		self:ReturnExpValues()
+	end
+	
+
+end
+
+function barebones:ZeroExpValues()
+	local creeps = self:FindEnemyCreeps(self.PlayerHero, 9999)
+	for k,v in pairs(creeps) do
+		v:SetDeathXP(0)
+	end
+end
+
+function barebones:ReturnExpValues()
+	local creeps = self:FindEnemyCreeps(self.PlayerHero, 9999)
+	for k,v in pairs(creeps) do
+		local name = v:GetClassname()
+		if name == "npc_dota_creep_lane" then
+			if v:IsRangedAttacker() then
+				v:SetDeathXP(69) -- Nice!
+			else
+				v:SetDeathXP(57)
+			end
+		elseif name == "npc_dota_creep_siege" then
+			v:SetDeathXP(88)
+		end
+
+		-- if name == "npc_dota_creep_neutral" then
+		-- 	local n_name = v:GetUnitName()
+		-- 	if 	n_name == "npc_dota_neutral_kobold" or
+		-- 		n_name == "npc_dota_neutral_kobold_tunneler" or
+		-- 		n_name == "npc_dota_neutral_kobold_taskmaster" or
+		-- 		n_name == "npc_dota_neutral_forest_troll_berserker" or			
+		-- 		n_name == "npc_dota_neutral_forest_troll_high_priest" or		
+		-- 		n_name == "npc_dota_neutral_forest_troll_berserker" or			
+		-- 		n_name == "npc_dota_neutral_kobold_taskmaster" or
+		-- 		n_name == "npc_dota_neutral_gnoll_assassin" or				
+		-- 		n_name == "npc_dota_neutral_ghost" or						
+		-- 		n_name == "npc_dota_neutral_fel_beast" or										
+		-- 		n_name == "npc_dota_neutral_harpy_scout" or										
+		-- 		n_name == "npc_dota_neutral_harpy_storm" or					
+		-- 		n_name == "npc_dota_neutral_tadpole" then
+		-- 			v:SetDeathXP(90) -- Average small camp creep experience
+		-- 	elseif
+		-- 	end
+		-- end
 	end
 end

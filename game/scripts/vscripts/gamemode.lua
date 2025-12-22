@@ -222,6 +222,7 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
 	CustomGameEventManager:RegisterListener( "HighlightCreepsButtonPressed", function(...) return self:OnHighlightCreepsButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "EnableExperienceButtonPressed", function(...) return self:OnEnableExperienceButtonPressed( ... ) end )
 
 	-- Change random seed for math.random function
 	local timeTxt = string.gsub(string.gsub(GetSystemTime(), ':', ''), '0','')
