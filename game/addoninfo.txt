@@ -5,6 +5,7 @@
 	[
 		"midlane_river",
 		"midlane_flat",
+		"midlane_river_old",
 	]
 	IsPlayable = 1
 	PenaltiesEnabled = 0
@@ -19,6 +20,10 @@
 		{
 			MaxPlayers = 1
 			map = "midlane_flat"
+		},
+		{
+			MaxPlayers = 1
+			map = "midlane_river_old"
 		},
 	]
 	HideInTools = false

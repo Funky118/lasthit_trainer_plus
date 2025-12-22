@@ -7,11 +7,11 @@
 Likely add:
     ✔ Flagbearer creep waves @done(25-12-16 17:22)
     ☐ Add a variable to enable experience gain (Nemesis needs to update damage on hero level up)
-    ☐ Add side neutral camps
+    ✔ Add side neutral camps @done(25-12-22 16:28)
     ☐ Show amount of denied/gained experience and gold
     ☐ Allow player to choose oppotent (including vanilla without modifier)
     ✔ Add option for a harder opponent with higher attack speed @done(25-12-16 23:56)
-    ☐ Add helper functions to highlight lasthittable creep and almost lasthittable creep
+    ✔ Add helper functions to highlight lasthittable creep and almost lasthittable creep @done(25-12-22 08:58)
     ☐ Add particle effects and stuff (me like shiny)
     ✔ Show remaining health upon hitting a creep @done(25-12-19 19:37)
     ☐ Prevent Invoker and Shadow Fiend from cheating (add Nemesis damage update timer every second or so)

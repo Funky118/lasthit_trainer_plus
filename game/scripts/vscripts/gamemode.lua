@@ -82,11 +82,17 @@ function barebones:InitGameMode()
 	local rrs = Entities:FindByName(nil,"radiant_ranged")
 	local dms = Entities:FindByName(nil,"dire_melee")
 	local drs = Entities:FindByName(nil,"dire_ranged")
+	local nct = Entities:FindByName(nil,"neutral_camp_top")
+	local ncb = Entities:FindByName(nil,"neutral_camp_bottom")
+	local ncs = Entities:FindByName(nil,"neutral_camp_secret")
 
 	self.RadiantMeeleePos = rms:GetOrigin()
 	self.RadiantRangedPos = rrs:GetOrigin()
 	self.DireMeeleePos = dms:GetOrigin()
 	self.DireRangedPos = drs:GetOrigin()
+	self.NeutralsTopPos = nct:GetOrigin()
+	self.NeutralsBotPos = ncb:GetOrigin()
+	self.NeutralsSecretPos = ncs:GetOrigin()
 
 	-- Give towers health regen
 	local towers = Entities:FindAllByClassname("npc_dota_tower")
@@ -115,6 +121,7 @@ function barebones:InitGameMode()
 	self.LowHealthTargets = {}
 	self.CurrentTarget = nil
 	self.HighlightEnabled = false
+	self.ExperienceGainEnabled = false
 
 
 	-- Setup rules
@@ -269,8 +276,7 @@ function barebones:InitGameMode()
 	-- Spawn a global shop
 	SpawnDOTAShopTriggerRadiusApproximate(Vector(), 999999); 
 	self:InitializeNetworkStats()
-	
-
+	self:InitNeutralCamps()
 end
 
 function barebones:InitializeNetworkStats()
@@ -363,19 +369,6 @@ function barebones:CaptureGameMode()
 	gamemode:DisableHudFlip(FORCE_MINIMAP_ON_THE_LEFT)
 
 	gamemode:SetFreeCourierModeEnabled(false) -- without this, passive GPM doesn't work, Thanks Valve
-	--gamemode:SetUseTurboCouriers(true)
-	--gamemode:SetGiveFreeTPOnDeath(false) -- disables free tp scroll on death
-	--gamemode:SetTPScrollSlotItemOverride(itemname) -- replace tp scroll slot with something else
-	--gamemode:SetSelectionGoldPenaltyEnabled(false) -- disables hero selection penalty
-
-	-- TO TEST:
-	--gamemode:SetAllowNeutralItemDrops(false) -- disables neutral items from dropping?
-	--gamemode:SetCanSellAnywhere(true) -- global shop?
-	--gamemode:SetFriendlyBuildingMoveToEnabled(true) -- maybe enables rightclicking friendly buildings without meepmeep invulnerable warning
-	--gamemode:SetKillableTombstones(true) -- drops tombstone on death or useless?
-	--gamemode:SetNeutralItemHideUndiscoveredEnabled(true) -- undiscovered items in the neutral item stash are hidden.
-	--gamemode:SetNeutralStashTeamViewOnlyEnabled(true) -- the all neutral items tab cannot be viewed? you can't see all neutrals but only found?
-	--gamemode:SetRandomHeroBonusItemGrantDisabled(false) -- enables faerie fire and mango maybe when randoming
 end
 
 -- Non-barebones functions below:
@@ -519,6 +512,148 @@ function barebones:SpawnLaneCreeps()
 	self.LastWaveSpawnTime = GameRules:GetGameTime()
 end
 
+function barebones:InitNeutralCamps()
+	self.small_camps = {	
+		{
+			"npc_dota_neutral_kobold",
+			"npc_dota_neutral_kobold",
+			"npc_dota_neutral_kobold",
+			"npc_dota_neutral_kobold_tunneler",
+			"npc_dota_neutral_kobold_taskmaster"
+		},
+		{
+			"npc_dota_neutral_forest_troll_berserker",		--"Hill Troll Berserker"
+			"npc_dota_neutral_forest_troll_berserker",		--"Hill Troll Berserker"
+			"npc_dota_neutral_forest_troll_high_priest"		--"Hill Troll Priest"
+		},
+		{
+			"npc_dota_neutral_forest_troll_berserker",		--"Hill Troll Berserker"
+			"npc_dota_neutral_forest_troll_berserker",		--"Hill Troll Berserker"
+			"npc_dota_neutral_kobold_taskmaster"
+		},
+		{
+			"npc_dota_neutral_gnoll_assassin",				--"Vhoul Assassin"
+			"npc_dota_neutral_gnoll_assassin",				--"Vhoul Assassin"
+			"npc_dota_neutral_gnoll_assassin"				--"Vhoul Assassin"
+		},
+		{
+			"npc_dota_neutral_ghost",						--"Ghost"
+			"npc_dota_neutral_fel_beast",					--"Fell Spirit"
+			"npc_dota_neutral_fel_beast"					--"Fell Spirit"
+		},
+		{
+			"npc_dota_neutral_harpy_scout",					--"Harpy Scout"
+			"npc_dota_neutral_harpy_scout",					--"Harpy Scout"
+			"npc_dota_neutral_harpy_storm"					--"Harpy Stormcrafter"
+		},
+		{
+			"npc_dota_neutral_tadpole",						--"Pollywog"
+			"npc_dota_neutral_tadpole",						--"Pollywog"
+			"npc_dota_neutral_tadpole"						--"Pollywog"
+		}
+	}
+	self.medium_camps = {
+		{
+			"npc_dota_neutral_centaur_outrunner",			--"Centaur Courser"
+			"npc_dota_neutral_centaur_khan"					--"Centaur Conqueror"
+		},
+		{
+			"npc_dota_neutral_giant_wolf",					--"Giant Wolf"
+			"npc_dota_neutral_alpha_wolf",					--"Alpha Wolf"
+			"npc_dota_neutral_alpha_wolf"					--"Alpha Wolf"
+		},
+		{
+			"npc_dota_neutral_satyr_soulstealer",			--"Satyr Mindstealer"
+			"npc_dota_neutral_satyr_soulstealer",			--"Satyr Mindstealer"
+			"npc_dota_neutral_satyr_trickster",				--"Satyr Banisher"
+			"npc_dota_neutral_satyr_trickster"				--"Satyr Banisher"
+		},
+		{
+			"npc_dota_neutral_ogre_magi",					--"Ogre Frostmage"
+			"npc_dota_neutral_ogre_mauler",					--"Ogre Bruiser"
+			"npc_dota_neutral_ogre_mauler"					--"Ogre Bruiser"
+		},
+		{
+			"npc_dota_neutral_mud_golem",					--"Mud Golem"
+			"npc_dota_neutral_mud_golem"					--"Mud Golem"
+		},
+		{
+			"npc_dota_neutral_froglet_mage",				--"Marshmage Apprentice"
+			"npc_dota_neutral_froglet",						--"Boglet"
+			"npc_dota_neutral_froglet",						--"Boglet"
+		},
+		-- Redundant seventh element because other camps have seven elements, to cycle correctly
+		{
+			"npc_dota_neutral_centaur_outrunner",			--"Centaur Courser"
+			"npc_dota_neutral_centaur_khan"					--"Centaur Conqueror"
+		}
+	}
+	self.large_camps = {
+		{
+			"npc_dota_neutral_centaur_outrunner",			--"Centaur Courser"
+			"npc_dota_neutral_centaur_outrunner",			--"Centaur Courser"
+			"npc_dota_neutral_centaur_khan"					--"Centaur Conqueror"
+		},
+		{
+			"npc_dota_neutral_satyr_soulstealer",			--"Satyr Mindstealer"
+			"npc_dota_neutral_satyr_trickster",				--"Satyr Banisher"
+			"npc_dota_neutral_satyr_hellcaller"				--"Satyr Tormenter"
+		},
+		{
+			"npc_dota_neutral_polar_furbolg_champion",		--"Hellbear"
+			"npc_dota_neutral_polar_furbolg_ursa_warrior"	--"Hellbear Smasher"
+		},
+		{
+			"npc_dota_neutral_wildkin",						--"Wildwing"
+			"npc_dota_neutral_wildkin",						--"Wildwing"
+			"npc_dota_neutral_enraged_wildkin"				--"Wildwing Ripper"
+		},
+		{
+			"npc_dota_neutral_dark_troll",					--"Hill Troll"
+			"npc_dota_neutral_dark_troll",					--"Hill Troll"
+			"npc_dota_neutral_dark_troll_warlord"			--"Dark Troll Summoner"
+		},
+		{
+			"npc_dota_neutral_warpine_raider",				--"Warpine Raider"
+			"npc_dota_neutral_warpine_raider"				--"Warpine Raider"
+		},
+		{
+			"npc_dota_neutral_grown_frog",					--"Croaker"
+			"npc_dota_neutral_grown_frog",					--"Croaker"
+			"npc_dota_neutral_grown_frog_mage"				--"Marshmage"
+		}
+	}
+	self.NeutralCampIdx = 1
+end
+
+function barebones:SpawnNeutralCreeps()
+	local top_creeps = self:FindNeutrals(self.NeutralsTopPos, 400)
+	local bot_creeps = self:FindNeutrals(self.NeutralsBotPos, 400)
+	
+	if next(top_creeps) == nil then
+		for k, v in pairs(self.large_camps[self.NeutralCampIdx]) do
+			CreateUnitByName(v, self.NeutralsTopPos, true, nil, nil, DOTA_TEAM_NEUTRALS)
+		end
+	end
+	if next(bot_creeps) == nil then
+		for k, v in pairs(self.medium_camps[self.NeutralCampIdx]) do
+			CreateUnitByName(v, self.NeutralsBotPos, true, nil, nil, DOTA_TEAM_NEUTRALS)
+		end
+	end
+	-- Old map compatibility (secret and bottom camps overlap)
+	local sec_creeps = self:FindNeutrals(self.NeutralsSecretPos, 400)
+	if next(sec_creeps) == nil then
+		for k, v in pairs(self.small_camps[self.NeutralCampIdx]) do
+			CreateUnitByName(v, self.NeutralsSecretPos, true, nil, nil, DOTA_TEAM_NEUTRALS)
+		end
+	end
+	if self.NeutralCampIdx >= 7 then
+		self.NeutralCampIdx = 1
+	else
+		self.NeutralCampIdx = self.NeutralCampIdx + 1
+	end
+end
+
 function barebones:FindEnemyCreeps(eUnit, iRange)
 	local ret = FindUnitsInRadius(
 		eUnit:GetTeamNumber(),
@@ -555,6 +690,21 @@ function barebones:FindAllCreeps(eUnit)
 		eUnit:GetAbsOrigin(),
 		nil,
 		9999,
+		DOTA_UNIT_TARGET_TEAM_BOTH,
+		DOTA_UNIT_TARGET_CREEP,
+		DOTA_UNIT_TARGET_FLAG_NONE,
+		FIND_ANY_ORDER,
+		false
+	)
+	return ret
+end
+
+function barebones:FindNeutrals(iLoc, iRadius)
+	local ret = FindUnitsInRadius(
+		DOTA_TEAM_NEUTRALS,
+		iLoc,
+		nil,
+		iRadius,
 		DOTA_UNIT_TARGET_TEAM_BOTH,
 		DOTA_UNIT_TARGET_CREEP,
 		DOTA_UNIT_TARGET_FLAG_NONE,

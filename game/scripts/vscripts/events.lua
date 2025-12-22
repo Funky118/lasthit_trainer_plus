@@ -97,7 +97,10 @@ function barebones:OnNPCSpawned(keys)
 			self.HeroDamage = npc:GetAverageTrueAttackDamage(nil)--GetBaseDamageMin() + (npc:GetBaseDamageMax() - npc:GetBaseDamageMin())/2
 			local nemesis = "npc_dota_hero_sniper"
 			PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
-			self:SpawnLaneCreeps()
+			self:SpawnLaneCreeps() -- The OnThink for this is in gamemode.lua
+
+			local gamemode = GameRules:GetGameModeEntity()
+			gamemode:SetThink( "OnNeutralThink", self, "NeutralsThink", 60 ) -- There's probably a better way to do this
 		end
 	end
 
@@ -747,6 +750,7 @@ function barebones:OnSwitchToNewHero(keys, data)
 	PlayerResource:SetGold(0, 0, true)
 	self:InitializeNetworkStats()
 	self:SendStatisticsToClient()
+	self:SpawnNeutralCreeps()
 	self.LastWaveSpawnTime = -self.CreepSpawnInterval
 	self.CreepWavesSpawned = 0
 	print("Hero: "..sHeroClass)
@@ -881,9 +885,9 @@ function barebones:CreepsCenter()
 	local center_of_gravity = 0
 	local num_creeps = 0
 
-	if creeps ~= nil then--or siege_creeps ~= nil then
+	if next(creeps) ~= nil then
 		for _,v in pairs(creeps) do
-			if v:IsAlive() then
+			if v:IsAlive() and not v:IsNeutralUnitType() then
 				center_of_gravity = center_of_gravity + v:GetAbsOrigin()
 				num_creeps = num_creeps + 1
 			end
@@ -1072,6 +1076,12 @@ function barebones:OnThink()
 		self:SpawnLaneCreeps()
 	end
 	return 0.5
+end
+
+-- Neutrals spawner
+function barebones:OnNeutralThink()
+	self:SpawnNeutralCreeps()
+	return 60
 end
 
 -- Send last hit statistics to be displayed in Panorama
