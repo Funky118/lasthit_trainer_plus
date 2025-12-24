@@ -288,9 +288,11 @@ function barebones:OnPlayerLevelUp(keys)
 	--PrintTable(keys)
 
 	-- Non-barebones edit: Ensure Nemesis can keep up with hero
-	self:OnItemPurchased(keys) -- refresh Nemesis damage
-	local maxHP = self.NemesisHero:GetMaxHealth()
-	self.NemesisHero:SetMaxHealth(maxHP+150)
+	Timers:CreateTimer(1, function ()
+		self:OnItemPurchased(keys) -- refresh Nemesis damage
+		local maxHP = self.NemesisHero:GetHealth() -- GetMaxHealth doesn't work here but works for self.PlayerHero
+		self.NemesisHero:SetMaxHealth(maxHP+150)
+	end)
 
 	local level = keys.level
 	local playerID = keys.player_id or keys.PlayerID
@@ -369,6 +371,43 @@ function barebones:OnLastHit(keys)
 				break
 			end
 		end
+		
+		-- Neuron list update
+		if self.NeuronEnabled and delay_time ~= -1 and delay_time ~= 0 then
+			print("Processing")
+			for k, v in pairs(self.NeuronTargets) do
+				if v.id == victim then
+					print("Victim found")
+					local criterion
+					if v.attack_time ~= -1 and v.attacked_by_nemesis then
+						criterion = 1/math.exp(delay_time) -- when attacked perfectly, gives 1
+						--self:NeuronBackward({0,0,0,0,0,0,0}, 0.01, criterion)
+					else
+						criterion = 0.99
+						--criterion = 1/math.exp(delay_time)
+					end
+					if v.action ~= -1 then
+						
+						local tmp ={input = v.input, action = v.action, crit = criterion}
+						table.insert(self.Batch, tmp)
+						self.BatchIdx = self.BatchIdx + 1
+						if self.BatchIdx >= self.BatchNum then
+							print("============================")
+							print("Calling backward")
+							for ___, batch in pairs(self.Batch) do
+								self:NeuronBackward(batch.input, batch.action, batch.crit)
+							end
+							self.Batch = {}
+							self.BatchIdx = 0
+							print("============================")
+						end
+					end
+					table.remove(self.NeuronTargets, k)
+					break
+				end
+			end
+		end
+		
 
 		-- Score update tmps
 		if victim:IsRangedAttacker() then
@@ -793,7 +832,11 @@ function barebones:SpawnNemesis(sHero)
 																				})
 	end)
 	self.NemesisHero:SetIdleAcquire(false)
-	self.NemesisHero:SetThink("NemesisThink", self)
+	if self.NeuronEnabled then
+		self.NemesisHero:SetThink("NemesisAdvancedThink", self)
+	else
+		self.NemesisHero:SetThink("NemesisThink", self)
+	end
 	self.NemesisHero:SetThink("NemesisMove", self, 1)
 	self.NemesisHero:SetControllableByPlayer(0, false)
 end
@@ -803,7 +846,7 @@ function barebones:NemesisThink()
 	for k, v in pairs(self.LowHealthTargets) do
 		if self.CurrentTarget == nil then
 			self.CurrentTarget = v[1]
-			ExecuteOrderFromTable({ --This should probably be in another if (otherwise sniper gets stuck when unit is in fog)
+			ExecuteOrderFromTable({
 				UnitIndex = self.NemesisHero:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
 				TargetIndex = self.CurrentTarget:entindex()
@@ -820,6 +863,90 @@ function barebones:NemesisThink()
 
 	end
 	return 0
+end
+
+function barebones:NemesisAdvancedThink()
+	--[[
+		This is a simple predition problem: Get effective HP rate of change and time the attack
+		in advance to land perfectly. It should be linearily separable, so
+		Using a simple one neuron network should make this very stable.
+		Input vector: [eHP rate of change, eHP, Nemesis position, creep position, Nemesis damage, Nemesis attack speed, Nemesis range]
+									or creep angle and creep distance instead of position vectors
+		Single output: attack: 0,1
+	--]]
+	--local _, target = next(self.NeuronTargets)
+	for __, target in pairs(self.NeuronTargets) do
+		if self.NemesisHero:IsAttacking() or target == nil or target.ehp_rate == 0.0 then
+			--print("Aborting think")
+			return 0
+		end
+
+		local attack_threshold = 0.85
+		local nemesis_pos = Vector(0,0,0)--self.NemesisHero:GetAbsOrigin()
+		local target_pos = Vector(0,0,0)--target.id:GetAbsOrigin()
+
+		local vec = {target.ehp_rate/1000, target.ehp/1000, 
+		nemesis_pos[1]/1000, nemesis_pos[2]/1000, nemesis_pos[3]/1000, target_pos[1]/1000, target_pos[2]/1000, target_pos[3]/100, --TODO: Normalize values
+		self.NemesisHero:GetAverageTrueAttackDamage(nil)/100, self.NemesisHero:GetAttackSpeed(false)/10, self.NemesisHero:Script_GetAttackRange()/10000}
+
+		local old_action = target.action
+		local action = target.action
+		if old_action < attack_threshold then
+			action = self:NeuronForward(vec)
+		end
+		
+		-- Save when the creep was or wasn't attacked (this will be recalled in OnLastHit)
+		if action >= attack_threshold and old_action < attack_threshold then
+			ExecuteOrderFromTable({
+					UnitIndex = self.NemesisHero:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
+					TargetIndex = target.id:entindex()
+				})
+				print("Sniper is attacking")
+			target.action = action
+			target.attack_time = Time()
+			target.input = vec
+		-- elseif action >= attack_threshold then -- Prevent Nemesis from not attacking if interrupted or unable
+		-- 	ExecuteOrderFromTable({
+		-- 			UnitIndex = self.NemesisHero:entindex(),
+		-- 			OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
+		-- 			TargetIndex = target.id:entindex()
+		-- 		})
+		-- 		print("Sniper is attacking more")
+		else
+			target.action = action
+			target.input = vec
+		end
+	end
+	return 0
+end
+-- First weight index is the bias, so vInput[end] == 1
+function barebones:NeuronForward(vInput)
+	local output = 0
+	local input = vInput
+	table.insert(input, 1.0) -- Adding bias input
+	for i,w in ipairs(self.Weights) do
+		output = output + w*vInput[i]
+	end
+	
+	return self:sigmoid(output)
+end
+-- This function will be called in OnLastHit
+function barebones:NeuronBackward(vX, y, d) --TODO: Add debug prints
+	--[[
+		Criterion: 1/math.exp(1*delay_time)
+	--]]
+	print("Action: "..y)
+	print("Criterion: "..d)
+	local x = vX
+	table.insert(x, 1) -- Adding bias input
+	for i,w in ipairs(self.Weights) do
+		self.Weights[i] = self.Weights[i] + self.Alpha * (y-y*y) * (d-y) * x[i]
+	end
+end
+
+function barebones:sigmoid(x)
+	return(1/(1+math.exp(-x)))
 end
 
 function barebones:NemesisMove()
@@ -934,7 +1061,11 @@ end
 
 function barebones:OnRoundRestartButtonPressed(keys)
 	print("Restart button pressed")
-	self:RoundRestart()
+	--PrintTable(self.Weights)
+	print(self.NemesisHero:GetAverageTrueAttackDamage(nil))
+	print(self.NemesisHero:GetAttackSpeed(false))
+	print(self.NemesisHero:Script_GetAttackRange())
+	--self:RoundRestart()
 end
 
 function barebones:WriteRedTempNumber(iNum, ent)
@@ -976,22 +1107,70 @@ function barebones:OnEntityHurt(keys)
 	local victim = EntIndexToHScript(keys.entindex_killed)
 	local attacker = EntIndexToHScript(keys.entindex_attacker)
 
+	local eHP = 0
 	if victim:GetClassname() == "npc_dota_creep_lane" then
 		local victim_armor = victim:GetPhysicalArmorBaseValue()
 		local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
-		local eHP = victim:GetHealth() / armor_factor
+		eHP = victim:GetHealth() / armor_factor
+		if self.NeuronEnabled then
+			self:AddCreepToNeuronTable(victim, eHP, attacker)
+		end
 		if eHP <= (self.HeroDamage) then
 			self:AddCreepToTable(victim, attacker:IsRealHero())
 		end
 	elseif victim:GetClassname() == "npc_dota_creep_siege" then
 		local victim_armor = victim:GetPhysicalArmorBaseValue()
 		local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
-		local eHP = victim:GetHealth() / armor_factor / 0.5 -- Reinforced unit
+		eHP = victim:GetHealth() / armor_factor / 0.5 -- Reinforced unit
+		if self.NeuronEnabled then
+			self:AddCreepToNeuronTable(victim, eHP, attacker)
+		end
 		if eHP <= (self.HeroDamage) then
 			self:AddCreepToTable(victim, attacker:IsRealHero())
 		end
 	end
-	
+end
+
+function barebones:AddCreepToNeuronTable(eCreep, eHP, eAttacker)
+	-- Creep must be in NeuronTargets for two cycles to be considered by Nemesis
+	if eCreep:GetHealth() <= eCreep:GetMaxHealth()/2 then
+		for k,v in pairs(self.NeuronTargets) do
+			if v.id == eCreep then
+				if Time()-v.last_hurt_time ~= 0 then
+				-- 	v.ehp_rate = (v.ehp - eHP)/(0.033) -- TODO: change this quickfix
+				-- else
+					v.ehp_rate = v.ehp--(v.ehp - eHP)/(Time()-v.last_hurt_time)
+				end
+				v.ehp = eHP
+				v.last_hurt_time = Time()
+				if eAttacker:GetName() == self.NemesisHero:GetName() then
+					v.attacked_by_nemesis = 1
+				else
+					v.attacked_by_nemesis = 0
+				end
+				-- local criterion = 0.1
+				-- if v.action ~= -1 and v.id:IsAlive() then
+				-- 	self:NeuronBackward(v.input, v.action, criterion)
+				-- end
+				return 0
+			end
+		end
+		local tmp = {
+			id = eCreep,
+			action = -1.0,
+			attack_time = -1.0,
+			attacked_by_nemesis = 0,
+			last_hurt_time = Time(),
+			ehp = eHP,
+			ehp_rate = 0.0,
+			input = {0,0,0,0,0,0,0,0,0,0,0}
+		}
+		if eAttacker:GetName() == self.NemesisHero:GetName() then
+			tmp.attacked_by_nemesis = 1
+		end
+		table.insert(self.NeuronTargets, tmp)
+	end
+	--PrintTable(self.NeuronTargets)
 end
 
 function barebones:AddCreepToTable(eCreep, isAttackerHero)

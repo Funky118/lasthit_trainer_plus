@@ -122,6 +122,13 @@ function barebones:InitGameMode()
 	self.CurrentTarget = nil
 	self.HighlightEnabled = false
 	self.ExperienceGainEnabled = false
+	self.NeuronEnabled = true
+	self.NeuronTargets = {}
+	self.BatchNum = 10
+	self.BatchIdx = 0
+	self.Batch = {}
+	self.Alpha = 0.1
+	self.Weights = {0,0,0,0,0,0,0,0,0,0,0,0}
 
 
 	-- Setup rules
@@ -278,6 +285,7 @@ function barebones:InitGameMode()
 	SpawnDOTAShopTriggerRadiusApproximate(Vector(), 999999); 
 	self:InitializeNetworkStats()
 	self:InitNeutralCamps()
+	self:InitWeights()
 end
 
 function barebones:InitializeNetworkStats()
@@ -713,4 +721,10 @@ function barebones:FindNeutrals(iLoc, iRadius)
 		false
 	)
 	return ret
+end
+
+function barebones:InitWeights()
+	for i,w in ipairs(self.Weights) do
+		self.Weights[i] = math.random()/10
+	end
 end
