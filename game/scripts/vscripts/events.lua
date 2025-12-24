@@ -288,9 +288,11 @@ function barebones:OnPlayerLevelUp(keys)
 	--PrintTable(keys)
 
 	-- Non-barebones edit: Ensure Nemesis can keep up with hero
-	self:OnItemPurchased(keys) -- refresh Nemesis damage
-	local maxHP = self.NemesisHero:GetMaxHealth()
-	self.NemesisHero:SetMaxHealth(maxHP+150)
+	Timers:CreateTimer(1, function ()
+		self:OnItemPurchased(keys) -- refresh Nemesis damage
+		local maxHP = self.NemesisHero:GetHealth() -- GetMaxHealth doesn't work here but works for self.PlayerHero
+		self.NemesisHero:SetMaxHealth(maxHP+150)
+	end)
 
 	local level = keys.level
 	local playerID = keys.player_id or keys.PlayerID
@@ -803,7 +805,7 @@ function barebones:NemesisThink()
 	for k, v in pairs(self.LowHealthTargets) do
 		if self.CurrentTarget == nil then
 			self.CurrentTarget = v[1]
-			ExecuteOrderFromTable({ --This should probably be in another if (otherwise sniper gets stuck when unit is in fog)
+			ExecuteOrderFromTable({
 				UnitIndex = self.NemesisHero:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
 				TargetIndex = self.CurrentTarget:entindex()
