@@ -788,7 +788,7 @@ function barebones:SpawnNemesis(sHero)
 		-- TODO: Add option for a harder opponent with higher attack speed
 		-- note: with some tinkering, the bot could achieve perfect last hitting if given higher damage
 		-- that would likely become unfair though
-		self.NemesisHero:SetRenderColor(255,0,0)
+		--self.NemesisHero:SetRenderColor(255,0,0)
 		CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
 																					bonus_damage = nemesis_bonus_damage,
