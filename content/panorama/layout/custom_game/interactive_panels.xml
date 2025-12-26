@@ -29,7 +29,7 @@
 						<Panel class="NemesisSetting">
 							<Label text="Bot attack speed"></Label>
 						</Panel>
-						<Panel class="NemesisSetting">
+						<Panel class="NemesisSetting" id="NemesisSettingButtons">
 							<Button id="ButtonMinus" class="SettingButton" 
 								onmousedown="Start_AttackSpeedChange(-1)"
 								onmouseup="Stop_AttackSpeedChange()"
@@ -51,6 +51,9 @@
 						</ToggleButton>
 						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( EnableExperienceButtonPressed )">
 							<Label text="Enable experience"></Label>
+						</ToggleButton>
+						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
+							<Label text="Nemesis mode"></Label>
 						</ToggleButton>
 					</Panel>
 					<Panel class="Category">

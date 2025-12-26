@@ -24,11 +24,11 @@ Likely add:
     ☐ Prevent Invoker and Shadow Fiend from cheating (add Nemesis damage update timer every second or so)
     ✘ Prevent Lone Druid and Meepo from cheating (don't really care about Arc Warden clone) @cancelled(25-12-24 13:43)
     ✔ Fix sniper walking in wrong direction when hooked past creep wave @done(25-12-20 00:24)
-    ☐ Find most attacked units, calculate hp rate of change, calculate attack speed, projectile speed and distance, start count down for perfect lasthit
+    ✘ Find most attacked units, calculate hp rate of change, calculate attack speed, projectile speed and distance, start count down for perfect lasthit @cancelled(25-12-26 19:51)
     
 Potential add:
     ☐ timer mode (increasingly more difficult last hitting on a timer, each creep gains you some time)
-    ☐ force kill creeps after an adjustable delay (very unfun, don't implement)
+    ✘ force kill creeps after an adjustable delay (very unfun, don't implement) @cancelled(25-12-26 19:52)
     ☐ log under tower last hits/missed into stats
     ☐ average miss time
     ☐ runes picked/missed (spawn enemies that kill runes after a delay)

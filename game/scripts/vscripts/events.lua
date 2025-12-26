@@ -769,7 +769,7 @@ end
 
 function barebones:SpawnNemesis(sHero)
 	-- Spawn enemy unit to contest last hits
-	-- Regen and armor are set same as in Polygon, range and damage are set with a modifier (see above this function)
+	-- Regen and armor are set same as in Polygon, range and damage are set with a modifier (see gamemode.lua)
 	self.NemesisHero = CreateUnitByName(sHero, self.NemesisSpawnPos, true, nil, nil, DOTA_TEAM_BADGUYS)
 	self.NemesisHero:SetBaseHealthRegen(100)
 	self.NemesisHero:SetPhysicalArmorBaseValue(50)
@@ -785,14 +785,25 @@ function barebones:SpawnNemesis(sHero)
 		-- note: with some tinkering, the bot could achieve perfect last hitting if given higher damage
 		-- that would likely become unfair though
 		--self.NemesisHero:SetRenderColor(255,0,0)
-		CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
-		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
-																					bonus_damage = nemesis_bonus_damage,
-																					bonus_attack_speed = self.NemesisBonusAttackSpeed, --5000
-																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed, --15000
-																					-- attack_point = 0,
-																					--BAT = 1,
-																				})
+		if not self.NemesisUnfair then
+			CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
+			self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
+																						bonus_damage = nemesis_bonus_damage,
+																						bonus_attack_speed = self.NemesisBonusAttackSpeed, --5000
+																						bonus_projectile_speed = self.NemesisBonusProjectileSpeed, --15000
+																						-- attack_point = 0,
+																						--BAT = 1,
+																					})
+		else
+			self.NemesisHero:SetRenderColor(255,0,0)
+			self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
+																			bonus_damage = nemesis_bonus_damage,
+																			bonus_attack_speed = 5000,
+																			bonus_projectile_speed = 15000,
+																			-- attack_point = 0,
+																			BAT = 1,
+																		})
+		end
 	end)
 	self.NemesisHero:SetIdleAcquire(false)
 	self.NemesisHero:SetThink("NemesisThink", self)
@@ -1111,34 +1122,38 @@ end
 function barebones:OnItemPurchased(keys)
 	-- HAHA! No cheating allowed! Nemesis now tracks Hero damage dynamically.
 	self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
-	self.NemesisHero:RemoveModifierByName("modifier_nemesis")
-	local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
-	local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
-	self.NemesisDamage = nemesis_damage+nemesis_bonus_damage
 	--CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 	-- print("Nemesis damage diff: "..nemesis_damage)
-	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
-																					bonus_damage = nemesis_bonus_damage,
-																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
-																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
-																					-- attack_point = 0,
-																					-- BAT = 1,
-																				})
+	if not self.NemesisUnfair then
+		self.NemesisHero:RemoveModifierByName("modifier_nemesis")
+		local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
+		local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
+		self.NemesisDamage = nemesis_damage+nemesis_bonus_damage
+		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
+																						bonus_damage = nemesis_bonus_damage,
+																						bonus_attack_speed = self.NemesisBonusAttackSpeed,
+																						bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
+																						-- attack_point = 0,
+																						-- BAT = 1,
+																					})
+	end
 end
 
 function barebones:OnNemesisAttackSpeedChange(keys, data)
-	self.NemesisHero:RemoveModifierByName("modifier_nemesis")
-	local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
-	local nemesis_bonus_damage =  self.HeroDamage - nemesis_damage
-	self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
-	self.NemesisBonusAttackSpeed = 0+data.str -- Really? The INT variable is retyped to string, come on...
-	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
-																					bonus_damage = nemesis_bonus_damage,
-																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
-																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
-																					-- attack_point = 0,
-																					-- BAT = 1,
-																				})
+	if not self.NemesisUnfair then
+		self.NemesisHero:RemoveModifierByName("modifier_nemesis")
+		local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
+		local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
+		self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
+		self.NemesisBonusAttackSpeed = 0+data.str -- Really? The INT variable is retyped to string, come on...
+		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
+																						bonus_damage = nemesis_bonus_damage,
+																						bonus_attack_speed = self.NemesisBonusAttackSpeed,
+																						bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
+																						-- attack_point = 0,
+																						-- BAT = 1,
+																					})
+	end
 end
 
 -- 
@@ -1203,4 +1218,18 @@ function barebones:ReturnExpValues()
 		-- 	end
 		-- end
 	end
+end
+
+function barebones:OnEnableUnfairButtonPressed(keys)
+	if self.NemesisUnfair == true then
+		self.NemesisUnfair = false
+	else
+		self.NemesisUnfair = true
+	end
+	if self.NemesisHero ~= nil then
+		self.NemesisHero:Destroy()
+	end
+	self.CurrentTarget = nil
+	local nemesis = "npc_dota_hero_sniper" -- TODO: Allow player to choose oppotent (including vanilla without modifier)
+	PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
 end

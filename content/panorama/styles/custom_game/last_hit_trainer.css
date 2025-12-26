@@ -12,7 +12,7 @@
 {
 	transform: translateX( 0% ) translateY( -100px );
 	/* vertical-align: middle; */
-	margin-top: 15%;
+	margin-top: 17%;
 	horizontal-align: left;
 	padding-left: 0px;
 	transition-property: background-color, transform;
@@ -221,7 +221,11 @@
 	margin-left: 3px;
 	margin-right: 3px;
 	flow-children: right;
+}
 
+#NemesisSettingButtons.Faded
+{
+	opacity: 0.2;
 }
 
 .Category .NemesisSetting Label
@@ -321,6 +325,8 @@
 .Category .OptionsToggleButton Label
 {
 	font-size: 14;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 
 /*Quit panel*/

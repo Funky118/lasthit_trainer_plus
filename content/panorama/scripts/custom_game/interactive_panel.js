@@ -62,6 +62,8 @@ function Start_AttackSpeedChange(delta)
 {
 	if(attackSpeedTimer != null)
 		return;
+	if($("#NemesisSettingButtons").BHasClass("Faded"))
+		return;
 	attackSpeedDelta = delta;
 	AttackSpeedChange();
 }
@@ -138,6 +140,12 @@ function SlideThumbActivate()
 {
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
 	$('#ControlPanel').RemoveClass('HeroPickerVisible');
+}
+
+function NemesisModeActivate()
+{
+	$("#NemesisSettingButtons").ToggleClass("Faded")
+	$.DispatchEvent('FireCustomGameEvent_Str', 'EnableUnfairButtonPressed', '' );
 }
 
 (function()
