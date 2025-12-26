@@ -288,10 +288,11 @@ function barebones:OnPlayerLevelUp(keys)
 	--PrintTable(keys)
 
 	-- Non-barebones edit: Ensure Nemesis can keep up with hero
-	Timers:CreateTimer(1, function ()
-		self:OnItemPurchased(keys) -- refresh Nemesis damage
-		local maxHP = self.NemesisHero:GetHealth() -- GetMaxHealth doesn't work here but works for self.PlayerHero
-		self.NemesisHero:SetMaxHealth(maxHP+150)
+	self.NemesisHero:RemoveModifierByName("modifier_bonus_health")
+	self.NemesisBonusHealth = self.NemesisBonusHealth + 150
+	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_bonus_health", {bonus_health = self.NemesisBonusHealth})
+	Timers:CreateTimer(0.5, function ()
+		self:OnItemPurchased(keys)
 	end)
 
 	local level = keys.level
@@ -768,6 +769,7 @@ end
 
 -- This causes vectorws error messages, comment it out a figure out a different way to add range
 LinkLuaModifier("modifier_nemesis", LUA_MODIFIER_MOTION_NONE )
+LinkLuaModifier("modifier_bonus_health", LUA_MODIFIER_MOTION_NONE )
 
 function barebones:SpawnNemesis(sHero)
 	-- Spawn enemy unit to contest last hits
@@ -775,6 +777,7 @@ function barebones:SpawnNemesis(sHero)
 	self.NemesisHero = CreateUnitByName(sHero, self.NemesisSpawnPos, true, nil, nil, DOTA_TEAM_BADGUYS)
 	self.NemesisHero:SetBaseHealthRegen(100)
 	self.NemesisHero:SetPhysicalArmorBaseValue(50)
+	self.NemesisBonusHealth = 0
 	
 	Timers:CreateTimer(1, function ()
 		-- Set damage to be competetive with Hero
