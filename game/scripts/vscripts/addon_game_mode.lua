@@ -40,9 +40,16 @@ function Precache(context)
 	PrecacheResource("particle", "particles/ui_mouseactions/range_finder_cp_color_creep_plus.vpcf", context) -- unused red aim target
 	PrecacheResource("particle", "particles/ui_mouseactions/ping_waypoint_vertical_energy_plus.vpcf", context)
 
+	PrecacheResource("particle", "particles/ui_mouseactions/ping_waypoint_vertical_energy_plus.vpcf", context)
+
+	-- Nemesis mode particles
+	
+	PrecacheResource("particle_folder", "particles/econ/events/ti10/high_five/towers/dire_tower_2021/high_five_dire_tower_2021_travel_fire.vpcf", context)
+	PrecacheResource("particle_folder", "particles/units/heroes/hero_warlock/warlock_fatal_bonds_icon_skull.vpcf", context)
+
+	PrecacheResource("particle_folder", "particles/econ/events/fall_2022/agh/agh_aura_fall2022_smoke.vpcf", context)
 
 	PrecacheResource("particle_folder", "particles/test_particle", context)
-
 	-- Models can also be precached by folder or individually
 	-- PrecacheModel should generally used over PrecacheResource for individual models
 
@@ -65,6 +72,7 @@ function Precache(context)
 	-- Custom units from npc_units_custom.txt can also have all of their abilities and precache{} blocks precached in this way
 	PrecacheUnitByNameSync("npc_dota_hero_ancient_apparition", context)
 	PrecacheUnitByNameSync("npc_dota_hero_enigma", context)
+	PrecacheUnitByNameSync("npc_dota_hero_warlock", context)
 	
 	-- Non-barebones: Precache our custom sound file
 	PrecacheResource( "soundfile", "soundevents/game_sounds_last_hit_trainer.vsndevts", context )
