@@ -767,10 +767,6 @@ function barebones:OnSwitchToNewHero(keys, data)
 	print("Hero: "..sHeroClass)
 end
 
--- This causes vectorws error messages, comment it out a figure out a different way to add range
-LinkLuaModifier("modifier_nemesis", LUA_MODIFIER_MOTION_NONE )
-LinkLuaModifier("modifier_bonus_health", LUA_MODIFIER_MOTION_NONE )
-
 function barebones:SpawnNemesis(sHero)
 	-- Spawn enemy unit to contest last hits
 	-- Regen and armor are set same as in Polygon, range and damage are set with a modifier (see above this function)
@@ -860,11 +856,12 @@ function barebones:NemesisMove()
 	local creep_center = self:CreepsCenter()
 	local new_pos = self.NemesisHero:GetAbsOrigin()
 	local dist = VectorDistance(creep_center,new_pos)
+	local rel_pos = VectorDistance(creep_center, self.DireMeeleePos) - VectorDistance(new_pos, self.DireMeeleePos)
 	-- Fortunately the lane is on the diagonal of 1. and 3. quadrant, so direction is easy
 	local away_from_center = (new_pos-creep_center):Normalized()
 	local towards_center = (creep_center-new_pos):Normalized()
 
-	if chicken_out then
+	if chicken_out or rel_pos <= 0 then
 		-- bok bok 
 		print("RUN AWAY!")
 		new_pos = self.DireRangedPos
@@ -875,7 +872,9 @@ function barebones:NemesisMove()
 		new_pos = new_pos + (dist-const_distance) * towards_center
 		new_pos.z = 0
 	else
-		--new_pos = new_pos + Vector(math.random(50,100), math.random(50,100), 0) -- simulate midlaner adhd
+		-- Always face the creeps
+		new_pos = new_pos + towards_center
+		new_pos.z = 0
 	end
 	-- Don't interrupt an attack order from NemesisThink
 	if not self.NemesisHero:IsAttacking() then
@@ -910,15 +909,18 @@ function barebones:CreepsCenter()
 	else
 		-- This shouldn't happen
 		print("Creeps nil!")
-		center_of_gravity = self.NemesisSpawnPos-VectorDistance(self.HeroSpawnPos,self.NemesisSpawnPos)/2 -- Set default to halfway between radiant and dire
+		center_of_gravity = self.NemesisSpawnPos+self.HeroSpawnPos/2
 	end
 
 	if num_creeps <= 0 then
-		center_of_gravity = self.NemesisSpawnPos-VectorDistance(self.HeroSpawnPos,self.NemesisSpawnPos)/2
+		center_of_gravity = self.NemesisSpawnPos+self.HeroSpawnPos/2 -- Set default to halfway between radiant and dire
 	end
 	--[[
 	local color1=Vector(255,0,0)
+	local color2=Vector(0,0,255)
 	DebugDrawCircle(center_of_gravity, color1, 20, 20, true, 5)
+	DebugDrawCircle(self.HeroSpawnPos, color2, 20, 20, true, 5)
+	DebugDrawCircle(self.NemesisSpawnPos, color2, 20, 20, true, 5)
 	--]]
 	return center_of_gravity
 end

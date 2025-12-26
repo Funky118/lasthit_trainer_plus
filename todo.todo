@@ -5,6 +5,9 @@
 ✔ Implement average time @done(25-12-12 16:18)
 
 Likely add:
+    ✔ Fix nemesis movement and add facing creeps @done(25-12-26 19:25)
+    ✔ Fix flagbearer HP and magic resistance @done(25-12-26 18:32)
+    ☐ Finish unfair nemesis
     ✔ Fix interactive ui layout @done(25-12-26 13:23)
     ✘ Write a GetEHP function @cancelled(25-12-26 13:24)
     ✔ Write a graph function @done(25-12-26 13:24)

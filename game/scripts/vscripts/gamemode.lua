@@ -65,6 +65,11 @@ function barebones:InitGameMode()
 	--Non-barebones: This has been edited but the edits are hopefully self-explenatory
 	DebugPrint("[BAREBONES] Starting to load Game Rules.")
 
+	-- This causes vectorws error messages
+	LinkLuaModifier("modifier_nemesis", LUA_MODIFIER_MOTION_NONE )
+	LinkLuaModifier("modifier_bonus_health", LUA_MODIFIER_MOTION_NONE )
+	LinkLuaModifier("modifier_creep_upgrade", LUA_MODIFIER_MOTION_NONE )
+
 	-- Hero spawn point
 	local hero_spawn = Entities:FindByName(nil,"radiant_hero")
 	local nemesis_spawn = Entities:FindByName(nil,"dire_nemesis")
@@ -120,6 +125,7 @@ function barebones:InitGameMode()
 	self.RangedCreepsSpawned = 0
 	self.FlagbearerCreepsSpawned = 0
 	self.SiegeCreepsSpawned = 0
+	self.LaneUpgrade = 0
 	self.LowHealthTargets = {}
 	self.CurrentTarget = nil
 	self.HighlightEnabled = false
@@ -381,11 +387,18 @@ function barebones:SpawnLaneCreeps()
 	local spawn_delay = 0.5
 	local meleeToSpawn = 3
 	self.CreepWavesSpawned = self.CreepWavesSpawned + 1
+	-- Lane upgrade every 7 minutes (real game does it 7:30 but whatever)
+	if (self.CreepWavesSpawned % 15) == 0 then
+		-- Let's keep this uncapped just for fun :P
+		self.LaneUpgrade = self.LaneUpgrade + 1
+	end
 
 	-- Spawn flagbearers
 	if self.CreepWavesSpawned >= 5 then
 		if ((self.CreepWavesSpawned - 5) % 2) == 0 then
 			local creep_flag_good = CreateUnitByName("npc_dota_creep_goodguys_flagbearer", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+			creep_flag_good:AddNewModifier(creep_flag_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
+			
 			if creep_flag_good ~= nil then
 				Timers:CreateTimer(spawn_delay, function ()
 					ExecuteOrderFromTable({
@@ -398,6 +411,7 @@ function barebones:SpawnLaneCreeps()
 				self.FlagbearerCreepsSpawned = self.FlagbearerCreepsSpawned + 1
 			end
 			local creep_flag_bad = CreateUnitByName("npc_dota_creep_badguys_flagbearer", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
+			creep_flag_bad:AddNewModifier(creep_flag_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
 			if creep_flag_bad ~= nil then
 				Timers:CreateTimer(spawn_delay, function ()
 					ExecuteOrderFromTable({
@@ -417,6 +431,7 @@ function barebones:SpawnLaneCreeps()
 	-- Spawn 3 melee radiant creeps and send them to attack dire spawn point
 	for i = 1, meleeToSpawn do
 		local creep_melee_good = CreateUnitByName("npc_dota_creep_goodguys_melee", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+		creep_melee_good:AddNewModifier(creep_melee_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
 		if creep_melee_good ~= nil then
 			Timers:CreateTimer(spawn_delay, function ()
 				ExecuteOrderFromTable({
@@ -434,6 +449,7 @@ function barebones:SpawnLaneCreeps()
 
 	-- Spawn 1 ranged randiant creep
 	local creep_ranged_good = CreateUnitByName("npc_dota_creep_goodguys_ranged", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+	creep_ranged_good:AddNewModifier(creep_ranged_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 2*self.LaneUpgrade})
 	if creep_ranged_good ~= nil then
 		Timers:CreateTimer(spawn_delay, function ()
 			ExecuteOrderFromTable({
@@ -451,6 +467,7 @@ function barebones:SpawnLaneCreeps()
 	-- Spawn 3 melee dire creeps and send them to attack radiant spawn point
 	for i = 1, meleeToSpawn do
 		local creep_melee_bad = CreateUnitByName("npc_dota_creep_badguys_melee", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
+		creep_melee_bad:AddNewModifier(creep_melee_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
 		if creep_melee_bad ~= nil then
 			Timers:CreateTimer(1, function ()
 				ExecuteOrderFromTable({
@@ -468,6 +485,7 @@ function barebones:SpawnLaneCreeps()
 
 	-- Spawn 1 ranged dire creep
 	local creep_ranged_bad = CreateUnitByName("npc_dota_creep_badguys_ranged", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
+	creep_ranged_bad:AddNewModifier(creep_ranged_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 2*self.LaneUpgrade})
 	if creep_ranged_bad ~= nil then
 		Timers:CreateTimer(1, function ()
 			ExecuteOrderFromTable({
