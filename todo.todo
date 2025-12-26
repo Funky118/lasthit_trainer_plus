@@ -8,6 +8,7 @@ Likely add:
     ☐ Fix interactive ui layout
     ☐ Write a GetEHP function
     ☐ Write a graph function
+    ☐ Test Nemesis with no creeps
     ✔ Flagbearer creep waves @done(25-12-16 17:22)
     ✔ Add a variable to enable experience gain (Nemesis needs to update damage on hero level up) @done(25-12-24 13:43)
     ✔ Add side neutral camps @done(25-12-22 16:28)

@@ -290,7 +290,7 @@ function barebones:OnPlayerLevelUp(keys)
 	-- Non-barebones edit: Ensure Nemesis can keep up with hero --TODO: This doesn't work, HP resets with RemoveModifierByName
 	Timers:CreateTimer(1, function ()
 		self:OnItemPurchased(keys) -- refresh Nemesis damage
-		local maxHP = self.NemesisHero:GetMaxHealth() -- GetMaxHealth doesn't work here but works for self.PlayerHero
+		local maxHP = self.NemesisHero:GetHealth() -- GetMaxHealth doesn't work here but works for self.PlayerHero
 		self.NemesisHero:SetBaseMaxHealth(maxHP+150)
 	end)
 
@@ -374,7 +374,7 @@ function barebones:OnLastHit(keys)
 
 		if self.NemesisUnfair then
 			for k, v in pairs(self.UnfairTargets) do
-				if v == victim then
+				if v.ent == victim then
 					table.remove(self.UnfairTargets, k)
 				end
 			end
@@ -832,22 +832,66 @@ function barebones:NemesisPredict()
 			-- Calculate damage rate before the Hero can lasthit
 			if eHP <= self.NemesisDamage*3 then -- Arbitrary threshold
 				local eHP_sum = 0
-				for _, veHP in pairs(v.ehp_table) do
+				local time_delta = 0
+				local avg_hit_dmg = 1
+				local counter = 0
+				local window = 10
+				local table_size = #v.ehp_table
+				local offset = (table_size <= window) and table_size or window
+				local prev_time = (table_size - offset)+1
+				for time = (table_size - offset)+1, table_size do
+					local veHP = v.ehp_table[time]
 					eHP_sum = eHP_sum + veHP
+					if veHP > 0 then
+						avg_hit_dmg = avg_hit_dmg + veHP
+						time_delta = time_delta + (time - prev_time)
+						prev_time = time
+						counter = counter + 1
+					end
 				end
-				v.ehp_roc = eHP_sum/#v.ehp_table
-				local future_eHP = eHP - v.ehp_roc*2 -- predict x*100ms into the future TODO: implement PID with this as baseline
-				if future_eHP <= self.NemesisDamage then
-					-- Start attacking
-					table.insert(self.UnfairTargets, v.ent)
+				-- for time, veHP in pairs(v.ehp_table) do
+				-- 	eHP_sum = eHP_sum + veHP
+				-- 	if veHP > 0 then
+				-- 		avg_hit_dmg = avg_hit_dmg + veHP
+				-- 		time_delta = time_delta + (time - prev_time)
+				-- 		prev_time = time
+				-- 		counter = counter + 1
+				-- 	end
+				-- end
+				avg_hit_dmg = avg_hit_dmg/counter
+				time_delta = time_delta/counter
+				local next_ehp = eHP - avg_hit_dmg
+				if next_ehp <= self.NemesisHero:GetBaseDamageMin() then
+					local delay = time_delta/10 - 0.1
+					delay = (delay >= 0) and delay or 0
+					v.attack_time = Time() + delay
+					table.insert(self.UnfairTargets, v)
 					print("=== Targetting creep ===")
 					print(v.ent)
-					--print("eHP diffs:")
-					print("Rate of change: "..v.ehp_roc)
+					print("Hit dmg: "..(avg_hit_dmg))
+					print("Time delta: "..(time_delta))
+					print("Delay "..delay)
+					print("Attack time "..v.attack_time)
 					DrawGraph(v.ehp_table,20)
-					-- PrintTable(v.ehp_table)
 					v.on_the_list = true
 				end
+
+
+				-- v.ehp_roc = eHP_sum/#v.ehp_table
+				-- local future_eHP = eHP - v.ehp_roc*1 -- predict x*100ms into the future TODO: implement PID with this as baseline
+				-- if future_eHP <= self.NemesisDamage then
+				-- 	-- Start attacking
+				-- 	table.insert(self.UnfairTargets, v.ent)
+				-- 	print("=== Targetting creep ===")
+				-- 	print(v.ent)
+				-- 	print("Hit dmg: "..(avg_hit_dmg/counter))
+				-- 	print("Time delta: "..(time_delta/counter))
+				-- 	--print("eHP diffs:")
+				-- 	print("Rate of change: "..v.ehp_roc)
+				-- 	DrawGraph(v.ehp_table,20)
+				-- 	-- PrintTable(v.ehp_table)
+				-- 	v.on_the_list = true
+				-- end
 			end
 	    end
 	end
@@ -855,15 +899,17 @@ function barebones:NemesisPredict()
 end
 
 function barebones:NemesisUnfairThink()
+	local time = Time()
 	for k, victim in pairs(self.UnfairTargets) do
-		if self.CurrentTarget == nil then
-			self.CurrentTarget = victim
+		if self.CurrentTarget == nil and victim.attack_time <= time then
+			self.CurrentTarget = victim.ent
 			ExecuteOrderFromTable({
 				UnitIndex = self.NemesisHero:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
 				TargetIndex = self.CurrentTarget:entindex()
 			})
-			print("Sniper attacked unfairly")
+			print("Sniper attacked unfairly ")
+			print(victim.ent)
 		-- elseif not self.NemesisHero:IsAttacking() then
 		-- 	ExecuteOrderFromTable({
 		-- 		UnitIndex = self.NemesisHero:entindex(),
@@ -1091,6 +1137,7 @@ function barebones:AddToPredictTable(eCreep)
 		ent = eCreep,
 		prev_ehp = eHP,
 		ehp_table = {},
+		attack_time = 0,
 		-- Updates every 0.1s inside a Think, so no need to track time
 		ehp_roc = 0, -- Rate of change, calculated later
 		on_the_list = false
