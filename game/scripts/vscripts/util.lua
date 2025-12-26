@@ -212,3 +212,46 @@ end
 function VectorDistance(v1, v2)
   return math.sqrt(VectorDistanceSq(v1, v2))
 end
+
+function DrawGraph(data, graph_height)
+  local max = data[1]
+  local min = data[1]
+  for k,v in pairs(data) do
+    if v < min then
+      min = v
+    end
+    if v > max then
+      max = v
+    end
+  end
+
+  local vert_lines = {}
+  local last_line = ""
+
+  for k,value in pairs(data) do
+    local offset = math.floor(graph_height * (value-min)/(max-min))
+    local line = ""
+    for i = graph_height, 0, -1 do
+      if i == offset then
+        line = line.."@"
+      else
+        line = line.."."
+      end
+    end
+    table.insert(vert_lines, line)
+    last_line = last_line.."-"
+  end
+
+  for i = 1, graph_height+1 do
+    local yaxis = math.floor(max * (graph_height-i-0)/(graph_height-0))
+    local horizontal_line = yaxis.."|"
+    for k, col in pairs(vert_lines)do
+      local tmp = string.sub(col, i, i)
+      horizontal_line = horizontal_line..tmp
+    end
+    print(horizontal_line)
+  end
+  
+  print(last_line)
+
+end

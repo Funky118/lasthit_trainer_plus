@@ -76,6 +76,7 @@ function barebones:InitGameMode()
 	self.NemesisBonusAttackRange = 1000
 	self.NemesisBonusAttackSpeed = 0
 	self.NemesisBonusProjectileSpeed = 5000
+	self.NemesisUnfair = true -- TODO: change
 
 	-- Starting positions of the creeps defined in Hammer
 	local rms = Entities:FindByName(nil,"radiant_melee")
@@ -122,6 +123,8 @@ function barebones:InitGameMode()
 	self.CurrentTarget = nil
 	self.HighlightEnabled = false
 	self.ExperienceGainEnabled = false
+	self.PredictTable = {}
+	self.UnfairTargets = {}
 
 
 	-- Setup rules
@@ -221,6 +224,7 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "SwitchToNewHero", function(...) return self:OnSwitchToNewHero( ... ) end )
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
+	CustomGameEventManager:RegisterListener( "NemesisUnfairButtonPressed", function(...) return self:OnNemesisUnfairButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "HighlightCreepsButtonPressed", function(...) return self:OnHighlightCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "EnableExperienceButtonPressed", function(...) return self:OnEnableExperienceButtonPressed( ... ) end )
 

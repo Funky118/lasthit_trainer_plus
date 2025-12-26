@@ -52,6 +52,9 @@
 						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( EnableExperienceButtonPressed )">
 							<Label text="Enable experience"></Label>
 						</ToggleButton>
+						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( NemesisUnfairButtonPressed )">
+							<Label text="Unfair bot"></Label>
+						</ToggleButton>
 					</Panel>
 					<Panel class="Category">
 						<Label text="" />

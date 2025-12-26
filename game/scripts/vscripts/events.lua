@@ -287,11 +287,11 @@ function barebones:OnPlayerLevelUp(keys)
 	DebugPrint("[BAREBONES] OnPlayerLevelUp event")
 	--PrintTable(keys)
 
-	-- Non-barebones edit: Ensure Nemesis can keep up with hero
+	-- Non-barebones edit: Ensure Nemesis can keep up with hero --TODO: This doesn't work, HP resets with RemoveModifierByName
 	Timers:CreateTimer(1, function ()
 		self:OnItemPurchased(keys) -- refresh Nemesis damage
-		local maxHP = self.NemesisHero:GetHealth() -- GetMaxHealth doesn't work here but works for self.PlayerHero
-		self.NemesisHero:SetMaxHealth(maxHP+150)
+		local maxHP = self.NemesisHero:GetMaxHealth() -- GetMaxHealth doesn't work here but works for self.PlayerHero
+		self.NemesisHero:SetBaseMaxHealth(maxHP+150)
 	end)
 
 	local level = keys.level
@@ -369,6 +369,19 @@ function barebones:OnLastHit(keys)
 				delay_time = Time() - v[2]
 				attacker = v[3]
 				break
+			end
+		end
+
+		if self.NemesisUnfair then
+			for k, v in pairs(self.UnfairTargets) do
+				if v == victim then
+					table.remove(self.UnfairTargets, k)
+				end
+			end
+			for k, v in pairs(self.PredictTable) do
+				if v == victim then
+					table.remove(self.PredictTable, k)
+				end
 			end
 		end
 
@@ -745,6 +758,8 @@ function barebones:OnSwitchToNewHero(keys, data)
 
 	-- Reset Nemesis' target and hitlist
 	self.LowHealthTargets = {}
+	self.PredictTable = {}
+	self.UnfairTargets = {}
 	self.CurrentTarget = nil
 
 	-- Precache the new hero and nemesis and call their spawning functions
@@ -795,9 +810,69 @@ function barebones:SpawnNemesis(sHero)
 																				})
 	end)
 	self.NemesisHero:SetIdleAcquire(false)
-	self.NemesisHero:SetThink("NemesisThink", self)
-	self.NemesisHero:SetThink("NemesisMove", self, 1)
+	if self.NemesisUnfair then
+		self.NemesisHero:SetThink("NemesisPredict", self)
+		self.NemesisHero:SetThink("NemesisUnfairThink", self)
+	else
+		self.NemesisHero:SetThink("NemesisThink", self)
+	end
+		self.NemesisHero:SetThink("NemesisMove", self, 1)
 	self.NemesisHero:SetControllableByPlayer(0, false)
+end
+
+function barebones:NemesisPredict()
+	for k, v in pairs(self.PredictTable) do
+		if v.on_the_list == false then
+			-- local hp = v.ent:GetHealth()
+			local victim_armor = v.ent:GetPhysicalArmorBaseValue() --TODO: Siege creeps
+			local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
+			local eHP = v.ent:GetHealth() / armor_factor
+			table.insert(v.ehp_table, v.prev_ehp - eHP)
+			v.prev_ehp = eHP
+			-- Calculate damage rate before the Hero can lasthit
+			if eHP <= self.NemesisDamage*3 then -- Arbitrary threshold
+				local eHP_sum = 0
+				for _, veHP in pairs(v.ehp_table) do
+					eHP_sum = eHP_sum + veHP
+				end
+				v.ehp_roc = eHP_sum/#v.ehp_table
+				local future_eHP = eHP - v.ehp_roc*2 -- predict x*100ms into the future TODO: implement PID with this as baseline
+				if future_eHP <= self.NemesisDamage then
+					-- Start attacking
+					table.insert(self.UnfairTargets, v.ent)
+					print("=== Targetting creep ===")
+					print(v.ent)
+					--print("eHP diffs:")
+					print("Rate of change: "..v.ehp_roc)
+					DrawGraph(v.ehp_table,20)
+					-- PrintTable(v.ehp_table)
+					v.on_the_list = true
+				end
+			end
+	    end
+	end
+	return 0.1
+end
+
+function barebones:NemesisUnfairThink()
+	for k, victim in pairs(self.UnfairTargets) do
+		if self.CurrentTarget == nil then
+			self.CurrentTarget = victim
+			ExecuteOrderFromTable({
+				UnitIndex = self.NemesisHero:entindex(),
+				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
+				TargetIndex = self.CurrentTarget:entindex()
+			})
+			print("Sniper attacked unfairly")
+		-- elseif not self.NemesisHero:IsAttacking() then
+		-- 	ExecuteOrderFromTable({
+		-- 		UnitIndex = self.NemesisHero:entindex(),
+		-- 		OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
+		-- 		TargetIndex = self.CurrentTarget:entindex()
+		-- 	})
+		end
+	end
+	return 0
 end
 
 function barebones:NemesisThink()
@@ -865,7 +940,7 @@ function barebones:NemesisMove()
 		print("RUN AWAY!")
 		new_pos = self.DireRangedPos
 	elseif dist <= const_distance-hyst then
-		new_pos = new_pos + (const_distance-dist) * away_from_center
+		new_pos = new_pos + (const_distance-dist) * away_from_center -- TODO:Bug here and in the other elseif, if center is behind sniper, he will run towards Hero
 		new_pos.z = 0
 	elseif dist >= const_distance+hyst*2 then
 		new_pos = new_pos + (dist-const_distance) * towards_center
@@ -881,7 +956,7 @@ function barebones:NemesisMove()
 			Position = new_pos,
 		})
 	end
-	--[[
+	---[[
 		local color1=Vector(0,255,0)
 		DebugDrawCircle(new_pos, color1, 20, 20, true, 5)
 	--]]
@@ -912,7 +987,7 @@ function barebones:CreepsCenter()
 	if num_creeps <= 0 then
 		center_of_gravity = self.NemesisSpawnPos-VectorDistance(self.HeroSpawnPos,self.NemesisSpawnPos)/2
 	end
-	--[[
+	---[[
 	local color1=Vector(255,0,0)
 	DebugDrawCircle(center_of_gravity, color1, 20, 20, true, 5)
 	--]]
@@ -977,6 +1052,9 @@ function barebones:OnEntityHurt(keys)
 	-- Calculate effective HP of the damaged creep and add it to Nemesis's list if below average Hero base damage
 	local victim = EntIndexToHScript(keys.entindex_killed)
 	local attacker = EntIndexToHScript(keys.entindex_attacker)
+	if self.NemesisUnfair == true then
+		self:AddToPredictTable(victim) -- TODO: Later check for deaggro which would mess up calculations
+	end
 
 	if victim:GetClassname() == "npc_dota_creep_lane" then
 		local victim_armor = victim:GetPhysicalArmorBaseValue()
@@ -994,6 +1072,30 @@ function barebones:OnEntityHurt(keys)
 		end
 	end
 	
+end
+
+function barebones:AddToPredictTable(eCreep)
+	if self.PredictTable ~= nil then
+		for _, v in pairs(self.PredictTable) do
+			if v.ent == eCreep then
+				return 0
+			end
+		end
+	end
+
+	local victim_armor = eCreep:GetPhysicalArmorBaseValue()
+	local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
+	local eHP = eCreep:GetHealth() / armor_factor -- TODO: Siege creeps
+
+	local creep_stats = {
+		ent = eCreep,
+		prev_ehp = eHP,
+		ehp_table = {},
+		-- Updates every 0.1s inside a Think, so no need to track time
+		ehp_roc = 0, -- Rate of change, calculated later
+		on_the_list = false
+	}
+	table.insert(self.PredictTable, creep_stats)
 end
 
 function barebones:AddCreepToTable(eCreep, isAttackerHero)
@@ -1132,12 +1234,31 @@ function barebones:OnNemesisAttackSpeedChange(keys, data)
 																				})
 end
 
--- 
+ 
 function barebones:OnHighlightCreepsButtonPressed(keys)
 	if self.HighlightEnabled == true then
 		self.HighlightEnabled = false
 	else
 		self.HighlightEnabled = true
+	end
+end
+
+function barebones:OnNemesisUnfairButtonPressed(keys)
+	if self.NemesisUnfair == true then
+		self.NemesisUnfair = false
+	else
+		self.NemesisUnfair = true
+	end
+	if self.NemesisUnfair then
+		self.NemesisHero:StopThink("NemesisThink", self)
+		self.NemesisHero:SetThink("NemesisPredict", self)
+		self.NemesisHero:SetThink("NemesisUnfairThink", self)
+	else
+		self.NemesisHero:StopThink("NemesisPredict", self)
+		self.NemesisHero:StopThink("NemesisUnfairThink", self)
+		self.NemesisHero:SetThink("NemesisThink", self)
+		self.PredictTable = {}
+		self.UnfairTargets = {}
 	end
 end
 
