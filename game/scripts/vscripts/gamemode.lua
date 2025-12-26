@@ -77,6 +77,7 @@ function barebones:InitGameMode()
 	self.NemesisBonusAttackSpeed = 0
 	self.NemesisBonusProjectileSpeed = 5000
 	self.NemesisBonusHealth = 0
+	self.NemesisUnfair = false
 
 	-- Starting positions of the creeps defined in Hammer
 	local rms = Entities:FindByName(nil,"radiant_melee")

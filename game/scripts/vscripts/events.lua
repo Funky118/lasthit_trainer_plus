@@ -788,13 +788,14 @@ function barebones:SpawnNemesis(sHero)
 		-- TODO: Add option for a harder opponent with higher attack speed
 		-- note: with some tinkering, the bot could achieve perfect last hitting if given higher damage
 		-- that would likely become unfair though
+		self.NemesisHero:SetRenderColor(255,0,0)
 		CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
 																					bonus_damage = nemesis_bonus_damage,
-																					bonus_attack_speed = self.NemesisBonusAttackSpeed,
-																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
+																					bonus_attack_speed = self.NemesisBonusAttackSpeed, --5000
+																					bonus_projectile_speed = self.NemesisBonusProjectileSpeed, --15000
 																					-- attack_point = 0,
-																					-- BAT = 0.1,
+																					--BAT = 1,
 																				})
 	end)
 	self.NemesisHero:SetIdleAcquire(false)
@@ -1016,6 +1017,9 @@ function barebones:AddCreepToTable(eCreep, isAttackerHero)
 	end
 	local tmp = {eCreep, Time(), isAttackerHero}
 	table.insert(self.LowHealthTargets, tmp)
+	if self.NemesisUnfair then
+		self:NemesisThink()
+	end
 	-- If creep fell below threshold HP by player's attack, it means the player attacked too early
 	if isAttackerHero and eCreep:GetHealth() > 0 then
 		self:WriteRedTempNumber(eCreep:GetHealth(), eCreep)
