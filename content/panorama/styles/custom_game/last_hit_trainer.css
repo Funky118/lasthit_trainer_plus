@@ -11,12 +11,14 @@
 #ControlPanel
 {
 	transform: translateX( 0% ) translateY( -100px );
-	vertical-align: middle;
+	/* vertical-align: middle; */
+	margin-top: 15%;
 	horizontal-align: left;
 	padding-left: 0px;
 	transition-property: background-color, transform;
 	transition-duration: 0.05s;
 	transition-timing-function: ease-in-out;
+	/* border: 2px solid #b31a1a; */
 }
 
 .ControlPanelContainer

@@ -212,3 +212,53 @@ end
 function VectorDistance(v1, v2)
   return math.sqrt(VectorDistanceSq(v1, v2))
 end
+
+-- Author: not Noya
+-- This function does what it literally says, draw 2D graph in console
+-- Inputs: data - 1D vector, graph_height - how many console lines will be used (data quantization)
+function DrawGraph(data, graph_height)
+  local max = data[1]
+  local min = data[1]
+  for k,v in pairs(data) do
+    if v < min then
+      min = v
+    end
+    if v > max then
+      max = v
+    end
+  end
+
+  local vert_lines = {}
+  local last_line = ""
+
+  for k,value in pairs(data) do
+    -- Rescale datapoint based on graph_height so that all of data fits into the graph
+    local offset = math.floor(graph_height * (value-min)/(max-min))
+    local line = ""
+    -- Render the Y axis values at each frame (column vectors)...
+    for i = graph_height, 0, -1 do
+      if i == offset then
+        line = line.."@" --Datapoint marker
+      else
+        line = line.."." --Empty space marker
+      end
+    end
+    table.insert(vert_lines, line)
+    -- X axis delimiter
+    last_line = last_line.."-"
+  end
+
+  for i = 1, graph_height+1 do
+    -- Y axis delimiter with number values (which aren't very accurate)
+    local yaxis = math.floor(max * (graph_height-i-0)/(graph_height-0))
+    local horizontal_line = yaxis.."|"
+    -- ...now render rows from the column vectors
+    for k, col in pairs(vert_lines)do
+      local tmp = string.sub(col, i, i)
+      horizontal_line = horizontal_line..tmp
+    end
+    print(horizontal_line)
+  end
+  
+  print(last_line)
+end

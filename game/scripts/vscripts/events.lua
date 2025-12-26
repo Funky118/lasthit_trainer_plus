@@ -865,7 +865,7 @@ function barebones:NemesisMove()
 		print("RUN AWAY!")
 		new_pos = self.DireRangedPos
 	elseif dist <= const_distance-hyst then
-		new_pos = new_pos + (const_distance-dist) * away_from_center
+		new_pos = new_pos + (const_distance-dist) * away_from_center -- TODO:Bug here and in the other elseif, if center is behind sniper, he will run towards Hero
 		new_pos.z = 0
 	elseif dist >= const_distance+hyst*2 then
 		new_pos = new_pos + (dist-const_distance) * towards_center
