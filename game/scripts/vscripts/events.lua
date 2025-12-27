@@ -780,11 +780,6 @@ function barebones:SpawnNemesis(sHero)
 		local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
 		local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
 		self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
-		-- print("Nemesis damage: "..nemesis_damage)
-		-- TODO: Add option for a harder opponent with higher attack speed
-		-- note: with some tinkering, the bot could achieve perfect last hitting if given higher damage
-		-- that would likely become unfair though
-		--self.NemesisHero:SetRenderColor(255,0,0)
 		if not self.NemesisUnfair then
 			CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 			self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
@@ -1128,24 +1123,33 @@ function barebones:SendStatisticsToClient()
 	CustomNetTables:SetTableValue( "last_hit_trainer_stats", "stats", self.NetTableStats )
 end
 
-function barebones:OnItemPurchased(keys)
+function barebones:OnItemPurchased(keys) --TODO: Fix nemesis mode not updating damage
 	-- HAHA! No cheating allowed! Nemesis now tracks Hero damage dynamically.
 	self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
 	--CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 	-- print("Nemesis damage diff: "..nemesis_damage)
-	if not self.NemesisUnfair then
-		self.NemesisHero:RemoveModifierByName("modifier_nemesis")
-		local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
-		local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
-		self.NemesisDamage = nemesis_damage+nemesis_bonus_damage
-		self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
-																						bonus_damage = nemesis_bonus_damage,
-																						bonus_attack_speed = self.NemesisBonusAttackSpeed,
-																						bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
-																						-- attack_point = 0,
-																						-- BAT = 1,
-																					})
+	self.NemesisHero:RemoveModifierByName("modifier_nemesis")
+	local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
+	local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
+	self.NemesisDamage = nemesis_damage+nemesis_bonus_damage
+	local nemesis_attack_speed = 0
+	local nemesis_projectile_speed = 0
+	local nemesis_BAT = 1.7
+	if self.NemesisUnfair then
+		nemesis_attack_speed = 5000
+		nemesis_projectile_speed = 15000
+		nemesis_BAT = 1
+	else
+		nemesis_attack_speed = self.NemesisBonusAttackSpeed
+		nemesis_projectile_speed = self.NemesisBonusProjectileSpeed
 	end
+	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
+																					bonus_damage = nemesis_bonus_damage,
+																					bonus_attack_speed = nemesis_attack_speed,
+																					bonus_projectile_speed = nemesis_projectile_speed,
+																					-- attack_point = 0,
+																					BAT = nemesis_BAT,
+																				})
 end
 
 function barebones:OnNemesisAttackSpeedChange(keys, data)
