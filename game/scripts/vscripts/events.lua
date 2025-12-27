@@ -747,6 +747,7 @@ function barebones:OnSwitchToNewHero(keys, data)
 	-- Reset Nemesis' target and hitlist
 	self.LowHealthTargets = {}
 	self.CurrentTarget = nil
+	self.NemesisBonusHealth = 0
 
 	-- Precache the new hero and nemesis and call their spawning functions
 	local nHeroID = tonumber( data.str )
@@ -763,6 +764,7 @@ function barebones:OnSwitchToNewHero(keys, data)
 	self:SendStatisticsToClient()
 	self:SpawnNeutralCreeps()
 	self.LastWaveSpawnTime = -self.CreepSpawnInterval
+	self.LaneUpgrade = 0
 	self.CreepWavesSpawned = 0
 	print("Hero: "..sHeroClass)
 end
@@ -773,7 +775,7 @@ function barebones:SpawnNemesis(sHero)
 	self.NemesisHero = CreateUnitByName(sHero, self.NemesisSpawnPos, true, nil, nil, DOTA_TEAM_BADGUYS)
 	self.NemesisHero:SetBaseHealthRegen(100)
 	self.NemesisHero:SetPhysicalArmorBaseValue(50)
-	self.NemesisBonusHealth = 0
+
 	
 	Timers:CreateTimer(1, function ()
 		-- Set damage to be competetive with Hero

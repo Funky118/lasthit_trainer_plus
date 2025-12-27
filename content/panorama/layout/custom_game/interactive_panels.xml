@@ -7,7 +7,82 @@
 		<include src="s2r://panorama/styles/dotastyles.css" />
     </styles>
     <Panel hittest="false" class="CustomHudRoot">
-        <Panel id="ControlPanel">
+		<Panel id="InfoScreen" class="Visible">
+			<Panel class="InfoTextBox">
+				<Panel class="horizontal_container">
+					<Panel class="label">
+						<Label text="Kill percentage"></Label>
+					</Panel>
+					<Panel class="value">
+						<Label id="CreepsKilled" text="%" />
+					</Panel>
+				</Panel>
+				<Panel class="horizontal_container">
+					<Panel class="label">
+						<Label text="Denied experience"></Label>
+					</Panel>
+					<Panel class="value">
+						<Label id="DeniedExp" text="0" />
+					</Panel>
+				</Panel>
+				<Panel class="horizontal_container">
+					<Panel class="label">
+						<Label text="Denied gold"></Label>
+					</Panel>
+					<Panel class="value">
+						<Label id="DeniedGold" text="0" />
+					</Panel>
+				</Panel>
+				<Panel class="horizontal_container">
+					<Panel class="label">
+						<Label text="Gained experience"></Label>
+					</Panel>
+					<Panel class="value">
+						<Label id="GainedExp" text="0" />
+					</Panel>
+				</Panel>
+				<Panel class="horizontal_container">
+					<Panel class="label">
+						<Label text="Gained gold"></Label>
+					</Panel>
+					<Panel class="value">
+						<Label id="GainedGold" text="0" />
+					</Panel>
+				</Panel>
+				<Panel class="horizontal_container">
+					<Panel class="label">
+						<Label text="Level difference"></Label>
+					</Panel>
+					<Panel class="value">
+						<Label id="GainedGold" text="levels" />
+					</Panel>
+				</Panel>
+				<Panel class="horizontal_container">
+					<Panel class="label">
+						<Label text="Gold difference"></Label>
+					</Panel>
+					<Panel class="value">
+						<Label id="GainedGold" text="gold" />
+					</Panel>
+				</Panel>
+				
+				<Panel class="Figure" id="Graph1">
+				</Panel>
+				<Panel class="Figure2" id="Graph2" >
+				</Panel>
+			</Panel>
+			<Panel class="LastHitTrainerPanel" id="LastHitTrainerPanel">
+				<Panel class="horizontal_container score">
+					<Panel class="label">
+						<Label text="#DOTA_HUD_Score" />
+					</Panel>
+					<Panel class="value">
+						<Label id="Score" text="hit/all" />
+					</Panel>
+				</Panel>
+			</Panel>
+		</Panel>
+        <Panel hittest="false" id="ControlPanel">
 			<Panel class="ControlPanelContainer">
 				<Panel id="Maximized">
 					<Panel class="BorderTitle">

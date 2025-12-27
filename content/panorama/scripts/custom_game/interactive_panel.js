@@ -15,6 +15,59 @@ var attackSpeedTimer = null
 var attackSpeedDelta = 0
 var expChange = 0
 
+// Put this into a function
+var graph = $("#Graph1");
+graph.RemoveAndDeleteChildren();
+
+var values = [10, 20, 30, 40, 50];
+var max = Math.max(...values);
+
+for (var i = 0; i < values.length; i++) {
+    var bar = $.CreatePanel("Panel", graph, "");
+    bar.style.width = "6px";
+    bar.style.height = (values[i] / max * 100) + "px";
+    bar.style.backgroundColor = "#17eb17ff";
+    bar.style.marginRight = "4px";
+	bar.style.verticalAlign = "bottom"
+}
+
+var graph2 = $("#Graph2");
+graph2.RemoveAndDeleteChildren();
+
+var values = [0, 10, 20, 30, 40, 50];
+var max = Math.max(...values);
+
+var graphWidth = 50;
+var graphHeight = 50;
+var stepX = graphWidth / (values.length - 1);
+
+for (var i = 0; i < values.length; i++) {
+    var dot = $.CreatePanel("Panel", graph2, "");
+    dot.AddClass("GraphDot");
+	let value = values[i];
+	dot.hittest = true;
+
+    var x = i * stepX;
+    var y = graphHeight - (values[i] / max * graphHeight);
+
+    dot.style.x = (x - 4) + "px";
+    dot.style.y = (y - 4) + "px";
+
+
+	dot.SetPanelEvent("onmouseover", function () {
+		$.DispatchEvent("DOTAShowTextTooltip", dot, "Value: " + value);
+	});
+
+	dot.SetPanelEvent("onmouseout", function () {
+		$.DispatchEvent("DOTAHideTextTooltip");
+	});
+
+	dot.SetPanelEvent("onmouseover", function () {
+		$.Msg("Hovered dot:", value);
+	});
+}
+////////////
+
 SetText("#AttackSpeedTextBox", nemesisAttackSpeed)
 
 // Unused, maybe I will add splash screen back for info (in which case go to Valve's source code)
