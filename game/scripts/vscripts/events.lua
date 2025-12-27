@@ -797,7 +797,7 @@ function barebones:SpawnNemesis(sHero)
 		else
 			local tmp1 = ParticleManager:CreateParticle("particles/econ/events/ti10/high_five/towers/dire_tower_2021/high_five_dire_tower_2021_travel_fire.vpcf", PATTACH_OVERHEAD_FOLLOW, self.NemesisHero)
 			local tmp2 = ParticleManager:CreateParticle("particles/units/heroes/hero_warlock/warlock_fatal_bonds_icon_skull.vpcf", PATTACH_OVERHEAD_FOLLOW, self.NemesisHero)
-			local tmp3 = ParticleManager:CreateParticle("particles/econ/events/fall_2022/agh/agh_aura_fall2022_smoke.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.NemesisHero)
+			local tmp3 = ParticleManager:CreateParticle("particles/econ/events/fall_2022/agh/agh_aura_fall2022_plus_lvl2.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.NemesisHero)
 			ParticleManager:SetParticleControl(tmp1, 0, self.NemesisHero:GetAbsOrigin())
 			ParticleManager:SetParticleControl(tmp2, 0, self.NemesisHero:GetAbsOrigin())
 			ParticleManager:SetParticleControl(tmp3, 0, self.NemesisHero:GetAbsOrigin())
