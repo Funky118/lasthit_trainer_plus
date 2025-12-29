@@ -356,6 +356,8 @@ function barebones:OnLastHit(keys)
 	-- Traverse Nemesis' hitlist and check for creep type
 	local tmpMelee = 0
 	local tmpRanged = 0
+	local tmpSiege = 0
+	local tmpFlag = 0
 	local delay_time = -1
 	local attacker = 0 -- The unit which got the creep below HP threshold
 	if victim:GetClassname() == "npc_dota_creep_lane" or victim:GetClassname() == "npc_dota_creep_siege" then
@@ -374,12 +376,18 @@ function barebones:OnLastHit(keys)
 		end
 
 		-- Score update tmps
-		if victim:IsRangedAttacker() then
+		local victim_name = victim:GetName()
+		if victim:GetClassname() == "npc_dota_creep_siege" then
+			tmpSiege = 1
+		elseif victim:IsRangedAttacker() then
 			tmpMelee = 0
 			tmpRanged = 1
 		else
 			tmpMelee = 1
 			tmpRanged = 0
+			if victim_name == "npc_dota_creep_goodguys_flagbearer" or victim_name == "npc_dota_creep_badguys_flagbearer" then
+				tmpFlag = 1
+			end
 		end
 	else
 		return
@@ -392,9 +400,11 @@ function barebones:OnLastHit(keys)
 		if player:GetTeamNumber() == victim:GetTeamNumber() then
 			-- DENIES
 			self.NetTableStats["DenyTotal"] = self.NetTableStats["DenyTotal"] + 1
-			self.NetTableStats["DenyCount"] = self.NetTableStats["DenyCount"] + tmpMelee + tmpRanged
+			self.NetTableStats["DenyCount"] = self.NetTableStats["DenyCount"] + tmpMelee + tmpRanged + tmpSiege
 			self.NetTableStats["MeleeCreepsDenied"] = self.NetTableStats["MeleeCreepsDenied"] + tmpMelee -- TODO: Will be used later
 			self.NetTableStats["RangedCreepsDenied"] = self.NetTableStats["RangedCreepsDenied"] + tmpRanged	-- for gold/xp stats
+			self.NetTableStats["SiegeCreepsDenied"] = self.NetTableStats["SiegeCreepsDenied"] + tmpSiege
+			self.NetTableStats["FlagCreepsDenied"] = self.NetTableStats["FlagCreepsDenied"] + tmpFlag
 			if delay_time ~= -1 then
 				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text="Deny delay: ", time=delay_time, killer="hero"})
 				self.NetTableStats["CumLasthitTime"] = self.NetTableStats["CumLasthitTime"] + delay_time
@@ -404,9 +414,11 @@ function barebones:OnLastHit(keys)
 		else
 			-- LASTHITS
 			self.NetTableStats["LastHitTotal"] = self.NetTableStats["LastHitTotal"] + 1
-			self.NetTableStats["LastHitCount"] = self.NetTableStats["LastHitCount"] + tmpMelee + tmpRanged
+			self.NetTableStats["LastHitCount"] = self.NetTableStats["LastHitCount"] + tmpMelee + tmpRanged + tmpSiege
 			self.NetTableStats["MeleeCreepsKilled"] = self.NetTableStats["MeleeCreepsKilled"] + tmpMelee
 			self.NetTableStats["RangedCreepsKilled"] = self.NetTableStats["RangedCreepsKilled"] + tmpRanged	
+			self.NetTableStats["SiegeCreepsKilled"] = self.NetTableStats["SiegeCreepsKilled"] + tmpSiege
+			self.NetTableStats["FlagCreepsKilled"] = self.NetTableStats["FlagCreepsKilled"] + tmpFlag
 			if delay_time ~= -1 then
 				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text="Lasthit delay: ", time=delay_time, killer="hero"})
 				self.NetTableStats["CumLasthitTime"] = self.NetTableStats["CumLasthitTime"] + delay_time
@@ -775,6 +787,7 @@ function barebones:SpawnNemesis(sHero)
 	self.NemesisHero = CreateUnitByName(sHero, self.NemesisSpawnPos, true, nil, nil, DOTA_TEAM_BADGUYS)
 	self.NemesisHero:SetBaseHealthRegen(100)
 	self.NemesisHero:SetPhysicalArmorBaseValue(50)
+	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_bonus_health", {bonus_health = self.NemesisBonusHealth})
 
 	
 	Timers:CreateTimer(1, function ()

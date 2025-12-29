@@ -1,72 +1,7 @@
-gStats = {
-	"LastHitCount" : 0, 
-	"LastHitTotal": 0,
-	"DenyCount": 0,
-	"DenyTotal": 0,
-    "AverageLasthitTime": 0,
-    "MeleeCreepsKilled": 0,
-	"MeleeCreepsDenied": 0,
-	"RangedCreepsKilled": 0,
-	"RangedCreepsDenied": 0,
-	"GoldSecured": 0
-};
 var nemesisAttackSpeed = 0
 var attackSpeedTimer = null
 var attackSpeedDelta = 0
 var expChange = 0
-
-// Put this into a function
-var graph = $("#Graph1");
-graph.RemoveAndDeleteChildren();
-
-var values = [10, 20, 30, 40, 50];
-var max = Math.max(...values);
-
-for (var i = 0; i < values.length; i++) {
-    var bar = $.CreatePanel("Panel", graph, "");
-    bar.style.width = "6px";
-    bar.style.height = (values[i] / max * 100) + "px";
-    bar.style.backgroundColor = "#17eb17ff";
-    bar.style.marginRight = "4px";
-	bar.style.verticalAlign = "bottom"
-}
-
-var graph2 = $("#Graph2");
-graph2.RemoveAndDeleteChildren();
-
-var values = [0, 10, 20, 30, 40, 50];
-var max = Math.max(...values);
-
-var graphWidth = 50;
-var graphHeight = 50;
-var stepX = graphWidth / (values.length - 1);
-
-for (var i = 0; i < values.length; i++) {
-    var dot = $.CreatePanel("Panel", graph2, "");
-    dot.AddClass("GraphDot");
-	let value = values[i];
-	dot.hittest = true;
-
-    var x = i * stepX;
-    var y = graphHeight - (values[i] / max * graphHeight);
-
-    dot.style.x = (x - 4) + "px";
-    dot.style.y = (y - 4) + "px";
-
-
-	dot.SetPanelEvent("onmouseover", function () {
-		$.DispatchEvent("DOTAShowTextTooltip", dot, "Value: " + value);
-	});
-
-	dot.SetPanelEvent("onmouseout", function () {
-		$.DispatchEvent("DOTAHideTextTooltip");
-	});
-
-	dot.SetPanelEvent("onmouseover", function () {
-		$.Msg("Hovered dot:", value);
-	});
-}
-////////////
 
 SetText("#AttackSpeedTextBox", nemesisAttackSpeed)
 
@@ -167,28 +102,6 @@ function SetText(name, value)
 	element.text = value;
 }
 
-function UpdateScores()
-{
-
-	SetText('#CreepsLastHit', gStats["LastHitCount"] + "/" + gStats["LastHitTotal"]);
-	SetText('#CreepsDenied', gStats["DenyCount"] + "/" + gStats["DenyTotal"]);
-	SetText('#MeleeCreepsKilled', gStats["MeleeCreepsKilled"]);
-	SetText('#MeleeCreepsDenied', gStats["MeleeCreepsDenied"]);
-	SetText('#RangedCreepsKilled', gStats["RangedCreepsKilled"]);
-	SetText('#RangedCreepsDenied', gStats["RangedCreepsDenied"]);
-	// SetText('#GoldFromMeleeCreeps', gStats["GoldFromMeleeCreeps"]);
-	// SetText('#GoldFromRangedCreeps', gStats["GoldFromRangedCreeps"]);
-
-}
-
-function OnLastHitTrainerStatsUpdated( tableName, key, data )
-{
-	//$.Msg("STATS DATA RECEIVED")
-	gStats = data;
-
-	UpdateScores();
-}
-
 function SlideThumbActivate()
 {
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
@@ -209,8 +122,6 @@ function NemesisModeActivate()
 
 	GameEvents.Subscribe( "round_ended", OnRoundEnded );
 	GameEvents.Subscribe("update_nemesis_attack_speed", UpdateNemesisAttackSpeed)
-
-	// CustomNetTables.SubscribeNetTableListener("last_hit_trainer_stats", OnLastHitTrainerStatsUpdated);
 
 	$.RegisterEventHandler('DOTAUIHeroPickerHeroSelected', $('#ControlPanel'), SwitchToNewHero );
 })();

@@ -298,8 +298,16 @@ function barebones:InitializeNetworkStats()
 		CumLasthitTime= 0,
 		MeleeCreepsKilled= 0,
 		MeleeCreepsDenied= 0,
+		MeleeCreepsSpawned=0,
+		FlagCreepsKilled= 0,
+		FlagCreepsDenied= 0,
+		FlagCreepsSpawned=0,
 		RangedCreepsKilled= 0,
-		RangedCreepsDenied= 0
+		RangedCreepsDenied= 0,
+		RangedCreepsSpawned=0,
+		SiegeCreepsKilled = 0,
+		SiegeCreepsDenied = 0,
+		SiegeCreepsSpawned = 0
 	}
 end
 
@@ -410,6 +418,7 @@ function barebones:SpawnLaneCreeps()
 				})
 				end)
 				self.FlagbearerCreepsSpawned = self.FlagbearerCreepsSpawned + 1
+				self.NetTableStats["FlagCreepsSpawned"] = self.NetTableStats["FlagCreepsSpawned"] + 1
 			end
 			local creep_flag_bad = CreateUnitByName("npc_dota_creep_badguys_flagbearer", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
 			creep_flag_bad:AddNewModifier(creep_flag_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
@@ -423,6 +432,7 @@ function barebones:SpawnLaneCreeps()
 				})
 				end)
 				self.FlagbearerCreepsSpawned = self.FlagbearerCreepsSpawned + 1
+				self.NetTableStats["FlagCreepsSpawned"] = self.NetTableStats["FlagCreepsSpawned"] + 1
 			end
 			meleeToSpawn = meleeToSpawn - 1
 		end
@@ -445,6 +455,7 @@ function barebones:SpawnLaneCreeps()
 			end)
 
 			self.MeleeCreepsSpawned = self.MeleeCreepsSpawned+ 1
+			self.NetTableStats["MeleeCreepsSpawned"] = self.NetTableStats["MeleeCreepsSpawned"] + 1
 		end
 	end
 
@@ -463,6 +474,7 @@ function barebones:SpawnLaneCreeps()
 		end)
 
 		self.RangedCreepsSpawned = self.RangedCreepsSpawned	+ 1
+		self.NetTableStats["RangedCreepsSpawned"] = self.NetTableStats["RangedCreepsSpawned"] + 1
 	end
 
 	-- Spawn 3 melee dire creeps and send them to attack radiant spawn point
@@ -481,6 +493,7 @@ function barebones:SpawnLaneCreeps()
 			end)
 
 			self.MeleeCreepsSpawned = self.MeleeCreepsSpawned+ 1
+			self.NetTableStats["MeleeCreepsSpawned"] = self.NetTableStats["MeleeCreepsSpawned"] + 1
 		end
 	end
 
@@ -499,6 +512,7 @@ function barebones:SpawnLaneCreeps()
 		end)
 
 		self.RangedCreepsSpawned = self.RangedCreepsSpawned	+ 1
+		self.NetTableStats["RangedCreepsSpawned"] = self.NetTableStats["RangedCreepsSpawned"] + 1
 	end
 
 	-- Siege spawn
@@ -515,6 +529,7 @@ function barebones:SpawnLaneCreeps()
 				})
 				end)
 				self.SiegeCreepsSpawned = self.SiegeCreepsSpawned + 1
+				self.NetTableStats["SiegeCreepsSpawned"] = self.NetTableStats["SiegeCreepsSpawned"] + 1
 			end
 			local creep_siege_bad = CreateUnitByName("npc_dota_badguys_siege", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
 			if creep_siege_bad ~= nil then
@@ -527,6 +542,7 @@ function barebones:SpawnLaneCreeps()
 				})
 				end)
 				self.SiegeCreepsSpawned = self.SiegeCreepsSpawned + 1
+				self.NetTableStats["SiegeCreepsSpawned"] = self.NetTableStats["SiegeCreepsSpawned"] + 1
 			end
 		end
 	end
