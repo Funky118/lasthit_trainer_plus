@@ -6,17 +6,24 @@ gStats = {
     "CumLasthitTime": 0,
     "MeleeCreepsKilled": 0,
     "MeleeCreepsDenied": 0,
-    "MeleeCreepsSpawned":0,
+    "MeleeCreepsBadguysMissed":0,
+    "MeleeCreepsLost":0,
     "FlagCreepsKilled": 0,
     "FlagCreepsDenied": 0,
-    "FlagCreepsSpawned":0,
+    "FlagCreepsBadguysMissed":0,
+    "FlagCreepsLost":0,
     "RangedCreepsKilled": 0,
     "RangedCreepsDenied": 0,
-    "RangedCreepsSpawned":0,
+    "RangedCreepsBadguysMissed":0,
+    "RangedCreepsLost":0,
     "SiegeCreepsKilled" : 0,
     "SiegeCreepsDenied" : 0,
-    "SiegeCreepsSpawned": 0
+    "SiegeCreepsBadguysMissed": 0,
+    "SiegeCreepsLost": 0
 };
+
+exp_to_level = [0,240,640,1160,1760,2440,3200,4000,4900,5900,7000,8200,9500,10900,12400,14000,15700,17500,19400,21400,23600,26000,28600,31400,34400,38400,43400,49400,56400,63900]
+
 var lasthit_delay = [];
 
 // var test_delay = [-0.3,0,-0.4,-0.3,0,-0.4,0.3,0,0.4,0.3,0,0.4,-0.7, 1];
@@ -35,26 +42,38 @@ function OpenInfoScreen()
     else
         killedPercentage = Math.round(100*(gStats["LastHitCount"]+gStats["DenyCount"])/(gStats["LastHitTotal"]+gStats["DenyTotal"]));
     // TODO: This ignores xp and gold upgrade interval
-    var total_exp_hero = (gStats["MeleeCreepsSpawned"]*57 + gStats["RangedCreepsSpawned"]*69 + gStats["SiegeCreepsSpawned"]*88)/2;
-    var total_gold_hero = (gStats["MeleeCreepsSpawned"]*37 + gStats["FlagCreepsSpawned"]*37 + gStats["RangedCreepsSpawned"]*48 + gStats["SiegeCreepsSpawned"]*66)/2;
-    // Simplification is left as an exercise to the coder
-    var exp_lost = ((gStats["MeleeCreepsSpawned"]/2-gStats["MeleeCreepsKilled"])*57 + (gStats["RangedCreepsSpawned"]/2-gStats["RangedCreepsKilled"])*69 + (gStats["SiegeCreepsSpawned"]/2-gStats["SiegeCreepsKilled"])*88)/2;
+    var total_exp_hero = (gStats["MeleeCreepsBadguysMissed"]*57 + gStats["RangedCreepsBadguysMissed"]*69 + gStats["SiegeCreepsBadguysMissed"]*88) + (gStats["MeleeCreepsKilled"]*57 + gStats["RangedCreepsKilled"]*69 + gStats["SiegeCreepsKilled"]*88);
+    var gold_missed = (gStats["MeleeCreepsBadguysMissed"]*37 + gStats["FlagCreepsBadguysMissed"]*37 + gStats["RangedCreepsBadguysMissed"]*48 + gStats["SiegeCreepsBadguysMissed"]*66);
+    var exp_lost = (gStats["MeleeCreepsLost"]*57 + gStats["RangedCreepsLost"]*69 + gStats["SiegeCreepsLost"]*88)/2;
 
     var deniedExp = (gStats["MeleeCreepsDenied"]*57 + gStats["RangedCreepsDenied"]*69 + gStats["SiegeCreepsDenied"]*88)/2;
     var deniedGold = gStats["MeleeCreepsDenied"]*37 + gStats["FlagCreepsDenied"]*37 + gStats["RangedCreepsDenied"]*48 + gStats["SiegeCreepsDenied"]*66;
     var gainedExp = total_exp_hero-exp_lost;
+    // var enemyExp = total_exp_hero-deniedExp;
     var gainedGold = gStats["MeleeCreepsKilled"]*37 + gStats["FlagCreepsKilled"]*37 + gStats["RangedCreepsKilled"]*48 + gStats["SiegeCreepsKilled"]*66;
     var expLoss =  exp_lost;
-    var goldLoss = total_gold_hero - gainedGold;
+    var goldLoss = gold_missed;
+
+    // var hero_lvl = 0;
+    // var enemy_lvl = 0;
+    // for(var i=0; i < 30; i++)
+    // {
+    //     if(gainedExp >= exp_to_level[i])
+    //         hero_lvl = i+1;
+    //     if(enemyExp >= exp_to_level[i])
+    //         enemy_lvl = i+1;
+    //     if(gainedExp < exp_to_level[i] && enemyExp < exp_to_level[i])
+    //         break;
+    // }
 
     $("#InfoScreen").ToggleClass("Invisible");
-    SetText("#KilledPercentage", killedPercentage + "%")
-    SetText("#DeniedExp", deniedExp)
-    SetText("#DeniedGold", deniedGold)
-    SetText("#GainedExp", gainedExp)
-    SetText("#GainedGold", gainedGold)
-    SetText("#ExpLoss", expLoss)
-    SetText("#GoldLoss", goldLoss)
+    SetText("#KilledPercentage", killedPercentage + "%");
+    SetText("#DeniedExp", deniedExp);// + "(enemy level: "+ enemy_lvl + ")");
+    SetText("#DeniedGold", deniedGold);
+    SetText("#GainedExp", gainedExp)// + "(your level: " + hero_lvl + ")");
+    SetText("#GainedGold", gainedGold);
+    SetText("#ExpLoss", expLoss);
+    SetText("#GoldLoss", goldLoss);
     DrawGraph($("#TestGraph"), lasthit_delay, 150,570,0);
 }
 

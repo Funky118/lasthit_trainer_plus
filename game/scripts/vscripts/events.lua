@@ -84,6 +84,10 @@ function barebones:OnNPCSpawned(keys)
 	if keys.entindex then
 		npc = EntIndexToHScript(keys.entindex)
 		local npc_name = npc:GetUnitName()
+		if npc:GetClassname() == "npc_dota_creep_neutral" then
+			table.insert(self.NeutralExpList, {id = npc, exp = npc:GetDeathXP()})
+		end
+		-- Radiant creeps never give experience
 		if not self.ExperienceGainEnabled or npc_name == "npc_dota_creep_goodguys_melee" or npc_name == "npc_dota_creep_goodguys_ranged" or npc_name == "npc_dota_creep_goodguys_flagbearer" or npc_name == "npc_dota_goodguys_siege" then
 			npc:SetDeathXP( 0 ) -- TODO: Add a variable to enable experience gain
 		end
@@ -439,6 +443,10 @@ function barebones:OnLastHit(keys)
 		else
 			-- MISSED LASTHITS
 			self.NetTableStats["LastHitTotal"] = self.NetTableStats["LastHitTotal"] + 1
+			self.NetTableStats["MeleeCreepsBadguysMissed"] = self.NetTableStats["MeleeCreepsBadguysMissed"] + tmpMelee
+			self.NetTableStats["RangedCreepsBadguysMissed"] = self.NetTableStats["RangedCreepsBadguysMissed"] + tmpRanged	
+			self.NetTableStats["SiegeCreepsBadguysMissed"] = self.NetTableStats["SiegeCreepsBadguysMissed"] + tmpSiege
+			self.NetTableStats["FlagCreepsBadguysMissed"] = self.NetTableStats["FlagCreepsBadguysMissed"] + tmpFlag
 			if delay_time ~= -1 then
 				CustomGameEventManager:Send_ServerToAllClients("show_notification", {text=popup_text, time=delay_time, killer="other"})
 			else
@@ -551,6 +559,21 @@ function barebones:OnEntityKilled(keys)
 			ParticleManager:SetParticleControl(gold, 1, killer_unit:GetAbsOrigin())
 			ParticleManager:SetParticleControl(gold, 3, killer_unit:GetAbsOrigin())
 			ParticleManager:ReleaseParticleIndex(gold)
+			local victim_name = killed_unit:GetUnitName()
+			if victim_name == "npc_dota_creep_badguys_flagbearer" then
+				self.NetTableStats["FlagCreepsLost"] = self.NetTableStats["FlagCreepsLost"] + 1
+				self:SendStatisticsToClient()
+			elseif victim_name == "npc_dota_creep_badguys_melee" then
+				self.NetTableStats["MeleeCreepsLost"] = self.NetTableStats["MeleeCreepsLost"] + 1
+				self:SendStatisticsToClient()
+			elseif victim_name == "npc_dota_creep_badguys_ranged" then
+				self.NetTableStats["RangedCreepsLost"] = self.NetTableStats["RangedCreepsLost"] + 1
+				self:SendStatisticsToClient()
+			elseif victim_name == "npc_dota_badguys_siege" then
+				self.NetTableStats["SiegeCreepsLost"] = self.NetTableStats["SiegeCreepsLost"] + 1
+				self:SendStatisticsToClient()
+			end
+			
 	end
 
     -- For Meepo clones, find the original
@@ -778,6 +801,7 @@ function barebones:OnSwitchToNewHero(keys, data)
 	self.LastWaveSpawnTime = -self.CreepSpawnInterval
 	self.LaneUpgrade = 0
 	self.CreepWavesSpawned = 0
+	self.NeutralExpList = {}
 	print("Hero: "..sHeroClass)
 end
 
@@ -1207,7 +1231,11 @@ end
 
 function barebones:ZeroExpValues()
 	local creeps = self:FindEnemyCreeps(self.PlayerHero, 9999)
+	self.NeutralExpList = {}
 	for k,v in pairs(creeps) do
+		if v:GetClassname() == "npc_dota_creep_neutral" then
+			table.insert(self.NeutralExpList, {id = v, exp = v:GetDeathXP()})
+		end
 		v:SetDeathXP(0)
 	end
 end
@@ -1225,27 +1253,13 @@ function barebones:ReturnExpValues()
 		elseif name == "npc_dota_creep_siege" then
 			v:SetDeathXP(88)
 		end
-
-		-- if name == "npc_dota_creep_neutral" then
-		-- 	local n_name = v:GetUnitName()
-		-- 	if 	n_name == "npc_dota_neutral_kobold" or
-		-- 		n_name == "npc_dota_neutral_kobold_tunneler" or
-		-- 		n_name == "npc_dota_neutral_kobold_taskmaster" or
-		-- 		n_name == "npc_dota_neutral_forest_troll_berserker" or			
-		-- 		n_name == "npc_dota_neutral_forest_troll_high_priest" or		
-		-- 		n_name == "npc_dota_neutral_forest_troll_berserker" or			
-		-- 		n_name == "npc_dota_neutral_kobold_taskmaster" or
-		-- 		n_name == "npc_dota_neutral_gnoll_assassin" or				
-		-- 		n_name == "npc_dota_neutral_ghost" or						
-		-- 		n_name == "npc_dota_neutral_fel_beast" or										
-		-- 		n_name == "npc_dota_neutral_harpy_scout" or										
-		-- 		n_name == "npc_dota_neutral_harpy_storm" or					
-		-- 		n_name == "npc_dota_neutral_tadpole" then
-		-- 			v:SetDeathXP(90) -- Average small camp creep experience
-		-- 	elseif
-		-- 	end
-		-- end
 	end
+	for k,v in pairs(self.NeutralExpList) do
+		if not v.id:IsNull() then
+			v.id:SetDeathXP(v.exp)
+		end
+	end
+	self.NeutralExpList = {}
 end
 
 function barebones:OnEnableUnfairButtonPressed(keys)
