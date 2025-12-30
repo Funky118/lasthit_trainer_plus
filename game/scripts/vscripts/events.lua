@@ -767,8 +767,17 @@ function barebones:OnLeaveButtonPressed(keys)
 end
 
 function barebones:OnSwitchToNewHero(keys, data)
+	-- Brood web crash workaround
+	if self.NemesisHero:GetUnitName() == "npc_dota_hero_broodmother" then
+		local webs = Entities:FindAllByName("npc_dota_broodmother_web")
+		for k, web in pairs(webs) do
+			if not web:IsNull() then
+				web:RemoveSelf()
+			end
+		end
+	end
 	-- Destroy nemesis if it exists
-	if self.NemesisHero ~= nil then
+	if not self.NemesisHero:IsNull() then
 		self.NemesisHero:Destroy()
 	end
 
@@ -789,6 +798,7 @@ function barebones:OnSwitchToNewHero(keys, data)
 	local sHeroClass = DOTAGameManager:GetHeroUnitNameByID( nHeroID )
 	local nPlayerID = 0--self.PlayerHero:GetPlayerID()
 	local nemesis = "npc_dota_hero_sniper" -- TODO: Allow player to choose oppotent (including vanilla without modifier)
+
 	PrecacheUnitByNameAsync( sHeroClass, function() self:AssignNewHero( sHeroClass, nPlayerID ) end, nPlayerID )
 	PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
 
@@ -819,12 +829,17 @@ function barebones:SpawnNemesis(sHero)
 		local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
 		local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
 		self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
+		local nemesis_bonus_projectile_speed = 0
+		if sHero == "npc_dota_hero_sniper" then
+			nemesis_bonus_projectile_speed = self.NemesisBonusProjectileSpeed
+			self.NemesisNotSniper = false
+		end
 		if not self.NemesisUnfair then
 			CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
 			self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { bonus_range_bonus = self.NemesisBonusAttackRange,
 																						bonus_damage = nemesis_bonus_damage,
 																						bonus_attack_speed = self.NemesisBonusAttackSpeed, --5000
-																						bonus_projectile_speed = self.NemesisBonusProjectileSpeed, --15000
+																						bonus_projectile_speed = nemesis_bonus_projectile_speed, --15000
 																						-- attack_point = 0,
 																						--BAT = 1,
 																					})
@@ -1073,7 +1088,7 @@ function barebones:AddCreepToTable(eCreep, isAttackerHero)
 	end
 	local tmp = {eCreep, Time(), isAttackerHero}
 	table.insert(self.LowHealthTargets, tmp)
-	if self.NemesisUnfair then
+	if self.NemesisUnfair or self.NemesisNotSniper then
 		self:NemesisThink()
 	end
 	-- If creep fell below threshold HP by player's attack, it means the player attacked too early
@@ -1094,11 +1109,22 @@ function barebones:AssignNewHero(sHero, iPlayerID)
 	--print("Assigning new hero!")
 	local player = PlayerResource:GetPlayer(iPlayerID)
 	local old_hero = player:GetAssignedHero()
-	
+	-- Brood web crash workaround
+	if old_hero:GetUnitName() == "npc_dota_hero_broodmother" then
+		local webs = Entities:FindAllByName("npc_dota_broodmother_web")
+		for k, web in pairs(webs) do
+			if not web:IsNull() then
+				web:RemoveSelf()
+			end
+		end
+	end
 	-- Get rid of old hero
-	if old_hero ~= nil then
+	--TODO: Meepo clones don't get killed
+	if not old_hero:IsNull() then
 		old_hero:Destroy()
 	end
+	
+
 	-- This is the prefered easy way to replace a player's hero...
 	local newHero = CreateHeroForPlayer(sHero, player)
 	newHero:SetAbsOrigin(self.HeroSpawnPos)
@@ -1268,10 +1294,30 @@ function barebones:OnEnableUnfairButtonPressed(keys)
 	else
 		self.NemesisUnfair = true
 	end
-	if self.NemesisHero ~= nil then
+	if not self.NemesisHero:IsNull() then
 		self.NemesisHero:Destroy()
 	end
 	self.CurrentTarget = nil
 	local nemesis = "npc_dota_hero_sniper" -- TODO: Allow player to choose oppotent (including vanilla without modifier)
 	PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
+end
+
+function barebones:OnSwitchToNewEnemyHero(keys, data)
+	local nNemesisID = tonumber( data.str )
+	local sNemesisClass = DOTAGameManager:GetHeroUnitNameByID( nNemesisID )
+
+	-- Destroy nemesis if it exists
+	if not self.NemesisHero:IsNull() then
+		self.NemesisHero:Destroy()
+	end
+
+	-- Reset Nemesis' target and hitlist
+	self.LowHealthTargets = {}
+	self.CurrentTarget = nil
+	self.NemesisBonusHealth = 0
+	self.NemesisNotSniper = true
+	-- Precache the new hero and nemesis and call their spawning functions
+	PrecacheUnitByNameAsync(sNemesisClass, function() self:SpawnNemesis(sNemesisClass) end)
+
+	print("Enemy: "..sNemesisClass)
 end

@@ -83,6 +83,7 @@ function barebones:InitGameMode()
 	self.NemesisBonusProjectileSpeed = 5000
 	self.NemesisBonusHealth = 0
 	self.NemesisUnfair = false
+	self.NemesisNotSniper = false
 
 	-- Starting positions of the creeps defined in Hammer
 	local rms = Entities:FindByName(nil,"radiant_melee")
@@ -228,6 +229,7 @@ function barebones:InitGameMode()
 	-- Panorama listeners
 	CustomGameEventManager:RegisterListener( "LeaveButtonPressed", function(...) return self:OnLeaveButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "SwitchToNewHero", function(...) return self:OnSwitchToNewHero( ... ) end )
+	CustomGameEventManager:RegisterListener( "SwitchToNewEnemyHero", function(...) return self:OnSwitchToNewEnemyHero( ... ) end )
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
 	CustomGameEventManager:RegisterListener( "HighlightCreepsButtonPressed", function(...) return self:OnHighlightCreepsButtonPressed( ... ) end )

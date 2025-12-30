@@ -28,6 +28,9 @@
 						<Button id="NewHeroButton" class="DemoButton" onactivate="ToggleHeroPicker()">
 							<Label text="#Flyout_Choose_New_Hero_Button" />
 						</Button>
+						<Button id="NewEnemyHeroButton" class="DemoButton" onactivate="ToggleEnemyHeroPicker()">
+							<Label text="Choose New Bot" />
+						</Button>
 						<Button class="DemoButton" onactivate="OpenInfoScreen()">
 							<Label text="Round Statistics" />
 						</Button>

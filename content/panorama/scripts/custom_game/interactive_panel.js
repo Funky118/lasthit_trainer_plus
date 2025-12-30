@@ -1,7 +1,8 @@
-var nemesisAttackSpeed = 0
-var attackSpeedTimer = null
-var attackSpeedDelta = 0
-var expChange = 0
+var nemesisAttackSpeed = 0;
+var attackSpeedTimer = null;
+var attackSpeedDelta = 0;
+var expChange = 0;
+var choosing_enemy = false;
 
 SetText("#AttackSpeedTextBox", nemesisAttackSpeed)
 
@@ -37,13 +38,29 @@ function OnRoundEnded( roundEndData )
 
 function ToggleHeroPicker()
 {
+	choosing_enemy = false;
+	$('#ControlPanel').ToggleClass('HeroPickerVisible');
+}
+function ToggleEnemyHeroPicker()
+{
+	choosing_enemy = true;
 	$('#ControlPanel').ToggleClass('HeroPickerVisible');
 }
 
 function SwitchToNewHero( nHeroID )
 {
 	$('#ControlPanel').RemoveClass('HeroPickerVisible');
-	$.DispatchEvent('FireCustomGameEvent_Str', 'SwitchToNewHero', String(nHeroID));
+	if (choosing_enemy)
+		$.DispatchEvent('FireCustomGameEvent_Str', 'SwitchToNewEnemyHero', String(nHeroID));
+	else
+		$.DispatchEvent('FireCustomGameEvent_Str', 'SwitchToNewHero', String(nHeroID));
+}
+
+function SwitchToNewEnemyHero( nHeroID )
+{
+	$.Msg("Switching to new enemy")
+	$('#ControlPanel').RemoveClass('HeroPickerVisible');
+	$.DispatchEvent('FireCustomGameEvent_Str', 'SwitchToNewEnemyHero', String(nHeroID));
 }
 
 function Start_AttackSpeedChange(delta)
