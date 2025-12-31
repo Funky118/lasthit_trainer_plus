@@ -847,7 +847,6 @@ function barebones:NemesisAddAttackModifier(sHero)
 	-- Set damage to be competetive with Hero
 	local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
 	local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
-	print(nemesis_bonus_damage)
 	local nemesis_bonus_projectile_speed = 0
 	local nemesis_bonus_attack_range = 0
 	self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
@@ -906,29 +905,54 @@ function barebones:NemesisMove()
 	if self.NemesisHero == nil then
 		return 1
 	end
-
-	
-	local creeps_450 = self:FindEnemyCreeps(self.NemesisHero, 450)
+	local range = self.NemesisHero:GetBaseAttackRange()
+	local is_ranged = self.NemesisHero:IsRangedAttacker()
+	local too_close_range = (is_ranged) and (range-140) or 120
+	too_close_range = (too_close_range < 120) and 120 or too_close_range
+	if self.NemesisHero:GetUnitName() == "npc_dota_hero_sniper" then
+		range = 600
+	end
+	local melee_too_close = self:FindEnemyCreeps(self.NemesisHero, too_close_range)
 	local chicken_out = false
 
-	for k,v in pairs(creeps_450) do
-			chicken_out = true
+	for k,v in pairs(melee_too_close) do
+		chicken_out = true
 		break
 	end
 	if chicken_out == false then
 		-- Special case for ranged creeps (siege creeps have higher range but are rare)
-		local creeps_600 = self:FindEnemyCreeps(self.NemesisHero, 600)
-		for k,v in pairs(creeps_600) do
+		local ranged_too_close = self:FindEnemyCreeps(self.NemesisHero, range)
+		for k,v in pairs(ranged_too_close) do
 			if v:IsRangedAttacker() then
 				chicken_out = true
 			end
 			break
 		end
 	end
+
+	-- Solo ranged creep check
+	if chicken_out == false then
+		local creeps = self:FindEnemyCreeps(self.NemesisHero, 600)
+		local melee_found = false
+		local ranged_found = false
+		for k,v in pairs(creeps) do
+			if not v:IsRangedAttacker() then
+				melee_found = true
+				break
+			else
+				ranged_found = true
+			end
+		end
+		chicken_out = not melee_found and ranged_found
+	end
 	
 
-	local const_distance = 600
+	local const_distance = range
 	local hyst = 100
+	if not self.NemesisHero:IsRangedAttacker() then
+		hyst = 40
+	end
+
 	local creep_center = self:CreepsCenter()
 	local new_pos = self.NemesisHero:GetAbsOrigin()
 	local dist = VectorDistance(creep_center,new_pos)
@@ -936,7 +960,6 @@ function barebones:NemesisMove()
 	-- Fortunately the lane is on the diagonal of 1. and 3. quadrant, so direction is easy
 	local away_from_center = (new_pos-creep_center):Normalized()
 	local towards_center = (creep_center-new_pos):Normalized()
-
 	if chicken_out or rel_pos <= 0 then
 		-- bok bok 
 		print("RUN AWAY!")
@@ -1218,47 +1241,12 @@ function barebones:OnItemPurchased(keys) --TODO: Fix nemesis mode not updating d
 	-- HAHA! No cheating allowed! Nemesis now tracks Hero damage dynamically.
 	self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
 	self:NemesisAddAttackModifier(self.NemesisHero:GetUnitName())
-	-- --CustomGameEventManager:Send_ServerToAllClients("update_nemesis_attack_speed", {attack_speed = self.NemesisBonusAttackSpeed})
-	-- -- print("Nemesis damage diff: "..nemesis_damage)
-	-- self.NemesisHero:RemoveModifierByName("modifier_nemesis")
-	-- local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
-	-- local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
-	-- self.NemesisDamage = nemesis_damage+nemesis_bonus_damage
-	-- local nemesis_attack_speed = 0
-	-- local nemesis_projectile_speed = 0
-	-- local nemesis_BAT = 1.7
-	-- if self.NemesisUnfair then
-	-- 	nemesis_attack_speed = 5000
-	-- 	nemesis_projectile_speed = 15000
-	-- 	nemesis_BAT = 1
-	-- else
-	-- 	nemesis_attack_speed = self.NemesisBonusAttackSpeed
-	-- 	nemesis_projectile_speed = self.NemesisBonusProjectileSpeed
-	-- end
-	-- self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
-	-- 																				bonus_damage = nemesis_bonus_damage,
-	-- 																				bonus_attack_speed = nemesis_attack_speed,
-	-- 																				bonus_projectile_speed = nemesis_projectile_speed,
-	-- 																				-- attack_point = 0,
-	-- 																				BAT = nemesis_BAT,
-	-- 																			})
 end
 
 function barebones:OnNemesisAttackSpeedChange(keys, data)
 	if not self.NemesisUnfair then
-		-- self.NemesisHero:RemoveModifierByName("modifier_nemesis")
-		-- local nemesis_damage = self.NemesisHero:GetAverageTrueAttackDamage(nil)
-		-- local nemesis_bonus_damage = self.HeroDamage - nemesis_damage
-		-- self.NemesisDamage = nemesis_damage + nemesis_bonus_damage
 		self.NemesisBonusAttackSpeed = 0+data.str -- Really? The INT variable is retyped to string, come on...
 		self:NemesisAddAttackModifier(self.NemesisHero:GetUnitName())
-		-- self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_nemesis", { 	bonus_range_bonus = self.NemesisBonusAttackRange,
-		-- 																				bonus_damage = nemesis_bonus_damage,
-		-- 																				bonus_attack_speed = self.NemesisBonusAttackSpeed,
-		-- 																				bonus_projectile_speed = self.NemesisBonusProjectileSpeed,
-		-- 																				-- attack_point = 0,
-		-- 																				-- BAT = 1,
-		-- 																			})
 	end
 end
 

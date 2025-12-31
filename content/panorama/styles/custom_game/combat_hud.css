@@ -1,10 +1,10 @@
 
 .Main
 {
-	margin-top: 50%;
+	margin-top: 54%;
     horizontal-align: left;
 	transform: scaleY( -1.0 );
-	height: 280px;
+	height: 235px;
 	width: 250px;
 	overflow: noclip noclip;
     /* border: 2px solid #111111; */
