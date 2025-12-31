@@ -220,12 +220,12 @@ function saveLasthitDelay(data)
 {
     if (data.killer == "hero")
     {
-        $.Msg("Got lasthit");
+        // $.Msg("Got lasthit");
         lasthit_delay.push(parseFloat(data.time).toFixed(3));
     }
     else if(data.text == "Too early ")
     {
-        $.Msg("Got missed lasthit");
+        // $.Msg("Got missed lasthit");
         lasthit_delay.push(parseFloat(-data.time).toFixed(3));
     }
 

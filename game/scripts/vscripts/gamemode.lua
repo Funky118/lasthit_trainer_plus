@@ -77,6 +77,7 @@ function barebones:InitGameMode()
 	self.NemesisSpawnPos = nemesis_spawn:GetAbsOrigin()
 	-- HeroDamage plays role in Nemesis' last hitting logic
 	self.HeroDamage = 40 -- Updates when Hero spawns but in case something goes wrong, this is a good default
+	self.NemesisHero = nil
 	self.NemesisDamage = 40
 	self.NemesisBonusAttackRange = 1000
 	self.NemesisBonusAttackSpeed = 0
