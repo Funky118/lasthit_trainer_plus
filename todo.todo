@@ -1,43 +1,32 @@
-✔ Add popups with time @done(25-12-12 16:18)
-✔ Add cat images @done(25-12-12 16:18)
-✔ Add sound and effect for nemesis deny @done(25-12-15 11:33)
-✔ Implement restart button @done(25-12-15 11:33)
-✔ Implement average time @done(25-12-12 16:18)
-
 Likely add:
-    ✔ Fix nemesis movement and add facing creeps @done(25-12-26 19:25)
-    ✔ Fix flagbearer HP and magic resistance @done(25-12-26 18:32)
-    ✔ Finish unfair nemesis @done(25-12-26 21:23)
-    ✔ Fix interactive ui layout @done(25-12-26 13:23)
-    ✘ Write a GetEHP function @cancelled(25-12-26 13:24)
-    ✔ Write a graph function @done(25-12-26 13:24)
-    ✔ Flagbearer creep waves @done(25-12-16 17:22)
-    ✔ Add a variable to enable experience gain (Nemesis needs to update damage on hero level up) @done(25-12-24 13:43)
-    ✔ Add side neutral camps @done(25-12-22 16:28)
-    ☐ Add post-game stats
-    ☐ Show amount of denied/gained experience and gold
-    ☐ Allow player to choose oppotent (including vanilla without modifier)
-    ✔ Add option for a harder opponent with higher attack speed @done(25-12-16 23:56)
-    ✔ Add helper functions to highlight lasthittable creep and almost lasthittable creep @done(25-12-22 08:58)
-    ✔ Add particle effects and stuff (me like shiny) @done(25-12-24 13:44)
-    ✔ Show remaining health upon hitting a creep @done(25-12-19 19:37)
-    ☐ Prevent Invoker and Shadow Fiend from cheating (add Nemesis damage update timer every second or so)
-    ✘ Prevent Lone Druid and Meepo from cheating (don't really care about Arc Warden clone) @cancelled(25-12-24 13:43)
-    ✔ Fix sniper walking in wrong direction when hooked past creep wave @done(25-12-20 00:24)
-    ✘ Find most attacked units, calculate hp rate of change, calculate attack speed, projectile speed and distance, start count down for perfect lasthit @cancelled(25-12-26 19:51)
-    
-Potential add:
-    ☐ timer mode (increasingly more difficult last hitting on a timer, each creep gains you some time)
-    ✘ force kill creeps after an adjustable delay (very unfun, don't implement) @cancelled(25-12-26 19:52)
-    ☐ log under tower last hits/missed into stats
-    ☐ average miss time
-    ☐ runes picked/missed (spawn enemies that kill runes after a delay)
-    ☐ idling time (not moving, preparing to cs)
-    ☐ creep aggro
-    ☐ creep blocking
-    ☐ enemy hero damage
-    ☐ damage received
-    ☐ wave clear speed
-    ☐ minimap awareness (spawn pudge and hook the hero)
-    ☐ tower damage dealt/received
-    ☐ apm
+    ☐ Pause game when stats are displayed
+    ☐ Add minimap awareness practice
+    ☐ Add rune control
+    ☐ Automatically increase/decrease Nemesis attack speed with each succesful lasthit
+    ☐ Tutorial map for absolutely new players (teach blocking, aggro etc.)
+Archive:
+  ✔ Add popups with time @done(25-12-12 16:18)
+  ✔ Add cat images @done(25-12-12 16:18)
+  ✔ Add sound and effect for nemesis deny @done(25-12-15 11:33)
+  ✔ Implement restart button @done(25-12-15 11:33)
+  ✔ Implement average time @done(25-12-12 16:18)
+  ✔ Fix nemesis movement and add facing creeps @done(25-12-26 19:25) @project(Likely add)
+  ✔ Fix flagbearer HP and magic resistance @done(25-12-26 18:32) @project(Likely add)
+  ✔ Finish unfair nemesis @done(25-12-26 21:23) @project(Likely add)
+  ✔ Fix interactive ui layout @done(25-12-26 13:23) @project(Likely add)
+  ✘ Write a GetEHP function @cancelled(25-12-26 13:24) @project(Likely add)
+  ✔ Write a graph function @done(25-12-26 13:24) @project(Likely add)
+  ✔ Flagbearer creep waves @done(25-12-16 17:22) @project(Likely add)
+  ✔ Add a variable to enable experience gain (Nemesis needs to update damage on hero level up) @done(25-12-24 13:43) @project(Likely add)
+  ✔ Add side neutral camps @done(25-12-22 16:28) @project(Likely add)
+  ✔ Add post-game stats @done(26-01-01 19:36) @project(Likely add)
+  ✔ Show amount of denied/gained experience and gold @done(26-01-01 19:36) @project(Likely add)
+  ✔ Allow player to choose oppotent (including vanilla without modifier) @done(26-01-01 19:36) @project(Likely add)
+  ✔ Add option for a harder opponent with higher attack speed @done(25-12-16 23:56) @project(Likely add)
+  ✔ Add helper functions to highlight lasthittable creep and almost lasthittable creep @done(25-12-22 08:58) @project(Likely add)
+  ✔ Add particle effects and stuff (me like shiny) @done(25-12-24 13:44) @project(Likely add)
+  ✔ Show remaining health upon hitting a creep @done(25-12-19 19:37) @project(Likely add)
+  ✘ Prevent Invoker and Shadow Fiend from cheating (add Nemesis damage update timer every second or so) @cancelled(26-01-01 19:36) @project(Likely add)
+  ✘ Prevent Lone Druid and Meepo from cheating (don't really care about Arc Warden clone) @cancelled(25-12-24 13:43) @project(Likely add)
+  ✔ Fix sniper walking in wrong direction when hooked past creep wave @done(25-12-20 00:24) @project(Likely add)
+  ✘ Find most attacked units, calculate hp rate of change, calculate attack speed, projectile speed and distance, start count down for perfect lasthit @cancelled(25-12-26 19:51) @project(Likely add)
