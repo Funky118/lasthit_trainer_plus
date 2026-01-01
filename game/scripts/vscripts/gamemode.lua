@@ -745,6 +745,21 @@ function barebones:FindAllCreeps(eUnit)
 	return ret
 end
 
+function barebones:FindAllCreepsRadius(eUnit, iRadius)
+	local ret = FindUnitsInRadius(
+		eUnit:GetTeamNumber(),
+		eUnit:GetAbsOrigin(),
+		nil,
+		iRadius,
+		DOTA_UNIT_TARGET_TEAM_BOTH,
+		DOTA_UNIT_TARGET_CREEP,
+		DOTA_UNIT_TARGET_FLAG_NONE,
+		FIND_ANY_ORDER,
+		false
+	)
+	return ret
+end
+
 function barebones:FindNeutrals(iLoc, iRadius)
 	local ret = FindUnitsInRadius(
 		DOTA_TEAM_NEUTRALS,

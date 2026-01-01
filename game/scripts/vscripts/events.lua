@@ -932,7 +932,7 @@ function barebones:NemesisMove()
 
 	-- Solo ranged creep check
 	if chicken_out == false then
-		local creeps = self:FindEnemyCreeps(self.NemesisHero, 600)
+		local creeps = self:FindAllCreepsRadius(self.NemesisHero, 600)
 		local melee_found = false
 		local ranged_found = false
 		for k,v in pairs(creeps) do

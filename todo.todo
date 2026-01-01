@@ -1,5 +1,7 @@
+✔ Nemesis ranged creep check should use FindAllCreeps for melee @done(26-01-01 23:40)
 Likely add:
     ☐ Pause game when stats are displayed
+    ☐ Create drop-down advanced settings menu beneath k/d/a
     ☐ Add minimap awareness practice
     ☐ Add rune control
     ☐ Automatically increase/decrease Nemesis attack speed with each succesful lasthit
