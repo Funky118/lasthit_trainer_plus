@@ -939,7 +939,7 @@ function barebones:NemesisMove()
 			if not v:IsRangedAttacker() then
 				melee_found = true
 				break
-			else
+			elseif v:GetUnitName() == "npc_dota_creep_goodguys_ranged" then
 				ranged_found = true
 			end
 		end
