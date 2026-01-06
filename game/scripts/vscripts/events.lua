@@ -1071,11 +1071,20 @@ function barebones:WriteRedTempNumber(iNum, ent)
 	ParticleManager:SetParticleControl(hundreds, 1, Vector( math.floor(iNum%10), 0, 0)) -- This is actually ones
 	ParticleManager:ReleaseParticleIndex(hundreds)
 end
-
+local a = 0
 function barebones:RoundRestart()
 	-- Spoof a new hero pick and just call the existing function
 	local heroid = self.PlayerHero:GetHeroID()
 	self:OnSwitchToNewHero(0, {str = tostring(heroid)})
+
+	-- if a == 0  then
+	-- 	self:FreezeTime()
+	-- 	a = 1
+	-- else
+	-- 	self:UnFreezeTime()
+	-- 	print("Unfreezing")
+	-- 	a = 0
+	-- end
 end
 
 function barebones:OnEntityHurt(keys)
@@ -1326,4 +1335,12 @@ function barebones:OnSwitchToNewEnemyHero(keys, data)
 	PrecacheUnitByNameAsync(sNemesisClass, function() self:SpawnNemesis(sNemesisClass) end)
 
 	print("Enemy: "..sNemesisClass)
+end
+
+function barebones:FreezeTime()
+	SendToServerConsole("host_timescale 0.1")
+end
+
+function barebones:UnFreezeTime()
+	SendToServerConsole("host_timescale 1")
 end
