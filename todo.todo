@@ -6,6 +6,8 @@ Likely add:
     ☐ Automatically increase/decrease Nemesis attack speed with each succesful lasthit
     ☐ Tutorial map for absolutely new players (teach blocking, aggro etc.)
     ☐ Add a timed training like in the original trainer
+    ☐ Add zoom in/out button next to stats graph
+    ☐ Tinker around with lasthit threshold (e.g. use 90% of average damage)
 Archive:
   ✔ Nemesis ranged creep check should use FindAllCreeps for melee @done(26-01-01 23:40)
   ✔ Add popups with time @done(25-12-12 16:18)

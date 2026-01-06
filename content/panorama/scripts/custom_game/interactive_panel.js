@@ -77,13 +77,13 @@ function AttackSpeedChange()
 {
 	if(attackSpeedDelta < 0 && nemesisAttackSpeed > -700)
 	{
-		nemesisAttackSpeed-=10;
+		nemesisAttackSpeed-=5;
 		SetText("#AttackSpeedTextBox",nemesisAttackSpeed);
 		$.DispatchEvent('FireCustomGameEvent_Str', "NemesisAttackSpeedChange", String(nemesisAttackSpeed));
 	}
 	else if(attackSpeedDelta > 0 && nemesisAttackSpeed < 700)
 	{
-		nemesisAttackSpeed+=10;
+		nemesisAttackSpeed+=5;
 		SetText("#AttackSpeedTextBox",nemesisAttackSpeed);
 		$.DispatchEvent('FireCustomGameEvent_Str', "NemesisAttackSpeedChange", String(nemesisAttackSpeed));
 	}
