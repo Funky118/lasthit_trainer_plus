@@ -1,3 +1,4 @@
+☐ Fix the threshold damage issue
 Likely add:
     ☐ Pause game when stats are displayed
     ☐ Create drop-down advanced settings menu beneath k/d/a
@@ -8,6 +9,7 @@ Likely add:
     ☐ Add a timed training like in the original trainer
     ☐ Add zoom in/out button next to stats graph
     ☐ Tinker around with lasthit threshold (e.g. use 90% of average damage)
+    ☐ Fix flipped hud
 Archive:
   ✔ Nemesis ranged creep check should use FindAllCreeps for melee @done(26-01-01 23:40)
   ✔ Add popups with time @done(25-12-12 16:18)

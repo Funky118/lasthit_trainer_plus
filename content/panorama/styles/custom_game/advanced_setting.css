@@ -33,7 +33,7 @@
 	padding-bottom: 11px;
 }
 
-#InfoScreen
+#AdvancedScreen
 {
 	horizontal-align: center;
 	margin-top: 10%;
@@ -41,7 +41,7 @@
 	height: 750px;
 	transition-property: opacity;
 	transition-duration: 0.2s;
-	border: 2px solid #be2121ab;
+	/* border: 2px solid #000000; */
     /* background-color: #00000099; */
 }
 
@@ -50,7 +50,7 @@
     opacity: 0;
 }
 
-.InfoTextBox
+.AdvancedTextBox
 {
 	width: 90%;
 	height: 80%;
@@ -64,7 +64,7 @@
 	border: 4px solid #000000;
 }
 
-.InfoTextBox Label
+.AdvancedTextBox Label
 {
 	width: fill-parent-flow( 1.0 );
 	vertical-align: center;
@@ -74,14 +74,14 @@
 	color: #EEEEEE;
 }
 
-.InfoTextBox .value Label
+.AdvancedTextBox .value Label
 {
 	text-align: right;
 	color: #9ebaf7;
 	/* border: 2px solid #09b14f; */
 }
 
-.InfoTextBox .horizontal_container
+.AdvancedTextBox .horizontal_container
 {
 	/* border: 2px solid #b10909; */
 	width: 40%;
@@ -160,7 +160,7 @@
 /* Cancel button */
 
 
-#InfoPanelCancelContainer
+#AdvancedPanelCancelContainer
 {
 	width: 34px;
 	height: 34px;
@@ -168,7 +168,7 @@
 	horizontal-align: right;
 }
 
-#InfoPanelButton
+#AdvancedPanelButton
 {
 	width: 96px;
 	height: 96px;
@@ -176,7 +176,7 @@
 	vertical-align: middle;
 }
 
-#InfoPanelButton:hover
+#AdvancedPanelButton:hover
 {
 	background-color: #383838cc;
 }
@@ -195,7 +195,7 @@
 	transition-timing-function: ease-in-out;
 }
 
-#InfoPanelButton:hover .RightArrowButtonIcon
+#AdvancedPanelButton:hover .RightArrowButtonIcon
 {
 	background-color: #383838cc;
 }

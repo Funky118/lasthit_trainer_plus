@@ -34,6 +34,9 @@
 						<Button class="DemoButton" onactivate="OpenInfoScreen()">
 							<Label text="Round Statistics" />
 						</Button>
+						<Button class="DemoButton" onactivate="OpenAdvancedSetting()">
+							<Label text="Advanced Settings" />
+						</Button>
 						<Panel class="NemesisSetting">
 							<Label text="Bot attack speed"></Label>
 						</Panel>

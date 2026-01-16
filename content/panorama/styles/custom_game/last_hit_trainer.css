@@ -18,7 +18,7 @@
 	transition-property: background-color, transform;
 	transition-duration: 0.05s;
 	transition-timing-function: ease-in-out;
-	/* border: 2px solid #b31a1a; */
+	border: 2px solid #b31a1a;
 }
 
 .ControlPanelContainer

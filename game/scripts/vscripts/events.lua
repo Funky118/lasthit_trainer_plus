@@ -104,7 +104,7 @@ function barebones:OnNPCSpawned(keys)
 			self.HeroDamage = npc:GetAverageTrueAttackDamage(nil)
 			local nemesis = "npc_dota_hero_sniper"
 			PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
-			self:SpawnLaneCreeps() -- The OnThink for this is in gamemode.lua
+			self:SpawnLaneCreeps()
 
 			local gamemode = GameRules:GetGameModeEntity()
 			gamemode:SetThink( "OnNeutralThink", self, "NeutralsThink", 60 ) -- There's probably a better way to do this
@@ -1071,7 +1071,7 @@ function barebones:WriteRedTempNumber(iNum, ent)
 	ParticleManager:SetParticleControl(hundreds, 1, Vector( math.floor(iNum%10), 0, 0)) -- This is actually ones
 	ParticleManager:ReleaseParticleIndex(hundreds)
 end
-local a = 0
+
 function barebones:RoundRestart()
 	-- Spoof a new hero pick and just call the existing function
 	local heroid = self.PlayerHero:GetHeroID()
@@ -1085,25 +1085,27 @@ function barebones:RoundRestart()
 	-- 	print("Unfreezing")
 	-- 	a = 0
 	-- end
+
 end
 
 function barebones:OnEntityHurt(keys)
 	-- Calculate effective HP of the damaged creep and add it to Nemesis's list if below average Hero base damage
 	local victim = EntIndexToHScript(keys.entindex_killed)
 	local attacker = EntIndexToHScript(keys.entindex_attacker)
+	local threshold = self.HeroDamage -- self.NemesisHero:GetBaseDamageMin()
 
 	if victim:GetClassname() == "npc_dota_creep_lane" then
 		local victim_armor = victim:GetPhysicalArmorBaseValue()
 		local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
 		local eHP = victim:GetHealth() / armor_factor
-		if eHP <= (self.HeroDamage) then
+		if eHP <= (threshold) then
 			self:AddCreepToTable(victim, attacker:IsRealHero())
 		end
 	elseif victim:GetClassname() == "npc_dota_creep_siege" then
 		local victim_armor = victim:GetPhysicalArmorBaseValue()
 		local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
 		local eHP = victim:GetHealth() / armor_factor / 0.5 -- Reinforced unit
-		if eHP <= (self.HeroDamage) then
+		if eHP <= (threshold) then
 			self:AddCreepToTable(victim, attacker:IsRealHero())
 		end
 	end
