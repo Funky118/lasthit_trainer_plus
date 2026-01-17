@@ -5,44 +5,41 @@
 .TitleContainer
 {
     flow-children: right;
-    width: 90%;
-    height: 80px;
-    margin-top: 4.5%;
-    margin-left: 5%;
-    border: 4px solid #000000;
-    background-color: #000000;
+    width: 100%;
+	margin-top: 0px;
+	margin-left: 0px;
+    height: 38px;
+    border: 2px solid #000000;
+	background-color: #181818;
 }
 
 .Title
 {
-    align: center top;
+    align: left top;
 }
 
 .Title Label
 {
-	color: #eec41d;
+	color: #666666;
     text-shadow: -1px 2px 1px 2.0 #111111b0;
-    /* border: 2px solid #000000; */
-	font-size: 44px;
+	font-size: 18px;
 	vertical-align: center middle;
-    /* margin-left: 40%; */
-    margin-top: 10%;
-	padding-left: 15px;
-	padding-right: 15px;
-	padding-top: 12px;
-	padding-bottom: 11px;
+    margin-top: 0px;
+	padding-left: 10px;
+	padding-top: 8px;
 }
 
 #AdvancedScreen
 {
-	horizontal-align: center;
-	margin-top: 10%;
-	width: 800px;
-	height: 750px;
+	horizontal-align: left;
+	margin-top: 13.75%;
+	margin-left: 14%;
+	width: 400px;
+	height: 350px;
 	transition-property: opacity;
 	transition-duration: 0.2s;
-	/* border: 2px solid #000000; */
-    /* background-color: #00000099; */
+	border: 2px solid #222222;
+    background-color: #181818dd;
 }
 
 .Invisible
@@ -52,16 +49,15 @@
 
 .AdvancedTextBox
 {
-	width: 90%;
+	width: 100%;
 	height: 80%;
 	margin-top: 10%;
-	background-color: #000000f5;
+	margin-left: 5%;
 	align: center middle;
-	font-size: 20;
+	font-size: 16;
 	color: #EEEEEE;
 	font-family: Radiance,FZKai-Z03,TH Sarabun New,YDYGO 540;
 	flow-children: down;
-	border: 4px solid #000000;
 }
 
 .AdvancedTextBox Label
@@ -90,112 +86,158 @@
 	/* flow-children: right; */
 }
 
-
-.GraphArea
+/*Demo button*/
+.DemoButton
 {
-	margin-top: 20px;
-	margin-left: 4%;
-	width: 90%;
-    background-color: #000000;
-	height: 320px;
-	border:1px solid #444;
-	/* margin-top: 2px; */
-	/* flow-children:right; */
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #333333), to( #444444 ) );
+	height: 35px;
+	width: 140px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	margin-left: 3px;
+	margin-right: 3px;
+	border-style: solid;
+	border-width: 1px;
+	border-top-color: #444444;
+	border-left-color: #494949;
+	border-bottom-color: #111111;
+	border-right-color: #404040;
+	transition-property: background-color;
+	transition-duration: 0.05s;
+	transition-timing-function: linear;
 }
 
-.GraphDot {
-	margin-top: 10px;
-    width: 8px;
-    height: 8px;
-    background-color: #12d322;
-    border-radius: 50%;
-}
-
-.GraphLine {
-	margin-top: 10px;
-    height: 2px;
-    background-color: #14cc14;
-    transform-origin: 0% 50%;
-}
-
-.GraphGridLine {
-	margin-top: 10px;
-    width: 90%;
-    height: 1px;
-    background-color: #ffffff;
-    opacity: 0.2;
-}
-
-.GraphGridLabel {
-	margin-top: 10px;
-    font-size: 14px;
-    color: #ccc;
-    vertical-align: center;
-}
-
-.GraphGridLine.Middle {
-    opacity: 1.0;
-    background-color: #ffffff;
-}
-
-.GraphGridLabel.Middle {
-    color: #fff;
-    font-weight: bold;
-}
-
-.GraphTooltip {
-    background-color: #222;
-    border: 1px solid #666;
-    width: 20%;
-    margin-left: 4%;
-    padding: 6px 8px;
-    z-index: 1000;
-}
-
-.GraphTooltip Label {
-    color: white;
-    font-size: 14px;
-}
-
-/* Cancel button */
-
-
-#AdvancedPanelCancelContainer
+.AdvancedTextBox .DemoButton Label
 {
-	width: 34px;
-	height: 34px;
-	vertical-align: top;
-	horizontal-align: right;
-}
-
-#AdvancedPanelButton
-{
-	width: 96px;
-	height: 96px;
-	/* background-color: #181818; */
 	vertical-align: middle;
+	color: #cccccc;
+	font-size: 15;
+	font-weight: thin;
 }
 
-#AdvancedPanelButton:hover
+.AdvancedTextBox .DemoButton:hover
 {
-	background-color: #383838cc;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #444444 ), to( #555555 ) );
 }
 
-.CrossButtonIcon
+.AdvancedTextBox .DemoButton:active
 {
-	width: 30px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #888888 ), to( #aaaaaa ) );
+	pre-transform-scale2d: 1.02;
+}
+.NemesisSetting
+{
+	background-color: #33333300;
 	height: 30px;
+	width: 140px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 3px;
+	margin-right: 3px;
+	flow-children: right;
+}
+
+#NemesisSettingButtons.Faded
+{
+	opacity: 0.2;
+}
+.AdvancedTextBox .NemesisSetting Label
+{
 	vertical-align: middle;
 	horizontal-align: middle;
-	background-image: url("file://{images}/custom_game/control_icons/cross_png.png");
-	background-size: contain;
-	background-repeat: no-repeat;
-	transition-delay: 0.0s;
-	transition-duration: 0.05s;
-	transition-timing-function: ease-in-out;
+	text-align: center;
+
+	color: #cccccc;
+	font-size: 18;
+	font-weight: bold;
+	width: 140px;
+	height: 100%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	padding-top: 7px;
 }
 
-#AdvancedPanelButton:hover .RightArrowButtonIcon
+.AdvancedTextBox .NemesisSetting .Text
 {
-	background-color: #383838cc;
+
+	height: 35px;
+	width: 60%;
+	text-align: center;
+}
+
+.AdvancedTextBox .NemesisSetting .Text Label
+{
+
+	height: 35px;
+	width: 100%;
+	padding-top: 3px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	font-size: 18;
+	font-weight: bold;
+	background-color: #000000ad;
+	
+}
+
+.AdvancedTextBox .NemesisSetting .SettingButton
+{
+
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #333333), to( #444444 ) );
+	height: 100%;
+	width: 20%;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	border-style: solid;
+	border-width: 1px;
+	border-top-color: #444444;
+	border-left-color: #494949;
+	border-bottom-color: #111111;
+	border-right-color: #404040;
+	transition-property: background-color;
+	transition-duration: 0.05s;
+	transition-timing-function: linear;
+
+}
+
+.AdvancedTextBox .NemesisSetting .SettingButton Label
+{
+	vertical-align: top;
+	color: #cccccc;
+	font-size: 20;
+	font-weight: thin;
+	width: 30px;
+	height: 100%;
+	padding-top: 0px;
+
+}
+
+.AdvancedTextBox .NemesisSetting .SettingButton:hover
+{
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #444444 ), to( #555555 ) );
+}
+
+.AdvancedTextBox .NemesisSetting .SettingButton:active
+{
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #888888 ), to( #aaaaaa ) );
+	pre-transform-scale2d: 1.02;
+}
+
+.AdvancedTextBox .OptionsToggleButton
+{
+	padding: 0px;
+	padding-top: 0px;
+	width: 100%;
+}
+
+.AdvancedTextBox .OptionsToggleButton Label
+{
+	font-size: 14;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }

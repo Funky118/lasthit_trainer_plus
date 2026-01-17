@@ -47,6 +47,11 @@ function ToggleEnemyHeroPicker()
 	$('#ControlPanel').ToggleClass('HeroPickerVisible');
 }
 
+function ToggleAdvancedSettings()
+{
+	$('#AdvancedScreen').ToggleClass('Invisible')
+}
+
 function SwitchToNewHero( nHeroID )
 {
 	$('#ControlPanel').RemoveClass('HeroPickerVisible');
@@ -123,6 +128,7 @@ function SlideThumbActivate()
 {
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
 	$('#ControlPanel').RemoveClass('HeroPickerVisible');
+	$('#AdvancedScreen').AddClass('Invisible')
 }
 
 function NemesisModeActivate()

@@ -6,6 +6,7 @@
     <styles>
         <include src="file://{resources}/styles/custom_game/last_hit_trainer.css"/>
 		<include src="file://{resources}/styles/custom_game/info_panel.css"/>
+		<include src="file://{resources}/styles/custom_game/advanced_setting.css"/>
 		<include src="s2r://panorama/styles/dotastyles.css" />
     </styles>
     <Panel hittest="false" class="CustomHudRoot">
@@ -34,7 +35,7 @@
 						<Button class="DemoButton" onactivate="OpenInfoScreen()">
 							<Label text="Round Statistics" />
 						</Button>
-						<Button class="DemoButton" onactivate="OpenAdvancedSetting()">
+						<Button class="DemoButton" onactivate="ToggleAdvancedSettings()">
 							<Label text="Advanced Settings" />
 						</Button>
 						<Panel class="NemesisSetting">
@@ -79,6 +80,43 @@
 			</Panel>
 			<Panel id="SelectHeroContainer">
 				<DOTAUIHeroPicker id="HeroPicker" />
+			</Panel>
+			<Panel id="AdvancedScreen">
+				<Panel class="TitleContainer">
+					<Panel class="Title">
+						<Panel class="label">
+							<Label text="Advanced Settings" />
+						</Panel>
+					</Panel>
+				</Panel>
+				<Panel class="AdvancedTextBox">
+					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( HighlightCreepsButtonPressed )">
+						<Label text="Highlight creeps"></Label>
+					</ToggleButton>
+					<Button class="DemoButton" onactivate="ToggleAdvancedSettings()">
+						<Label text="Advanced Settings" />
+					</Button>
+					<Panel class="NemesisSetting">
+						<Label text="Bot attack speed"></Label>
+					</Panel>
+					<Panel class="NemesisSetting" id="NemesisSettingButtons">
+						<Button id="ButtonMinus" class="SettingButton" 
+							onmousedown="Start_AttackSpeedChange(-1)"
+							onmouseup="Stop_AttackSpeedChange()"
+							onmouseout="Stop_AttackSpeedChange()">
+							<Label text="-"/>
+						</Button>
+						<Panel class="Text">
+							<Label id="AttackSpeedTextBox" text="text" />
+						</Panel>
+						<Button id="ButtonPlus" class="SettingButton"
+							onmousedown="Start_AttackSpeedChange(1)"
+							onmouseup="Stop_AttackSpeedChange()"
+							onmouseout="Stop_AttackSpeedChange()">
+							<Label  text="+"/>
+						</Button>
+					</Panel>
+				</Panel>
 			</Panel>
 			
 		</Panel>
