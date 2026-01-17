@@ -1,21 +1,22 @@
 ✘ Fix the threshold damage issue @cancelled(26-01-17 10:59)
 Advanced settings:
-    ☐ Damage threshold
-    ☐ Game speed
-    ☐ Hero level
+    ☐ rename all classes
+    ☐ Damage threshold @started(26-01-17 15:46)
+    ☐ Game speed @started(26-01-17 15:48)
+    ☐ Hero level @started(26-01-17 15:59)
     ☐ Rune spawn
     ☐ Awareness practice
-    ☐ Static creep wave
-    ☐ Disable siege
-    ☐ Timer practice (3 mins of csing)
+    ✘ Static creep wave @cancelled(26-01-17 15:59)
+    ☐ Disable siege @started(26-01-17 15:59)
+    ☐ Timer practice (3 mins of csing) @started(26-01-17 15:59)
 Likely add:
     ☐ Pause game when stats are displayed
-    ☐ Create drop-down advanced settings menu beneath k/d/a
+    ✔ Create drop-down advanced settings menu beneath k/d/a @done(26-01-17 16:00)
     ☐ Add minimap awareness practice
     ☐ Add rune control
     ☐ Automatically increase/decrease Nemesis attack speed with each succesful lasthit
     ☐ Tutorial map for absolutely new players (teach blocking, aggro etc.)
-    ☐ Add a timed training like in the original trainer
+    ✔ Add a timed training like in the original trainer @done(26-01-17 16:00)
     ☐ Add zoom in/out button next to stats graph
     ☐ Tinker around with lasthit threshold (e.g. use 90% of average damage)
     ☐ Fix flipped hud

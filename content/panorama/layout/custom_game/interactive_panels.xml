@@ -93,13 +93,42 @@
 					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( HighlightCreepsButtonPressed )">
 						<Label text="Highlight creeps"></Label>
 					</ToggleButton>
-					<Button class="DemoButton" onactivate="ToggleAdvancedSettings()">
-						<Label text="Advanced Settings" />
-					</Button>
-					<Panel class="NemesisSetting">
-						<Label text="Bot attack speed"></Label>
+					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( EnableExperienceButtonPressed )">
+						<Label text="Enable experience"></Label>
+					</ToggleButton>
+					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
+						<Label text="Nemesis mode"></Label>
+					</ToggleButton>
+					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
+						<Label text="Disable siege creeps"></Label>
+					</ToggleButton>
+					<Panel class="AdvancedSlider">
+						<Label id="DamageThresholdNum" text="Damage threshold: -1" />
+						<Slider
+							class="HorizontalSlider"
+							direction= "Horizontal"
+							id="MySlider"
+							onvaluechanged="DamageThresholdValueChanged()"/>
 					</Panel>
-					<Panel class="NemesisSetting" id="NemesisSettingButtons">
+					<Panel class="AdvancedSlider">
+						<Label id="AttackSpeedNum" text="Bot attack speed: 0" />
+						<Slider
+							class="HorizontalSlider"
+							direction= "Horizontal"
+							id="AttackSpeedSlider"
+							onvaluechanged="AttackSpeedValueChanged()"/>
+					</Panel>
+					<Button class="DemoButton" onactivate="StartTimedPractice()">
+						<Label text="Level up" />
+					</Button>
+					<Button class="DemoButton" onactivate="StartTimedPractice()">
+						<Label text="Reset level" />
+					</Button>
+
+					<Panel class="NemesisSetting">
+						<Label text="Game speed"></Label>
+					</Panel>
+					<Panel class="NemesisSetting" id="GameSpeed">
 						<Button id="ButtonMinus" class="SettingButton" 
 							onmousedown="Start_AttackSpeedChange(-1)"
 							onmouseup="Stop_AttackSpeedChange()"
@@ -107,7 +136,7 @@
 							<Label text="-"/>
 						</Button>
 						<Panel class="Text">
-							<Label id="AttackSpeedTextBox" text="text" />
+							<Label id="AttackSpeedTextBox" text="1" />
 						</Panel>
 						<Button id="ButtonPlus" class="SettingButton"
 							onmousedown="Start_AttackSpeedChange(1)"
@@ -116,6 +145,32 @@
 							<Label  text="+"/>
 						</Button>
 					</Panel>
+					
+
+					<Panel class="NemesisSetting">
+						<Label text="Timed practice"></Label>
+					</Panel>
+					<Panel class="NemesisSetting" id="TimedPractice">
+						<Button id="ButtonMinus" class="SettingButton" 
+							onmousedown="Start_AttackSpeedChange(-1)"
+							onmouseup="Stop_AttackSpeedChange()"
+							onmouseout="Stop_AttackSpeedChange()">
+							<Label text="-"/>
+						</Button>
+						<Panel class="Text">
+							<Label id="AttackSpeedTextBox" text="0:30" />
+						</Panel>
+						<Button id="ButtonPlus" class="SettingButton"
+							onmousedown="Start_AttackSpeedChange(1)"
+							onmouseup="Stop_AttackSpeedChange()"
+							onmouseout="Stop_AttackSpeedChange()">
+							<Label  text="+"/>
+						</Button>
+					</Panel>
+					<Button class="DemoButton" onactivate="StartTimedPractice()">
+						<Label text="Start practice" />
+					</Button>
+					
 				</Panel>
 			</Panel>
 			

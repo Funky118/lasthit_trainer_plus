@@ -35,7 +35,7 @@
 	margin-top: 13.75%;
 	margin-left: 14%;
 	width: 400px;
-	height: 350px;
+	height: 600px;
 	transition-property: opacity;
 	transition-duration: 0.2s;
 	border: 2px solid #222222;
@@ -50,8 +50,8 @@
 .AdvancedTextBox
 {
 	width: 100%;
-	height: 80%;
-	margin-top: 10%;
+	height: 100%;
+	margin-top: 8%;
 	margin-left: 5%;
 	align: center middle;
 	font-size: 16;
@@ -238,6 +238,20 @@
 .AdvancedTextBox .OptionsToggleButton Label
 {
 	font-size: 14;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.AdvancedTextBox .AdvancedSlider
+{
+	flow-children: down;
+	width:350px;
+	height: 60px;
+}
+
+.AdvancedTextBox .AdvancedSlider Label
+{
+	font-size: 18;
 	margin-top: 0px;
 	margin-bottom: 0px;
 }

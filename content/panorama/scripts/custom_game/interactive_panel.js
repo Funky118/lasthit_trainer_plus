@@ -136,13 +136,48 @@ function NemesisModeActivate()
 	$("#NemesisSettingButtons").ToggleClass("Faded")
 	$.DispatchEvent('FireCustomGameEvent_Str', 'EnableUnfairButtonPressed', '' );
 }
+function DamageThresholdValueChanged()
+{
+	var slider = $("#MySlider");
+	var value = slider.value;
+	
+	$.Msg("Slider value: ", value);
+	var text = "Damage threshold: " + Math.round(value*10);
+	SetText("#DamageThresholdNum",text);
+}
+function AttackSpeedValueChanged()
+{
+	var slider = $("#AttackSpeedSlider");
+	var value = slider.value;
+
+	value = ((value * 2)-1)*700;
+
+	var text = "Bot attack speed " + Math.round(value);
+	SetText("#AttackSpeedNum",text);
+
+	$.DispatchEvent('FireCustomGameEvent_Str', "NemesisAttackSpeedChange", String(Math.round(value)));
+}
+
+function initSliders()
+{
+	var slider_thrs = $("#MySlider");
+	var slider_atck = $("#AttackSpeedSlider");
+	slider_thrs.value = 0.5;
+	slider_atck.value = 0.5;
+
+}
 
 (function()
 {
 	//$.Msg("INITIALIZED PANORAMA JS: round end panel");
+	// var slider = $("#MySlider");
+	// slider.SetPanelEvent("onvaluechanged", function(){
+	// 	var value = slider.value;
+	// 	$.Msg("Slider value: ", value);
+	// });
 
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
-
+	initSliders()
 	GameEvents.Subscribe( "round_ended", OnRoundEnded );
 	GameEvents.Subscribe("update_nemesis_attack_speed", UpdateNemesisAttackSpeed)
 
