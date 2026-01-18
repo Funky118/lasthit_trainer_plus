@@ -41,7 +41,7 @@
 	height: 750px;
 	transition-property: opacity;
 	transition-duration: 0.2s;
-	border: 2px solid #be2121ab;
+	/* border: 2px solid #be2121ab; */
     /* background-color: #00000099; */
 }
 

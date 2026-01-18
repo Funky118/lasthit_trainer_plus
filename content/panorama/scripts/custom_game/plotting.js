@@ -34,6 +34,16 @@ var lasthit_delay = [];
 // 	sine_values.push(Math.sin(Math.PI * 2 * i/20));
 // }
 
+function SetText(name, value)
+{
+	var element = $(name);
+
+	if(element == null)
+		return;
+
+	element.text = value;
+}
+
 function OpenInfoScreen()
 {
     var killedPercentage = 0;
@@ -53,18 +63,6 @@ function OpenInfoScreen()
     var gainedGold = gStats["MeleeCreepsKilled"]*37 + gStats["FlagCreepsKilled"]*37 + gStats["RangedCreepsKilled"]*48 + gStats["SiegeCreepsKilled"]*66;
     var expLoss =  exp_lost;
     var goldLoss = gold_missed;
-
-    // var hero_lvl = 0;
-    // var enemy_lvl = 0;
-    // for(var i=0; i < 30; i++)
-    // {
-    //     if(gainedExp >= exp_to_level[i])
-    //         hero_lvl = i+1;
-    //     if(enemyExp >= exp_to_level[i])
-    //         enemy_lvl = i+1;
-    //     if(gainedExp < exp_to_level[i] && enemyExp < exp_to_level[i])
-    //         break;
-    // }
 
     $("#InfoScreen").ToggleClass("Invisible");
     SetText("#KilledPercentage", killedPercentage + "%");
@@ -231,6 +229,18 @@ function saveLasthitDelay(data)
 
 }
 
+function TimedPracticeStart()
+{
+    lasthit_delay = [];
+    $("#InfoScreen").AddClass("Invisible");
+}
+
+function TimedPracticeEnd()
+{
+	$("#InfoScreen").AddClass("Invisible");
+    OpenInfoScreen()
+}
+
 function OnLastHitTrainerStatsUpdated( tableName, key, data )
 {
 	//$.Msg("STATS DATA RECEIVED")
@@ -246,5 +256,7 @@ function OnLastHitTrainerStatsUpdated( tableName, key, data )
 	//$.Msg("INITIALIZED PANORAMA JS: score panel");
 	//CustomNetTables.SubscribeNetTableListener("last_hit_trainer_stats", OnLastHitTrainerStatsUpdated);
     GameEvents.Subscribe("show_notification", saveLasthitDelay);
+    GameEvents.Subscribe("timed_practice_end", TimedPracticeEnd)
+    GameEvents.Subscribe("timed_practice_start", TimedPracticeStart)
     CustomNetTables.SubscribeNetTableListener("last_hit_trainer_stats", OnLastHitTrainerStatsUpdated);
 })();

@@ -18,7 +18,7 @@
 	transition-property: background-color, transform;
 	transition-duration: 0.05s;
 	transition-timing-function: ease-in-out;
-	border: 2px solid #b31a1a;
+	/* border: 2px solid #b31a1a; */
 }
 
 .ControlPanelContainer
@@ -403,7 +403,7 @@
 /*Hero selection*/
 #SelectHeroContainer
 {
-	margin-left: 161px;
+	margin-left: 160px;
 	background-color: #000c;
 	opacity: 0.0;
 	transform: translateX( -20px );
@@ -479,4 +479,53 @@
 #LastHitTrainerPanel.Minimized
 {
 	transform: translateX( -512px ) translateY(-14px);
+}
+
+/* Timer panel from Valve's lasthit trainer */
+.Timer
+{
+	vertical-align: top;
+	horizontal-align: center;
+	flow-children: down;
+	background-image: url("file://{images}/custom_game/bg_timer_psd.png");
+	width: 114px;
+	height: 58px;
+	margin-top: -10px;
+	padding-top: 14px;
+	opacity: 1.0;
+}
+
+.Invisible
+{
+	opacity: 0.0;
+}
+
+.Timer Label
+{
+	text-align: center;
+	color: #ffffff;
+	font-family: Radiance,FZKai-Z03,TH Sarabun New,YDYGO 540;
+	letter-spacing: 1px;
+	text-shadow: -1px 2px 1px 2.0 #333333b0;
+}
+
+.Timer Panel Label
+{
+	margin: 0px;
+	width: 200px;
+}
+
+.Timer #TimerRemainingPanel
+{
+	font-size: 30px;
+}
+
+#TimerRemainingPanel .overtime
+{
+	color: red;
+}
+
+#TimerRemainingPanel #roundInactive
+{
+	color: red;
 }

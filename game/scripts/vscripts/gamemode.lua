@@ -77,6 +77,9 @@ function barebones:InitGameMode()
 	self.NemesisSpawnPos = nemesis_spawn:GetAbsOrigin()
 	-- HeroDamage plays role in Nemesis' last hitting logic
 	self.HeroDamage = 40 -- Updates when Hero spawns but in case something goes wrong, this is a good default
+	self.HeroDamageMin = 40
+	self.HeroDamageMax = 40
+	self.LasthitThreshold = 0.5
 	self.NemesisHero = nil
 	self.NemesisDamage = 40
 	self.NemesisBonusAttackRange = 1000
@@ -109,18 +112,12 @@ function barebones:InitGameMode()
 		v:SetBaseHealthRegen(100)
 	end
 
-	-- Colors for last hit particle (same as Valve's last hit trainer) TODO: UNUSED
-	self.CSTier1 = Vector( 100, 250, 30 )
-	self.CSTier2 = Vector( 180, 190, 30 )
-	self.CSTier3 = Vector( 200, 170, 30 )
-	self.CSTier4 = Vector( 220, 145, 30 )
-	self.CSTier5 = Vector( 240, 110, 30 )
-	self.CSTier6 = Vector( 250, 75, 30 )
-	self.CSTier7 = Vector( 250, 45, 30 )
-	self.CSTier8 = Vector( 250, 0, 30 )
-
 	-- Counter initialization
 	self.CreepSpawnInterval = 30
+	self.TimedPractice = 30
+	self.PauseTraining = false
+	self.TimedPracticeEnabled = false
+	self.TimedPracticeEndTime = 0
 	self.LastWaveSpawnTime = -1 -- This is initialized -1 just like in Valve's code
 	self.CreepWavesSpawned = 0
 	self.MeleeCreepsSpawned = 0
@@ -132,6 +129,7 @@ function barebones:InitGameMode()
 	self.CurrentTarget = nil
 	self.HighlightEnabled = false
 	self.ExperienceGainEnabled = false
+	self.SiegeEnabled = true
 	self.NeutralExpList = {}
 
 
@@ -233,8 +231,15 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "SwitchToNewEnemyHero", function(...) return self:OnSwitchToNewEnemyHero( ... ) end )
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
+	CustomGameEventManager:RegisterListener( "HeroDamageChange", function(...) return self:OnHeroDamageChange( ... ) end )
+	CustomGameEventManager:RegisterListener( "TimedPracticeChanged", function(...) return self:OnTimedPracticeChanged( ... ) end )
+	CustomGameEventManager:RegisterListener( "GameSpeedChanged", function(...) return self:OnGameSpeedChanged( ... ) end )
 	CustomGameEventManager:RegisterListener( "HighlightCreepsButtonPressed", function(...) return self:OnHighlightCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "EnableExperienceButtonPressed", function(...) return self:OnEnableExperienceButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "DisableSiegeCreepsButtonPressed", function(...) return self:OnDisableSiegeCreepsButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "LevelUpButtonPressed", function(...) return self:OnLevelUpButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "ResetLevelButtonPressed", function(...) return self:OnResetLevelButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "StartTimedPracticeButtonPressed", function(...) return self:OnStartTimedPracticeButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "EnableUnfairButtonPressed", function(...) return self:OnEnableUnfairButtonPressed( ... ) end )
 
 	-- Change random seed for math.random function
@@ -401,6 +406,9 @@ end
 
 -- Creep spawning function, I am using Timers to delay attack orders because otherwise they didn't go through at game start
 function barebones:SpawnLaneCreeps()
+	if self.PauseTraining then
+		return
+	end
 	local spawn_delay = 0.5
 	local meleeToSpawn = 3
 	self.CreepWavesSpawned = self.CreepWavesSpawned + 1
@@ -524,7 +532,7 @@ function barebones:SpawnLaneCreeps()
 	end
 
 	-- Siege spawn
-	if self.CreepWavesSpawned >= 11 then
+	if self.CreepWavesSpawned >= 11 and self.SiegeEnabled then
 		if ((self.CreepWavesSpawned - 11) % 10) == 0 then
 			local creep_siege_good = CreateUnitByName("npc_dota_goodguys_siege", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
 			if creep_siege_good ~= nil then

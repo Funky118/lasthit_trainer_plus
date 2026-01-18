@@ -1,26 +1,38 @@
-✘ Fix the threshold damage issue @cancelled(26-01-17 10:59)
-Advanced settings:
-    ☐ rename all classes
-    ☐ Damage threshold @started(26-01-17 15:46)
-    ☐ Game speed @started(26-01-17 15:48)
-    ☐ Hero level @started(26-01-17 15:59)
-    ☐ Rune spawn
-    ☐ Awareness practice
-    ✘ Static creep wave @cancelled(26-01-17 15:59)
-    ☐ Disable siege @started(26-01-17 15:59)
-    ☐ Timer practice (3 mins of csing) @started(26-01-17 15:59)
+✔ Fix stats not showing after practice @done(26-01-18 23:23)
+✔ Fix bonus damage not counting @done(26-01-18 23:23)
 Likely add:
-    ☐ Pause game when stats are displayed
-    ✔ Create drop-down advanced settings menu beneath k/d/a @done(26-01-17 16:00)
+    ☐ Keep items between timed practice rounds
     ☐ Add minimap awareness practice
     ☐ Add rune control
     ☐ Automatically increase/decrease Nemesis attack speed with each succesful lasthit
     ☐ Tutorial map for absolutely new players (teach blocking, aggro etc.)
-    ✔ Add a timed training like in the original trainer @done(26-01-17 16:00)
     ☐ Add zoom in/out button next to stats graph
-    ☐ Tinker around with lasthit threshold (e.g. use 90% of average damage)
     ☐ Fix flipped hud
 Archive:
+  ✔ Finish damage threshold @done(26-01-18 19:07)
+  ✔ Fix restarting time @done(26-01-18 21:28)
+  ✔ Fix attack speed @done(26-01-18 21:28)
+  ✔ Pause game when stats are displayed @done(26-01-18 21:28) @project(Likely add)
+  ✔ Tinker around with lasthit threshold (e.g. use 90% of average damage) @done(26-01-18 21:28) @project(Likely add)
+  ✘ Fix the threshold damage issue @cancelled(26-01-17 10:59)
+  ✔ rename all classes @done(26-01-17 19:43) @project(Advanced settings)
+  ✔ Damage threshold @started(26-01-17 15:46) @done(26-01-17 19:41) @lasted(3h55m49s) @project(Advanced settings)
+  ✔ Game speed @started(26-01-17 15:48) @done(26-01-17 19:41) @lasted(3h53m50s) @project(Advanced settings)
+  ✔ Hero level @started(26-01-17 15:59) @done(26-01-17 19:41) @lasted(3h42m51s) @project(Advanced settings)
+  ✘ Rune spawn @cancelled(26-01-17 19:43) @project(Advanced settings)
+  ✘ Awareness practice @cancelled(26-01-17 19:43) @project(Advanced settings)
+  ✘ Static creep wave @cancelled(26-01-17 15:59) @project(Advanced settings)
+  ✔ Disable siege @started(26-01-17 15:59) @done(26-01-17 19:41) @lasted(3h42m54s) @project(Advanced settings)
+  ✔ Timer practice (3 mins of csing) @started(26-01-17 15:59) @done(26-01-17 19:41) @lasted(3h42m54s) @project(Advanced settings)
+  ✔ Send hero damage to JS @done(26-01-18 02:16) @project(Advanced settings)
+  ✔ Hero damage event @done(26-01-18 02:17) @project(Advanced settings)
+  ✔ Game speed event @done(26-01-18 02:17) @project(Advanced settings)
+  ✔ Level up event @done(26-01-18 02:17) @project(Advanced settings)
+  ✔ Siege disable event @done(26-01-18 02:17) @project(Advanced settings)
+  ✔ Timed practice half minute increments @done(26-01-18 02:17) @project(Advanced settings)
+  ✔ Timed practice implementation @done(26-01-18 02:17) @project(Advanced settings)
+  ✔ Create drop-down advanced settings menu beneath k/d/a @done(26-01-17 16:00) @project(Likely add)
+  ✔ Add a timed training like in the original trainer @done(26-01-17 16:00) @project(Likely add)
   ✔ Nemesis ranged creep check should use FindAllCreeps for melee @done(26-01-01 23:40)
   ✔ Add popups with time @done(25-12-12 16:18)
   ✔ Add cat images @done(25-12-12 16:18)

@@ -1,0 +1,16 @@
+<!-- xml reconstructed by Source 2 Viewer 16.0.0.0 - https://valveresourceformat.github.io -->
+<root>
+	<scripts>
+		<include src="file://{resources}/scripts/custom_game/timer_panel.js" />
+	</scripts>
+	<styles>
+		<include src="file://{resources}/styles/custom_game/last_hit_trainer.css" />
+	</styles>
+	<Panel hittest="false" class="CustomHudRoot">
+		<Panel class="Timer" id="TimedTrainingPanel">
+			<Panel id="TimerRemainingPanel">
+				<Label id="TimerRemaining" text="#DOTA_HUD_Timer" />
+			</Panel>
+		</Panel>
+	</Panel>
+</root>

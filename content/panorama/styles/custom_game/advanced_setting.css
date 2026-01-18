@@ -2,7 +2,7 @@
 * Information screen
 ********************************/
 
-.TitleContainer
+.AdvancedTitleContainer
 {
     flow-children: right;
     width: 100%;
@@ -13,12 +13,12 @@
 	background-color: #181818;
 }
 
-.Title
+.AdvancedTitle
 {
     align: left top;
 }
 
-.Title Label
+.AdvancedTitle Label
 {
 	color: #666666;
     text-shadow: -1px 2px 1px 2.0 #111111b0;
@@ -32,10 +32,10 @@
 #AdvancedScreen
 {
 	horizontal-align: left;
-	margin-top: 13.75%;
-	margin-left: 14%;
+	margin-top: 17%;
+	margin-left: 14.1%;
 	width: 400px;
-	height: 600px;
+	height: 400px;
 	transition-property: opacity;
 	transition-duration: 0.2s;
 	border: 2px solid #222222;
@@ -51,10 +51,10 @@
 {
 	width: 100%;
 	height: 100%;
-	margin-top: 8%;
+	margin-top: 14%;
 	margin-left: 5%;
 	align: center middle;
-	font-size: 16;
+	font-size: 15;
 	color: #EEEEEE;
 	font-family: Radiance,FZKai-Z03,TH Sarabun New,YDYGO 540;
 	flow-children: down;
@@ -67,7 +67,7 @@
 	horizontal-align: center;
 	letter-spacing: 1px;
 	text-shadow: -1px 2px 1px 2.0 #111111b0;
-	color: #EEEEEE;
+	color: #cccccc;
 }
 
 .AdvancedTextBox .value Label
@@ -80,14 +80,14 @@
 .AdvancedTextBox .horizontal_container
 {
 	/* border: 2px solid #b10909; */
-	width: 40%;
-    margin-top: 6px;
-    margin-left: 4%;
-	/* flow-children: right; */
+	width: 100%;
+	flow-children: right;
+	/* border: 2px solid #222222; */
+	flow-children: right;
 }
 
 /*Demo button*/
-.DemoButton
+.AdvancedButton
 {
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #333333), to( #444444 ) );
 	height: 35px;
@@ -107,25 +107,25 @@
 	transition-timing-function: linear;
 }
 
-.AdvancedTextBox .DemoButton Label
+.AdvancedTextBox .AdvancedButton Label
 {
 	vertical-align: middle;
+	text-align: center;
 	color: #cccccc;
 	font-size: 15;
-	font-weight: thin;
 }
 
-.AdvancedTextBox .DemoButton:hover
+.AdvancedTextBox .AdvancedButton:hover
 {
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #444444 ), to( #555555 ) );
 }
 
-.AdvancedTextBox .DemoButton:active
+.AdvancedTextBox .AdvancedButton:active
 {
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #888888 ), to( #aaaaaa ) );
 	pre-transform-scale2d: 1.02;
 }
-.NemesisSetting
+.AdvancedNemesisSetting
 {
 	background-color: #33333300;
 	height: 30px;
@@ -136,20 +136,14 @@
 	margin-right: 3px;
 	flow-children: right;
 }
-
-#NemesisSettingButtons.Faded
-{
-	opacity: 0.2;
-}
-.AdvancedTextBox .NemesisSetting Label
+.AdvancedTextBox .AdvancedNemesisSetting Label
 {
 	vertical-align: middle;
 	horizontal-align: middle;
 	text-align: center;
 
 	color: #cccccc;
-	font-size: 18;
-	font-weight: bold;
+	font-size: 15;
 	width: 140px;
 	height: 100%;
 	margin-top: 0px;
@@ -159,7 +153,7 @@
 	padding-top: 7px;
 }
 
-.AdvancedTextBox .NemesisSetting .Text
+.AdvancedTextBox .AdvancedNemesisSetting .Text
 {
 
 	height: 35px;
@@ -167,7 +161,7 @@
 	text-align: center;
 }
 
-.AdvancedTextBox .NemesisSetting .Text Label
+.AdvancedTextBox .AdvancedNemesisSetting .Text Label
 {
 
 	height: 35px;
@@ -183,7 +177,7 @@
 	
 }
 
-.AdvancedTextBox .NemesisSetting .SettingButton
+.AdvancedTextBox .AdvancedNemesisSetting .SettingButton
 {
 
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #333333), to( #444444 ) );
@@ -205,7 +199,7 @@
 
 }
 
-.AdvancedTextBox .NemesisSetting .SettingButton Label
+.AdvancedTextBox .AdvancedNemesisSetting .SettingButton Label
 {
 	vertical-align: top;
 	color: #cccccc;
@@ -217,27 +211,27 @@
 
 }
 
-.AdvancedTextBox .NemesisSetting .SettingButton:hover
+.AdvancedTextBox .AdvancedNemesisSetting .SettingButton:hover
 {
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #444444 ), to( #555555 ) );
 }
 
-.AdvancedTextBox .NemesisSetting .SettingButton:active
+.AdvancedTextBox .AdvancedNemesisSetting .SettingButton:active
 {
 	background-color: gradient( linear, 0% 0%, 0% 100%, from( #888888 ), to( #aaaaaa ) );
 	pre-transform-scale2d: 1.02;
 }
 
-.AdvancedTextBox .OptionsToggleButton
+.AdvancedTextBox .AdvancedOptionsToggleButton
 {
 	padding: 0px;
 	padding-top: 0px;
-	width: 100%;
+	width: 50%;
 }
 
-.AdvancedTextBox .OptionsToggleButton Label
+.AdvancedTextBox .AdvancedOptionsToggleButton Label
 {
-	font-size: 14;
+	font-size: 15;
 	margin-top: 0px;
 	margin-bottom: 0px;
 }
@@ -247,11 +241,17 @@
 	flow-children: down;
 	width:350px;
 	height: 60px;
+	/* border: 2px solid #000000; */
 }
 
 .AdvancedTextBox .AdvancedSlider Label
 {
-	font-size: 18;
+	font-size: 15;
 	margin-top: 0px;
 	margin-bottom: 0px;
+}
+
+.CenteredSection
+{
+	margin-left: 29px;
 }

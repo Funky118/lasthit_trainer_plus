@@ -29,44 +29,12 @@
 						<Button id="NewHeroButton" class="DemoButton" onactivate="ToggleHeroPicker()">
 							<Label text="#Flyout_Choose_New_Hero_Button" />
 						</Button>
-						<Button id="NewEnemyHeroButton" class="DemoButton" onactivate="ToggleEnemyHeroPicker()">
-							<Label text="Choose New Bot" />
-						</Button>
 						<Button class="DemoButton" onactivate="OpenInfoScreen()">
 							<Label text="Round Statistics" />
 						</Button>
 						<Button class="DemoButton" onactivate="ToggleAdvancedSettings()">
 							<Label text="Advanced Settings" />
 						</Button>
-						<Panel class="NemesisSetting">
-							<Label text="Bot attack speed"></Label>
-						</Panel>
-						<Panel class="NemesisSetting" id="NemesisSettingButtons">
-							<Button id="ButtonMinus" class="SettingButton" 
-								onmousedown="Start_AttackSpeedChange(-1)"
-								onmouseup="Stop_AttackSpeedChange()"
-								onmouseout="Stop_AttackSpeedChange()">
-								<Label text="-"/>
-							</Button>
-							<Panel class="Text">
-								<Label id="AttackSpeedTextBox" text="text" />
-							</Panel>
-							<Button id="ButtonPlus" class="SettingButton"
-								onmousedown="Start_AttackSpeedChange(1)"
-								onmouseup="Stop_AttackSpeedChange()"
-								onmouseout="Stop_AttackSpeedChange()">
-								<Label  text="+"/>
-							</Button>
-						</Panel>
-						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( HighlightCreepsButtonPressed )">
-							<Label text="Highlight creeps"></Label>
-						</ToggleButton>
-						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( EnableExperienceButtonPressed )">
-							<Label text="Enable experience"></Label>
-						</ToggleButton>
-						<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
-							<Label text="Nemesis mode"></Label>
-						</ToggleButton>
 					</Panel>
 					<Panel class="Category">
 						<Label text="" />
@@ -81,33 +49,37 @@
 			<Panel id="SelectHeroContainer">
 				<DOTAUIHeroPicker id="HeroPicker" />
 			</Panel>
-			<Panel id="AdvancedScreen">
-				<Panel class="TitleContainer">
-					<Panel class="Title">
+			<Panel id="AdvancedScreen" class="Invisible">
+				<Panel class="AdvancedTitleContainer">
+					<Panel class="AdvancedTitle">
 						<Panel class="label">
 							<Label text="Advanced Settings" />
 						</Panel>
 					</Panel>
 				</Panel>
 				<Panel class="AdvancedTextBox">
-					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( HighlightCreepsButtonPressed )">
-						<Label text="Highlight creeps"></Label>
-					</ToggleButton>
-					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( EnableExperienceButtonPressed )">
-						<Label text="Enable experience"></Label>
-					</ToggleButton>
-					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
-						<Label text="Nemesis mode"></Label>
-					</ToggleButton>
-					<ToggleButton class="OptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
-						<Label text="Disable siege creeps"></Label>
-					</ToggleButton>
+					<Panel class="horizontal_container">
+						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( HighlightCreepsButtonPressed )">
+							<Label text="Highlight creeps"></Label>
+						</ToggleButton>
+						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( EnableExperienceButtonPressed )">
+							<Label text="Enable experience"></Label>
+						</ToggleButton>
+					</Panel>
+					<Panel class="horizontal_container">
+						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
+							<Label text="Nemesis mode"></Label>
+						</ToggleButton>
+						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableSiegeCreepsButtonPressed )">
+							<Label text="Disable siege creeps"></Label>
+						</ToggleButton>
+					</Panel>
 					<Panel class="AdvancedSlider">
 						<Label id="DamageThresholdNum" text="Damage threshold: -1" />
 						<Slider
 							class="HorizontalSlider"
 							direction= "Horizontal"
-							id="MySlider"
+							id="DamageSlider"
 							onvaluechanged="DamageThresholdValueChanged()"/>
 					</Panel>
 					<Panel class="AdvancedSlider">
@@ -118,58 +90,60 @@
 							id="AttackSpeedSlider"
 							onvaluechanged="AttackSpeedValueChanged()"/>
 					</Panel>
-					<Button class="DemoButton" onactivate="StartTimedPractice()">
-						<Label text="Level up" />
-					</Button>
-					<Button class="DemoButton" onactivate="StartTimedPractice()">
-						<Label text="Reset level" />
-					</Button>
-
-					<Panel class="NemesisSetting">
-						<Label text="Game speed"></Label>
-					</Panel>
-					<Panel class="NemesisSetting" id="GameSpeed">
-						<Button id="ButtonMinus" class="SettingButton" 
-							onmousedown="Start_AttackSpeedChange(-1)"
-							onmouseup="Stop_AttackSpeedChange()"
-							onmouseout="Stop_AttackSpeedChange()">
-							<Label text="-"/>
+					<Panel class="horizontal_container CenteredSection">
+						<Button class="AdvancedButton" onactivate="FireCustomGameEvent_Str(LevelUpButtonPressed)">
+							<Label text="Level up" />
 						</Button>
-						<Panel class="Text">
-							<Label id="AttackSpeedTextBox" text="1" />
+						<Button class="AdvancedButton" onactivate="FireCustomGameEvent_Str(ResetLevelButtonPressed)">
+							<Label text="Reset level" />
+						</Button>
+					</Panel>
+					<Panel class="horizontal_container CenteredSection">
+						<Panel class="AdvancedNemesisSetting">
+							<Label text="Timed practice"></Label>
 						</Panel>
-						<Button id="ButtonPlus" class="SettingButton"
-							onmousedown="Start_AttackSpeedChange(1)"
-							onmouseup="Stop_AttackSpeedChange()"
-							onmouseout="Stop_AttackSpeedChange()">
-							<Label  text="+"/>
-						</Button>
-					</Panel>
-					
-
-					<Panel class="NemesisSetting">
-						<Label text="Timed practice"></Label>
-					</Panel>
-					<Panel class="NemesisSetting" id="TimedPractice">
-						<Button id="ButtonMinus" class="SettingButton" 
-							onmousedown="Start_AttackSpeedChange(-1)"
-							onmouseup="Stop_AttackSpeedChange()"
-							onmouseout="Stop_AttackSpeedChange()">
-							<Label text="-"/>
-						</Button>
-						<Panel class="Text">
-							<Label id="AttackSpeedTextBox" text="0:30" />
+						<Panel class="AdvancedNemesisSetting">
+							<Label text="Game speed"></Label>
 						</Panel>
-						<Button id="ButtonPlus" class="SettingButton"
-							onmousedown="Start_AttackSpeedChange(1)"
-							onmouseup="Stop_AttackSpeedChange()"
-							onmouseout="Stop_AttackSpeedChange()">
-							<Label  text="+"/>
+					</Panel>
+					<Panel class="horizontal_container CenteredSection" >
+
+						<Panel class="AdvancedNemesisSetting" id="TimedPractice">
+							<Button id="ButtonMinus" class="SettingButton" 
+								onmousedown="TimedPracticeChange(-1)">
+								<Label text="-"/>
+							</Button>
+							<Panel class="Text">
+								<Label id="TimedPracticeTextBox" text="0:30" />
+							</Panel>
+							<Button id="ButtonPlus" class="SettingButton"
+								onmousedown="TimedPracticeChange(1)">
+								<Label  text="+"/>
+							</Button>
+						</Panel>
+						<Panel class="AdvancedNemesisSetting" id="GameSpeed">
+							<Button id="ButtonMinus" class="SettingButton" 
+								onmousedown="GameSpeedChange(-1)">
+								<Label text="-"/>
+							</Button>
+							<Panel class="Text">
+								<Label id="GameSpeedTextBox" text="1" />
+							</Panel>
+							<Button id="ButtonPlus" class="SettingButton"
+								onmousedown="GameSpeedChange(1)">
+								<Label  text="+"/>
+							</Button>
+						</Panel>
+						
+					</Panel>
+					<Panel class="horizontal_container CenteredSection" >
+						<Button class="AdvancedButton" onactivate="FireCustomGameEvent_Str(StartTimedPracticeButtonPressed)">
+							<Label text="Start practice" />
+						</Button>
+						<Button id="NewEnemyHeroButton" class="AdvancedButton" onactivate="ToggleEnemyHeroPicker()">
+							<Label text="Choose New Bot" />
 						</Button>
 					</Panel>
-					<Button class="DemoButton" onactivate="StartTimedPractice()">
-						<Label text="Start practice" />
-					</Button>
 					
 				</Panel>
 			</Panel>

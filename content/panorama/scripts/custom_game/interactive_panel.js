@@ -1,8 +1,16 @@
 var nemesisAttackSpeed = 0;
+var nemesisAttackSpeedToSend = 0;
+var sendingAttackSpeed = false;
 var attackSpeedTimer = null;
 var attackSpeedDelta = 0;
 var expChange = 0;
 var choosing_enemy = false;
+var maxHeroDmg = 40;
+var avgHeroDmg = 40;
+var minHeroDmg = 40;
+var bonusHeroDmg = 0;
+var timedPracticeSeconds = 30;
+var gameSpeed = 1;
 
 SetText("#AttackSpeedTextBox", nemesisAttackSpeed)
 
@@ -39,17 +47,20 @@ function OnRoundEnded( roundEndData )
 function ToggleHeroPicker()
 {
 	choosing_enemy = false;
+	$('#AdvancedScreen').AddClass('Invisible')
 	$('#ControlPanel').ToggleClass('HeroPickerVisible');
 }
 function ToggleEnemyHeroPicker()
 {
 	choosing_enemy = true;
 	$('#ControlPanel').ToggleClass('HeroPickerVisible');
+	$('#AdvancedScreen').AddClass('Invisible')
 }
 
 function ToggleAdvancedSettings()
 {
 	$('#AdvancedScreen').ToggleClass('Invisible')
+	$('#ControlPanel').RemoveClass('HeroPickerVisible');
 }
 
 function SwitchToNewHero( nHeroID )
@@ -108,10 +119,100 @@ function Stop_AttackSpeedChange()
 	expChange = 0;
 }
 
+function TimedPracticeChange(delta)
+{
+	if (delta < 0)
+	{
+		if(timedPracticeSeconds > 30)
+			timedPracticeSeconds -= 30;
+	}
+	else
+	{
+		timedPracticeSeconds += 30;
+	}
+	var minutes = Math.floor(timedPracticeSeconds/60);
+	var seconds = timedPracticeSeconds%60;
+	if(seconds == 0)
+		SetText("#TimedPracticeTextBox", minutes+":"+seconds+"0")
+	else
+		SetText("#TimedPracticeTextBox", minutes+":"+seconds)
+	$.DispatchEvent('FireCustomGameEvent_Str', 'TimedPracticeChanged', String(timedPracticeSeconds) );
+}
+
+function GameSpeedChange(delta)
+{
+	var text = "dec";
+	if(delta < 0)
+	{
+		if(gameSpeed <= 0.1)
+			return;
+		if(gameSpeed == 1)
+			gameSpeed = 0.8;
+		else if(gameSpeed < 1 && gameSpeed > 0.1)
+			gameSpeed = gameSpeed/2;
+		else
+			gameSpeed -= 1;
+		text = "dec";
+	}
+	else
+	{
+		if(gameSpeed >= 10)
+			return;
+		if(gameSpeed == 0.8)
+			gameSpeed = 1;
+		else if(gameSpeed < 0.8)
+			gameSpeed = gameSpeed*2;
+		else if(gameSpeed < 10)
+			gameSpeed += 1;
+		text = "inc";
+	}
+
+	SetText("#GameSpeedTextBox", gameSpeed)
+	$.DispatchEvent('FireCustomGameEvent_Str', 'GameSpeedChanged', String(text) );
+}
+
 function UpdateNemesisAttackSpeed(data)
 {
-	nemesisAttackSpeed = data.attack_speed
-	SetText("#AttackSpeedTextBox",nemesisAttackSpeed);
+	nemesisAttackSpeed = data.attack_speed;
+	if(nemesisAttackSpeed < -700)
+		nemesisAttackSpeed = -700;
+	else if(nemesisAttackSpeed > 700)
+		nemesisAttackSpeed = 700;
+	var text = "Bot attack speed " + Math.round(nemesisAttackSpeed);
+	var slider = $("#AttackSpeedSlider");
+	nemesisAttackSpeed = (nemesisAttackSpeed + 700)/1400;
+	slider.value = nemesisAttackSpeed;
+	SetText("#AttackSpeedNum", text);
+}
+
+function UpdateHeroDamage(data)
+{
+	maxHeroDmg = data.max;
+	avgHeroDmg = data.avg;
+	minHeroDmg = data.min;
+	bonusHeroDmg = data.avg - Math.floor((data.min+data.max)/2);
+	UpdateUIHeroDamage();
+}
+
+function UpdateUIHeroDamage()
+{
+	var slider = $("#DamageSlider");
+	var value = slider.value;
+	var diff = maxHeroDmg - minHeroDmg;
+
+	var text = "Damage threshold: " + Math.round(minHeroDmg + diff*value + bonusHeroDmg);
+	SetText("#DamageThresholdNum",text);
+}
+
+function TimedPracticeStart()
+{
+	SlideThumbActivate();
+}
+
+function TimedPracticeEnd()
+{
+	$( "#ControlPanel" ).RemoveClass( "Minimized" );
+	$('#AdvancedScreen').RemoveClass('Invisible')
 }
 
 function SetText(name, value)
@@ -133,17 +234,18 @@ function SlideThumbActivate()
 
 function NemesisModeActivate()
 {
-	$("#NemesisSettingButtons").ToggleClass("Faded")
+	//$("#NemesisSettingButtons").ToggleClass("Faded")
 	$.DispatchEvent('FireCustomGameEvent_Str', 'EnableUnfairButtonPressed', '' );
 }
 function DamageThresholdValueChanged()
 {
-	var slider = $("#MySlider");
+	var slider = $("#DamageSlider");
 	var value = slider.value;
-	
-	$.Msg("Slider value: ", value);
-	var text = "Damage threshold: " + Math.round(value*10);
+	var diff = maxHeroDmg - minHeroDmg;
+
+	var text = "Damage threshold: " + Math.round(minHeroDmg + Math.round(diff*value) + bonusHeroDmg);
 	SetText("#DamageThresholdNum",text);
+	$.DispatchEvent('FireCustomGameEvent_Str', "HeroDamageChange", String(Math.round(value*100)))
 }
 function AttackSpeedValueChanged()
 {
@@ -151,16 +253,28 @@ function AttackSpeedValueChanged()
 	var value = slider.value;
 
 	value = ((value * 2)-1)*700;
+	nemesisAttackSpeedToSend = value;
+	if(sendingAttackSpeed == false)
+	{
+		$.Schedule(0.1, SendAttackSpeedChange)
+	}
 
 	var text = "Bot attack speed " + Math.round(value);
 	SetText("#AttackSpeedNum",text);
 
+	
+}
+
+function SendAttackSpeedChange()
+{
+	var value = nemesisAttackSpeedToSend;
 	$.DispatchEvent('FireCustomGameEvent_Str', "NemesisAttackSpeedChange", String(Math.round(value)));
+	sendingAttackSpeed = false;
 }
 
 function initSliders()
 {
-	var slider_thrs = $("#MySlider");
+	var slider_thrs = $("#DamageSlider");
 	var slider_atck = $("#AttackSpeedSlider");
 	slider_thrs.value = 0.5;
 	slider_atck.value = 0.5;
@@ -169,17 +283,13 @@ function initSliders()
 
 (function()
 {
-	//$.Msg("INITIALIZED PANORAMA JS: round end panel");
-	// var slider = $("#MySlider");
-	// slider.SetPanelEvent("onvaluechanged", function(){
-	// 	var value = slider.value;
-	// 	$.Msg("Slider value: ", value);
-	// });
-
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
 	initSliders()
 	GameEvents.Subscribe( "round_ended", OnRoundEnded );
 	GameEvents.Subscribe("update_nemesis_attack_speed", UpdateNemesisAttackSpeed)
+	GameEvents.Subscribe("update_hero_damage", UpdateHeroDamage)
+	GameEvents.Subscribe("timed_practice_start", TimedPracticeStart)
+	GameEvents.Subscribe("timed_practice_end", TimedPracticeEnd)
 
 	$.RegisterEventHandler('DOTAUIHeroPickerHeroSelected', $('#ControlPanel'), SwitchToNewHero );
 })();

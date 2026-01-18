@@ -89,7 +89,7 @@ function barebones:OnNPCSpawned(keys)
 		end
 		-- Radiant creeps never give experience
 		if not self.ExperienceGainEnabled or npc_name == "npc_dota_creep_goodguys_melee" or npc_name == "npc_dota_creep_goodguys_ranged" or npc_name == "npc_dota_creep_goodguys_flagbearer" or npc_name == "npc_dota_goodguys_siege" then
-			npc:SetDeathXP( 0 ) -- TODO: Add a variable to enable experience gain
+			npc:SetDeathXP( 0 )
 		end
 	else
 		print("npc_spawned event doesn't have entindex key")
@@ -101,10 +101,15 @@ function barebones:OnNPCSpawned(keys)
 	if not self.PlayerHero then
 		if npc:IsRealHero() and npc:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
 			self.PlayerHero = npc
-			self.HeroDamage = npc:GetAverageTrueAttackDamage(nil)
 			local nemesis = "npc_dota_hero_sniper"
 			PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
 			self:SpawnLaneCreeps()
+			Timers:CreateTimer(0.5, function ()
+				self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
+				self.HeroDamageMin = self.PlayerHero:GetDamageMin()
+				self.HeroDamageMax = self.PlayerHero:GetDamageMax()
+				CustomGameEventManager:Send_ServerToAllClients("update_hero_damage", {min = self.HeroDamageMin, avg = self.HeroDamage, max = self.HeroDamageMax})
+			end)
 
 			local gamemode = GameRules:GetGameModeEntity()
 			gamemode:SetThink( "OnNeutralThink", self, "NeutralsThink", 60 ) -- There's probably a better way to do this
@@ -142,66 +147,68 @@ function barebones:OnHeroInGame(hero)
 			current_ability:SetLevel(1)
 		end
 	end
+	-- Non-barebones: This thing was causing me bugs, so I commented this whole thing out
 
-	Timers:CreateTimer(0.5, function()
-		local playerID = hero:GetPlayerID()	-- never nil (-1 by default), needs delay 1 or more frames
 
-		if PlayerResource:IsFakeClient(playerID) or playerID == nil or playerID == -1 then
-			-- This is happening only for bots
-			DebugPrint("[BAREBONES] OnHeroInGame - Bot hero "..hero:GetUnitName().." (re)spawned in the game.")
-			-- Set starting gold for bots
-			hero:SetGold(NORMAL_START_GOLD, false)
-		else
-			DebugPrint("[BAREBONES] OnHeroInGame running for a non-bot player!")
-			-- if not PlayerResource.PlayerData[playerID] and PlayerResource:IsValidPlayerID(playerID) then
-			-- 	PlayerResource:InitPlayerDataForID(playerID)
-			-- end
-			if hero:IsClone() then
-				DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Meepo Clone")
-				return
-			elseif hero:IsTempestDouble() then
-				DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Tempest Double")
-				return
-			elseif IsMonkeyKingCloneCustom(hero) then
-				DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Monkey King soldier or invalid entity")
-				return
-			elseif hero:IsSpiritBearCustom() then
-				DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Spirit Bear")
-				return
-			end
-			-- Set some hero stuff on first spawn or on every spawn (custom or not)
-			if PlayerResource.PlayerData[playerID].already_set_hero == true then
-				-- This is happening only when players create new heroes or replace them
-			else
-				-- This is happening for players when their primary hero spawns for the first time
-				DebugPrint("[BAREBONES] OnHeroInGame - Hero "..hero:GetUnitName().." spawned in the game for the first time for the player with ID: "..playerID)
+	-- Timers:CreateTimer(0.5, function()
+	-- 	local playerID = hero:GetPlayerID()	-- never nil (-1 by default), needs delay 1 or more frames
 
-				-- Make heroes briefly visible on spawn (to prevent bad fog of war interactions)
-				hero:MakeVisibleToTeam(DOTA_TEAM_GOODGUYS, 0.5)
-				hero:MakeVisibleToTeam(DOTA_TEAM_BADGUYS, 0.5)
+	-- 	if PlayerResource:IsFakeClient(playerID) or playerID == nil or playerID == -1 then
+	-- 		-- This is happening only for bots
+	-- 		DebugPrint("[BAREBONES] OnHeroInGame - Bot hero "..hero:GetUnitName().." (re)spawned in the game.")
+	-- 		-- Set starting gold for bots
+	-- 		hero:SetGold(NORMAL_START_GOLD, false)
+	-- 	else
+	-- 		DebugPrint("[BAREBONES] OnHeroInGame running for a non-bot player!")
+	-- 		-- if not PlayerResource.PlayerData[playerID] and PlayerResource:IsValidPlayerID(playerID) then
+	-- 		-- 	PlayerResource:InitPlayerDataForID(playerID)
+	-- 		-- end
+	-- 		if hero:IsClone() then
+	-- 			DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Meepo Clone")
+	-- 			return
+	-- 		elseif hero:IsTempestDouble() then
+	-- 			DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Tempest Double")
+	-- 			return
+	-- 		elseif IsMonkeyKingCloneCustom(hero) then
+	-- 			DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Monkey King soldier or invalid entity")
+	-- 			return
+	-- 		elseif hero:IsSpiritBearCustom() then
+	-- 			DebugPrint("[BAREBONES] OnHeroInGame - Spawned hero is a Spirit Bear")
+	-- 			return
+	-- 		end
+	-- 		-- Set some hero stuff on first spawn or on every spawn (custom or not)
+	-- 		if PlayerResource.PlayerData[playerID].already_set_hero == true then
+	-- 			-- This is happening only when players create new heroes or replace them
+	-- 		else
+	-- 			-- This is happening for players when their primary hero spawns for the first time
+	-- 			DebugPrint("[BAREBONES] OnHeroInGame - Hero "..hero:GetUnitName().." spawned in the game for the first time for the player with ID: "..playerID)
 
-				-- Set the starting gold for the player's hero 
-				-- Use 'PlayerResource:ModifyGold(playerID, NORMAL_START_GOLD-600, false, 0)' if GameRules:SetStartingGold breaks again
-				-- If the NORMAL_START_GOLD is less than 600, disable Strategy Time and use 'hero:SetGold(NORMAL_START_GOLD, false)' instead
-				-- Why? Because OnHeroInGame is triggering during PreGame (after Strategy Time) and players can buy items during Strategy Time (starting gold will remain default 600)
+	-- 			-- Make heroes briefly visible on spawn (to prevent bad fog of war interactions)
+	-- 			hero:MakeVisibleToTeam(DOTA_TEAM_GOODGUYS, 0.5)
+	-- 			hero:MakeVisibleToTeam(DOTA_TEAM_BADGUYS, 0.5)
+
+	-- 			-- Set the starting gold for the player's hero 
+	-- 			-- Use 'PlayerResource:ModifyGold(playerID, NORMAL_START_GOLD-600, false, 0)' if GameRules:SetStartingGold breaks again
+	-- 			-- If the NORMAL_START_GOLD is less than 600, disable Strategy Time and use 'hero:SetGold(NORMAL_START_GOLD, false)' instead
+	-- 			-- Why? Because OnHeroInGame is triggering during PreGame (after Strategy Time) and players can buy items during Strategy Time (starting gold will remain default 600)
 				
-				if ADDITIONAL_GPM then
-					hero:AddNewModifier(hero, nil, "modifier_custom_passive_gold", {})
-				end
+	-- 			if ADDITIONAL_GPM then
+	-- 				hero:AddNewModifier(hero, nil, "modifier_custom_passive_gold", {})
+	-- 			end
 
-				-- Create an item and add it to the player's hero, effectively ensuring they start with the item
-				if ADD_ITEM_TO_HERO_ON_SPAWN then
-					local item = CreateItem("item_example_item", hero, hero)
-					hero:AddItem(item)
-				end
+	-- 			-- Create an item and add it to the player's hero, effectively ensuring they start with the item
+	-- 			if ADD_ITEM_TO_HERO_ON_SPAWN then
+	-- 				local item = CreateItem("item_example_item", hero, hero)
+	-- 				hero:AddItem(item)
+	-- 			end
 
-				-- Make sure that stuff above will not happen again for the player if some other hero spawns
-				-- for him for the first time during the game 
-				PlayerResource.PlayerData[playerID].already_set_hero = true
-				DebugPrint("[BAREBONES] OnHeroInGame - Hero "..hero:GetUnitName().." set for the player with ID: "..playerID)
-			end
-		end
-	end)
+	-- 			-- Make sure that stuff above will not happen again for the player if some other hero spawns
+	-- 			-- for him for the first time during the game 
+	-- 			PlayerResource.PlayerData[playerID].already_set_hero = true
+	-- 			DebugPrint("[BAREBONES] OnHeroInGame - Hero "..hero:GetUnitName().." set for the player with ID: "..playerID)
+	-- 		end
+	-- 	end
+	-- end)
 end
 
 -- An item was picked up off the ground
@@ -297,6 +304,9 @@ function barebones:OnPlayerLevelUp(keys)
 	self.NemesisHero:AddNewModifier(self.NemesisHero, nil, "modifier_bonus_health", {bonus_health = self.NemesisBonusHealth})
 	Timers:CreateTimer(0.5, function ()
 		self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
+		self.HeroDamageMin = self.PlayerHero:GetDamageMin()
+		self.HeroDamageMax = self.PlayerHero:GetDamageMax()
+		CustomGameEventManager:Send_ServerToAllClients("update_hero_damage", {min = self.HeroDamageMin, avg = self.HeroDamage, max = self.HeroDamageMax})
 		self:NemesisAddAttackModifier(self.NemesisHero:GetUnitName())
 	end)
 
@@ -406,8 +416,8 @@ function barebones:OnLastHit(keys)
 			-- DENIES
 			self.NetTableStats["DenyTotal"] = self.NetTableStats["DenyTotal"] + 1
 			self.NetTableStats["DenyCount"] = self.NetTableStats["DenyCount"] + tmpMelee + tmpRanged + tmpSiege
-			self.NetTableStats["MeleeCreepsDenied"] = self.NetTableStats["MeleeCreepsDenied"] + tmpMelee -- TODO: Will be used later
-			self.NetTableStats["RangedCreepsDenied"] = self.NetTableStats["RangedCreepsDenied"] + tmpRanged	-- for gold/xp stats
+			self.NetTableStats["MeleeCreepsDenied"] = self.NetTableStats["MeleeCreepsDenied"] + tmpMelee
+			self.NetTableStats["RangedCreepsDenied"] = self.NetTableStats["RangedCreepsDenied"] + tmpRanged
 			self.NetTableStats["SiegeCreepsDenied"] = self.NetTableStats["SiegeCreepsDenied"] + tmpSiege
 			self.NetTableStats["FlagCreepsDenied"] = self.NetTableStats["FlagCreepsDenied"] + tmpFlag
 			if delay_time ~= -1 then
@@ -769,6 +779,11 @@ end
 
 function barebones:OnSwitchToNewHero(keys, data)
 	-- Kill all creeps and erase nemesis' target list
+	self.PauseTraining = false
+	if self.TimedPracticeEnabled == true then
+		self.TimedPracticeEnabled = false
+		CustomGameEventManager:Send_ServerToAllClients("timed_practice_end", {})
+	end
 	local creeps = self:FindAllCreeps(self.PlayerHero)
 	for _,v in pairs(creeps) do
 		v:ForceKill(false)
@@ -885,7 +900,7 @@ function barebones:NemesisThink()
 				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
 				TargetIndex = self.CurrentTarget:entindex()
 			})
-			--DebugDrawCircle(self.CurrentTarget:GetAbsOrigin(), Vector(0,0,255), 20, 20, true, 5) -- TODO: Add helper functions to highlight lasthittable creep and almost lasthittable creep
+			--DebugDrawCircle(self.CurrentTarget:GetAbsOrigin(), Vector(0,0,255), 20, 20, true, 5)
 			print("Nemesis attacked at: "..(Time() - v[2]))
 		elseif not self.NemesisHero:IsAttacking() then
 			ExecuteOrderFromTable({
@@ -965,7 +980,7 @@ function barebones:NemesisMove()
 		print("RUN AWAY!")
 		new_pos = self.DireRangedPos
 	elseif dist <= const_distance-hyst then
-		new_pos = new_pos + (const_distance-dist) * away_from_center -- TODO:Bug here and in the other elseif, if center is behind sniper, he will run towards Hero
+		new_pos = new_pos + (const_distance-dist) * away_from_center
 		new_pos.z = 0
 	elseif dist >= const_distance+hyst*2 then
 		new_pos = new_pos + (dist-const_distance) * towards_center
@@ -1006,7 +1021,7 @@ function barebones:CreepsCenter()
 		end
 		center_of_gravity = center_of_gravity/num_creeps
 	else
-		-- This shouldn't happen
+		-- This shouldn't happen unless creepwaves are paused
 		print("Creeps nil!")
 		center_of_gravity = self.NemesisSpawnPos+self.HeroSpawnPos/2
 	end
@@ -1076,24 +1091,14 @@ function barebones:RoundRestart()
 	-- Spoof a new hero pick and just call the existing function
 	local heroid = self.PlayerHero:GetHeroID()
 	self:OnSwitchToNewHero(0, {str = tostring(heroid)})
-
-	-- if a == 0  then
-	-- 	self:FreezeTime()
-	-- 	a = 1
-	-- else
-	-- 	self:UnFreezeTime()
-	-- 	print("Unfreezing")
-	-- 	a = 0
-	-- end
-
 end
 
 function barebones:OnEntityHurt(keys)
 	-- Calculate effective HP of the damaged creep and add it to Nemesis's list if below average Hero base damage
 	local victim = EntIndexToHScript(keys.entindex_killed)
 	local attacker = EntIndexToHScript(keys.entindex_attacker)
-	local threshold = self.HeroDamage -- self.NemesisHero:GetBaseDamageMin()
-
+	local damageBonus = self.HeroDamage - (math.floor(self.HeroDamageMin+self.HeroDamageMax)/2)
+	local threshold = self.HeroDamageMin + math.floor(self.LasthitThreshold*(self.HeroDamageMax-self.HeroDamageMin)) + damageBonus -- By default this is equal to self.HeroDamage
 	if victim:GetClassname() == "npc_dota_creep_lane" then
 		local victim_armor = victim:GetPhysicalArmorBaseValue()
 		local armor_factor = 1-((0.06*victim_armor)/(1+0.06*math.abs(victim_armor)))
@@ -1194,8 +1199,13 @@ function barebones:AssignNewHero(sHero, iPlayerID)
 	newHero:SetAcquisitionRange(0)
 	player:SetAssignedHeroEntity(newHero)
 	self.PlayerHero = newHero
-	self.HeroDamage = newHero:GetAverageTrueAttackDamage(nil) -- TODO: Here it's possible that Nemesis will spawn before HeroDamage is updated
-
+		
+	Timers:CreateTimer(0.5, function ()
+		self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil) -- TODO: Here it's possible that Nemesis will spawn before HeroDamage is updated
+		self.HeroDamageMin = self.PlayerHero:GetDamageMin()
+		self.HeroDamageMax = self.PlayerHero:GetDamageMax()
+		CustomGameEventManager:Send_ServerToAllClients("update_hero_damage", {min = self.HeroDamageMin, avg = self.HeroDamage, max = self.HeroDamageMax})
+	end)
 	-- ...alternatively use DebugCreateHeroWithVariant()
 
 	-- -- Disconnect the substitude bot, if exists (it should have id = 1 but loop through a couple just to be sure)
@@ -1234,7 +1244,12 @@ function barebones:OnThink()
 	if (GameRules:GetGameTime() >= (self.LastWaveSpawnTime + self.CreepSpawnInterval)) then
 		self:SpawnLaneCreeps()
 	end
-	return 0.5
+	if(self.TimedPracticeEnabled) then
+		if (GameRules:GetGameTime() >= self.TimedPracticeEndTime-5) then
+			self:TimeIsUp()
+		end
+	end
+		return 0.5
 end
 
 -- Neutrals spawner
@@ -1248,16 +1263,41 @@ function barebones:SendStatisticsToClient()
 	CustomNetTables:SetTableValue( "last_hit_trainer_stats", "stats", self.NetTableStats )
 end
 
-function barebones:OnItemPurchased(keys) --TODO: Fix nemesis mode not updating damage
+function barebones:OnItemPurchased(keys)
 	-- HAHA! No cheating allowed! Nemesis now tracks Hero damage dynamically.
-	self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
-	self:NemesisAddAttackModifier(self.NemesisHero:GetUnitName())
+	
+	Timers:CreateTimer(0.5, function ()
+		self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
+		self.HeroDamageMin = self.PlayerHero:GetDamageMin()
+		self.HeroDamageMax = self.PlayerHero:GetDamageMax()
+		CustomGameEventManager:Send_ServerToAllClients("update_hero_damage", {min = self.HeroDamageMin, avg = self.HeroDamage, max = self.HeroDamageMax})
+		self:NemesisAddAttackModifier(self.NemesisHero:GetUnitName())
+	end)
+	
 end
 
 function barebones:OnNemesisAttackSpeedChange(keys, data)
 	if not self.NemesisUnfair then
-		self.NemesisBonusAttackSpeed = 0+data.str -- Really? The INT variable is retyped to string, come on...
+		self.NemesisBonusAttackSpeed = 0+data.str
 		self:NemesisAddAttackModifier(self.NemesisHero:GetUnitName())
+	end
+end
+
+function barebones:OnHeroDamageChange(keys, data)
+	self.LasthitThreshold = 0+data.str/100
+end
+
+function barebones:OnTimedPracticeChanged(keys, data)
+	self.TimedPractice = 0+data.str
+end
+
+function barebones:OnGameSpeedChanged(keys, data)
+	print("Changing game speed")
+	SendToServerConsole("sv_cheats 1")
+	if data.str == "dec" then
+		SendToServerConsole("host_timescale_dec")
+	else
+		SendToServerConsole("host_timescale_inc")
 	end
 end
 
@@ -1280,6 +1320,78 @@ function barebones:OnEnableExperienceButtonPressed(keys)
 	end
 	
 
+end
+
+function barebones:OnDisableSiegeCreepsButtonPressed(keys)
+	if self.SiegeEnabled == true then
+		self.SiegeEnabled = false
+		local ents = self:FindAllCreeps(self.PlayerHero)
+		for _,v in pairs(ents) do
+			if v:GetClassname() == "npc_dota_creep_siege" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+	else
+		self.SiegeEnabled = true
+	end
+end
+
+function barebones:OnLevelUpButtonPressed(keys)
+	self.PlayerHero:HeroLevelUp(true)
+end
+
+function barebones:OnResetLevelButtonPressed(keys)
+	-- Precache the new hero and nemesis and call their spawning functions
+	local nHeroID = tonumber( self.PlayerHero:GetHeroID() )
+	local sHeroClass = DOTAGameManager:GetHeroUnitNameByID( nHeroID )
+	local nPlayerID = 0--self.PlayerHero:GetPlayerID()
+	self.NemesisBonusHealth = 0
+
+	PrecacheUnitByNameAsync( sHeroClass, function() self:AssignNewHero( sHeroClass, nPlayerID ) end, nPlayerID )
+	PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis("npc_dota_hero_sniper") end)
+
+end
+
+function barebones:OnStartTimedPracticeButtonPressed()
+	--GameRules:ResetGameTime()
+	self:RoundRestart()
+	self.TimedPracticeEnabled = true
+	self.PauseTraining = false
+	self.TimedPracticeEndTime = GameRules:GetGameTime() + self.TimedPractice
+	CustomGameEventManager:Send_ServerToAllClients("timed_practice_start", {TimedPracticeDuration=self.TimedPractice, TimedPracticeStartTime = GameRules:GetGameTime()})
+end
+
+function barebones:TimeIsUp()
+	-- This is just the first half of OnSwitchToNewHero()
+	-- Kill all creeps and erase nemesis' target list
+	self.PauseTraining = true
+	local creeps = self:FindAllCreeps(self.PlayerHero)
+	local lane_creep_present = false
+	for _,v in pairs(creeps) do
+		if v:GetClassname() == "npc_dota_creep_lane" or v:GetClassname() == "npc_dota_creep_siege" then
+			lane_creep_present = true
+		end
+	end
+	if lane_creep_present then
+		CustomGameEventManager:Send_ServerToAllClients("timed_practice_overtime", {})
+		return
+	end
+	self.TimedPracticeEnabled = false
+	for _,v in pairs(creeps) do
+		v:ForceKill(false)
+	end
+
+	-- Precache the new hero and nemesis and call their spawning functions
+	local nHeroID = self.PlayerHero:GetHeroID()
+	local sHeroClass = DOTAGameManager:GetHeroUnitNameByID( nHeroID )
+	local nPlayerID = 0--self.PlayerHero:GetPlayerID()
+	local nemesis = "npc_dota_hero_sniper"
+	self.NemesisBonusHealth = 0
+
+	PrecacheUnitByNameAsync( sHeroClass, function() self:AssignNewHero( sHeroClass, nPlayerID ) end, nPlayerID )
+	PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
+	CustomGameEventManager:Send_ServerToAllClients("timed_practice_end", {})
 end
 
 function barebones:ZeroExpValues()
@@ -1322,7 +1434,7 @@ function barebones:OnEnableUnfairButtonPressed(keys)
 		self.NemesisUnfair = true
 	end
 	self.CurrentTarget = nil
-	local nemesis = "npc_dota_hero_sniper" -- TODO: Allow player to choose oppotent (including vanilla without modifier)
+	local nemesis = "npc_dota_hero_sniper"
 	PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
 end
 
@@ -1337,12 +1449,4 @@ function barebones:OnSwitchToNewEnemyHero(keys, data)
 	PrecacheUnitByNameAsync(sNemesisClass, function() self:SpawnNemesis(sNemesisClass) end)
 
 	print("Enemy: "..sNemesisClass)
-end
-
-function barebones:FreezeTime()
-	SendToServerConsole("host_timescale 0.1")
-end
-
-function barebones:UnFreezeTime()
-	SendToServerConsole("host_timescale 1")
 end
