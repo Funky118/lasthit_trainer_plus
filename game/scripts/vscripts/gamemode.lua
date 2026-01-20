@@ -293,9 +293,10 @@ function barebones:InitGameMode()
 	Convars:SetInt('dota_max_physical_items_purchase_limit', 64)
 
 	-- Spawn a global shop
-	SpawnDOTAShopTriggerRadiusApproximate(Vector(), 999999); 
+	SpawnDOTAShopTriggerRadiusApproximate(Vector(), 999999);
 	self:InitializeNetworkStats()
 	self:InitNeutralCamps()
+	Convars:SetInt("dota_pause_force_unpause_time ", 9999)
 end
 
 function barebones:InitializeNetworkStats()

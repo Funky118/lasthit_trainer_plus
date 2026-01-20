@@ -1292,16 +1292,11 @@ function barebones:OnTimedPracticeChanged(keys, data)
 end
 
 function barebones:OnGameSpeedChanged(keys, data)
-	print("Changing game speed")
-	SendToServerConsole("sv_cheats 1")
-	if data.str == "dec" then
-		SendToServerConsole("host_timescale_dec")
-	else
-		SendToServerConsole("host_timescale_inc")
-	end
+	local speed = 0+data.str
+	print("Changing game speed to "..speed)
+	Convars:SetFloat("host_timescale", speed)
 end
 
--- 
 function barebones:OnHighlightCreepsButtonPressed(keys)
 	if self.HighlightEnabled == true then
 		self.HighlightEnabled = false

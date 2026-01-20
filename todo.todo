@@ -1,6 +1,8 @@
-✔ Fix stats not showing after practice @done(26-01-18 23:23)
-✔ Fix bonus damage not counting @done(26-01-18 23:23)
 Likely add:
+    ☐ All starting items available during strategy time
+    ☐ Pausing
+    ☐ Clear all particles before deleting hero (dumpparticlelist)
+    ☐ Disable nemesis
     ☐ Keep items between timed practice rounds
     ☐ Add minimap awareness practice
     ☐ Add rune control
@@ -9,6 +11,8 @@ Likely add:
     ☐ Add zoom in/out button next to stats graph
     ☐ Fix flipped hud
 Archive:
+  ✔ Fix stats not showing after practice @done(26-01-18 23:23)
+  ✔ Fix bonus damage not counting @done(26-01-18 23:23)
   ✔ Finish damage threshold @done(26-01-18 19:07)
   ✔ Fix restarting time @done(26-01-18 21:28)
   ✔ Fix attack speed @done(26-01-18 21:28)

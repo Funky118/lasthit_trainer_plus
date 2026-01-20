@@ -168,7 +168,7 @@ function GameSpeedChange(delta)
 	}
 
 	SetText("#GameSpeedTextBox", gameSpeed)
-	$.DispatchEvent('FireCustomGameEvent_Str', 'GameSpeedChanged', String(text) );
+	$.DispatchEvent('FireCustomGameEvent_Str', 'GameSpeedChanged', String(gameSpeed) );
 }
 
 function UpdateNemesisAttackSpeed(data)
