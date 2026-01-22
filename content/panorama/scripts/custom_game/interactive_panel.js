@@ -281,6 +281,12 @@ function initSliders()
 
 }
 
+function PauseButtonPressed()
+{
+  $.DispatchEvent('FireCustomGameEvent_Str', "LasthitTrainerPause", '');
+}
+
+
 (function()
 {
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
@@ -290,6 +296,12 @@ function initSliders()
 	GameEvents.Subscribe("update_hero_damage", UpdateHeroDamage)
 	GameEvents.Subscribe("timed_practice_start", TimedPracticeStart)
 	GameEvents.Subscribe("timed_practice_end", TimedPracticeEnd)
+	// The following five lines are all needed to enable unlimited pausing on the server
+	var date = new Date();
+	var unique_string = "+lasthit_trainer_pause"+date.getDay()+date.getMonth()+date.getYear()+date.getHours()+date.getMinutes()+date.getSeconds();
+	$.Msg(unique_string)
+	Game.AddCommand( unique_string, PauseButtonPressed, "", 0 );
+	Game.CreateCustomKeyBind('F9', unique_string);
 
 	$.RegisterEventHandler('DOTAUIHeroPickerHeroSelected', $('#ControlPanel'), SwitchToNewHero );
 })();

@@ -1348,7 +1348,7 @@ function barebones:OnResetLevelButtonPressed(keys)
 
 end
 
-function barebones:OnStartTimedPracticeButtonPressed()
+function barebones:OnStartTimedPracticeButtonPressed(keys)
 	--GameRules:ResetGameTime()
 	self:RoundRestart()
 	self.TimedPracticeEnabled = true
@@ -1444,4 +1444,10 @@ function barebones:OnSwitchToNewEnemyHero(keys, data)
 	PrecacheUnitByNameAsync(sNemesisClass, function() self:SpawnNemesis(sNemesisClass) end)
 
 	print("Enemy: "..sNemesisClass)
+end
+
+function barebones:OnLasthitTrainerPause(keys)
+	--print("Pausing the game through event")
+	self.GamePaused = not self.GamePaused
+	PauseGame(self.GamePaused)
 end

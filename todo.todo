@@ -1,3 +1,4 @@
+☐ Debug [SoundSystem] Failed to start voice for sounds\vo\puck\puck_move_03.vsnd
 Likely add:
     ☐ All starting items available during strategy time
     ☐ Pausing
@@ -11,6 +12,7 @@ Likely add:
     ☐ Add zoom in/out button next to stats graph
     ☐ Fix flipped hud
 Archive:
+  ✔ setpause 			Set the pause state of the server. @done(26-01-21 21:08)
   ✔ Fix stats not showing after practice @done(26-01-18 23:23)
   ✔ Fix bonus damage not counting @done(26-01-18 23:23)
   ✔ Finish damage threshold @done(26-01-18 19:07)

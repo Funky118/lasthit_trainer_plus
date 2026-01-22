@@ -133,7 +133,7 @@ MINIMUM_ATTACK_SPEED                         = 10    -- What should we use for t
 DISABLE_DAY_NIGHT_CYCLE                      = true -- Should we disable the day night cycle from naturally occurring? (Manual adjustment still possible)
 DISABLE_KILLING_SPREE_ANNOUNCER              = false -- Should we disable the killing spree announcer?
 DISABLE_STICKY_ITEM                          = false -- Should we disable the sticky item button in the quick buy area?
-ENABLE_PAUSING                               = true  -- Should we allow players to pause the game?
+ENABLE_PAUSING                               = false  -- Should we allow players to pause the game?
 
 FORCE_MINIMAP_ON_THE_LEFT                    = false -- Should we disable hud flip aka force the default dota hud positions?
 -- Note: Some players have minimap on the right and gold/shop on the left.

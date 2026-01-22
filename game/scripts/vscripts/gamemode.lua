@@ -64,6 +64,7 @@ end
 function barebones:InitGameMode()
 	--Non-barebones: This has been edited but the edits are hopefully self-explenatory
 	DebugPrint("[BAREBONES] Starting to load Game Rules.")
+	self.GamePaused = false
 
 	-- This causes vectorws error messages
 	LinkLuaModifier("modifier_nemesis", LUA_MODIFIER_MOTION_NONE )
@@ -241,6 +242,7 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "ResetLevelButtonPressed", function(...) return self:OnResetLevelButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "StartTimedPracticeButtonPressed", function(...) return self:OnStartTimedPracticeButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "EnableUnfairButtonPressed", function(...) return self:OnEnableUnfairButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "LasthitTrainerPause", function(...) return self:OnLasthitTrainerPause( ... ) end )
 
 	-- Change random seed for math.random function
 	local timeTxt = string.gsub(string.gsub(GetSystemTime(), ':', ''), '0','')
@@ -296,7 +298,6 @@ function barebones:InitGameMode()
 	SpawnDOTAShopTriggerRadiusApproximate(Vector(), 999999);
 	self:InitializeNetworkStats()
 	self:InitNeutralCamps()
-	Convars:SetInt("dota_pause_force_unpause_time ", 9999)
 end
 
 function barebones:InitializeNetworkStats()
