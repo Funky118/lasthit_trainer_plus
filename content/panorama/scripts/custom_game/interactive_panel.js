@@ -47,6 +47,7 @@ function OnRoundEnded( roundEndData )
 function ToggleHeroPicker()
 {
 	choosing_enemy = false;
+	$("#InfoScreen").AddClass("Invisible");
 	$('#AdvancedScreen').AddClass('Invisible')
 	$('#ControlPanel').ToggleClass('HeroPickerVisible');
 }
@@ -55,6 +56,7 @@ function ToggleEnemyHeroPicker()
 	choosing_enemy = true;
 	$('#ControlPanel').ToggleClass('HeroPickerVisible');
 	$('#AdvancedScreen').AddClass('Invisible')
+	$("#InfoScreen").AddClass("Invisible");
 }
 
 function ToggleAdvancedSettings()

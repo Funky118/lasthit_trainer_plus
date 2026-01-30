@@ -103,6 +103,7 @@ function barebones:OnNPCSpawned(keys)
 			self.PlayerHero = npc
 			local nemesis = "npc_dota_hero_sniper"
 			PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
+			self.PauseTraining = false -- No creeps spawning while in strategy
 			self:SpawnLaneCreeps()
 			Timers:CreateTimer(0.5, function ()
 				self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
@@ -1093,6 +1094,25 @@ function barebones:RoundRestart()
 	self:OnSwitchToNewHero(0, {str = tostring(heroid)})
 end
 
+function barebones:RememberItems()
+	self.PlayerItemList = {}
+	for i = 0,8 do
+		local tmp = self.PlayerHero:GetItemInSlot(i)
+		if tmp ~= nil then
+			table.insert(self.PlayerItemList, tmp:GetAbilityName())
+		end
+	end
+end
+
+function barebones:ReturnItems()
+	for k,v in pairs(self.PlayerItemList) do
+		if v ~= nil then
+			self.PlayerHero:AddItemByName(v)
+		end
+	end
+	self.PlayerItemList = {}
+end
+
 function barebones:OnEntityHurt(keys)
 	-- Calculate effective HP of the damaged creep and add it to Nemesis's list if below average Hero base damage
 	local victim = EntIndexToHScript(keys.entindex_killed)
@@ -1199,6 +1219,7 @@ function barebones:AssignNewHero(sHero, iPlayerID)
 	newHero:SetAcquisitionRange(0)
 	player:SetAssignedHeroEntity(newHero)
 	self.PlayerHero = newHero
+	self:ReturnItems()
 		
 	Timers:CreateTimer(0.5, function ()
 		self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil) -- TODO: Here it's possible that Nemesis will spawn before HeroDamage is updated
@@ -1350,6 +1371,7 @@ end
 
 function barebones:OnStartTimedPracticeButtonPressed(keys)
 	--GameRules:ResetGameTime()
+	self:RememberItems()
 	self:RoundRestart()
 	self.TimedPracticeEnabled = true
 	self.PauseTraining = false

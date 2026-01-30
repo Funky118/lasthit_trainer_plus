@@ -116,7 +116,7 @@ function barebones:InitGameMode()
 	-- Counter initialization
 	self.CreepSpawnInterval = 30
 	self.TimedPractice = 30
-	self.PauseTraining = false
+	self.PauseTraining = true
 	self.TimedPracticeEnabled = false
 	self.TimedPracticeEndTime = 0
 	self.LastWaveSpawnTime = -1 -- This is initialized -1 just like in Valve's code
@@ -132,6 +132,7 @@ function barebones:InitGameMode()
 	self.ExperienceGainEnabled = false
 	self.SiegeEnabled = true
 	self.NeutralExpList = {}
+	self.PlayerItemList = {}
 
 
 	-- Setup rules

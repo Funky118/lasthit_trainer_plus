@@ -36,7 +36,7 @@
 	hero_picker = 
 	{
 	}
-	ForceDefaultGuide = true
+	ForceDefaultGuide = false
 	MinimalPrecache = false
 	MinPlayers = 1
 	MaxPlayers = 1
