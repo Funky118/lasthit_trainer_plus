@@ -1400,6 +1400,7 @@ function barebones:TimeIsUp()
 	end
 
 	-- Precache the new hero and nemesis and call their spawning functions
+	self:RememberItems()
 	local nHeroID = self.PlayerHero:GetHeroID()
 	local sHeroClass = DOTAGameManager:GetHeroUnitNameByID( nHeroID )
 	local nPlayerID = 0--self.PlayerHero:GetPlayerID()
