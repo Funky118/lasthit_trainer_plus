@@ -1,15 +1,24 @@
 ☐ Debug [SoundSystem] Failed to start voice for sounds\vo\puck\puck_move_03.vsnd
+☐ Differenciate missed lasthit and nemesis lasthit
 Likely add:
+    ✔ Radiant and dire range, melee, catapult enable @done(26-05-27 21:32)
+    ✔ Disable friendly/enemy creep spawn @done(26-05-27 21:32)
+    ☐ Delay friendly creep spawn to practice under tower (also delay spawning until all creeps dead)
+    ☐ T1, T2, T3 tower damage
+    ☐ Move creep meet point
+    ☐ Add minimap awareness practice
+    ☐ Add rune control
+    ☐ Tutorial map for absolutely new players (teach blocking, aggro etc.)
+
     ☐ All starting items available during strategy time
     ☐ Clear all particles before deleting hero (dumpparticlelist)
     ☐ Disable nemesis
     ☐ Option to remember items
-    ☐ Add minimap awareness practice
-    ☐ Add rune control
     ☐ Automatically increase/decrease Nemesis attack speed with each succesful lasthit
-    ☐ Tutorial map for absolutely new players (teach blocking, aggro etc.)
-    ☐ Add zoom in/out button next to stats graph
+    ☐ Lane upgrade option
+    ☐ Disable lane upgrade option
     ☐ Fix flipped hud
+
 Archive:
   ✔ Hide stats when hero picker opens @done(26-01-30 22:23)
   ✔ Pausing @done(26-01-30 22:23) @project(Likely add)

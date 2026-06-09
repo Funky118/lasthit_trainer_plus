@@ -1337,11 +1337,11 @@ function barebones:OnEnableExperienceButtonPressed(keys)
 	
 
 end
-
-function barebones:OnDisableSiegeCreepsButtonPressed(keys)
-	if self.SiegeEnabled == true then
-		self.SiegeEnabled = false
-		local ents = self:FindAllCreeps(self.PlayerHero)
+-- **********Disable siege creeps block
+function barebones:OnDisableRadiantSiegeCreepsButtonPressed(keys)
+	if self.RadiantSiegeEnabled == true then
+		self.RadiantSiegeEnabled = false
+		local ents = self:FindFriendlyCreeps(self.PlayerHero)
 		for _,v in pairs(ents) do
 			if v:GetClassname() == "npc_dota_creep_siege" then
 				v:SetDeathXP(0)
@@ -1349,9 +1349,85 @@ function barebones:OnDisableSiegeCreepsButtonPressed(keys)
 			end
 		end
 	else
-		self.SiegeEnabled = true
+		self.RadiantSiegeEnabled = true
 	end
 end
+
+function barebones:OnDisableDireSiegeCreepsButtonPressed(keys)
+	if self.DireSiegeEnabled == true then
+		self.DireSiegeEnabled = false
+		local ents = self:FindEnemyCreeps(self.PlayerHero, 9999)
+		for _,v in pairs(ents) do
+			if v:GetClassname() == "npc_dota_creep_siege" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+	else
+		self.DireSiegeEnabled = true
+	end
+end
+-- **********Disable Ranged creeps block
+function barebones:OnDisableRadiantRangedCreepsButtonPressed(keys)
+	if self.RadiantRangedEnabled == true then
+		self.RadiantRangedEnabled = false
+		local ents = self:FindFriendlyCreeps(self.PlayerHero)
+		for _,v in pairs(ents) do
+			if v:GetUnitName() == "npc_dota_creep_goodguys_ranged" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+	else
+		self.RadiantRangedEnabled = true
+	end
+end
+
+function barebones:OnDisableDireRangedCreepsButtonPressed(keys)
+	if self.DireRangedEnabled == true then
+		self.DireRangedEnabled = false
+		local ents = self:FindEnemyCreeps(self.PlayerHero,9999)
+		for _,v in pairs(ents) do
+			if v:GetUnitName() == "npc_dota_creep_badguys_ranged" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+	else
+		self.DireRangedEnabled = true
+	end
+end
+-- **********Disable Melee creeps block
+function barebones:OnDisableRadiantMeleeCreepsButtonPressed(keys)
+	if self.RadiantMeleeEnabled == true then
+		self.RadiantMeleeEnabled = false
+		local ents = self:FindFriendlyCreeps(self.PlayerHero)
+		for _,v in pairs(ents) do
+			if v:GetUnitName() == "npc_dota_creep_goodguys_melee" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+	else
+		self.RadiantMeleeEnabled = true
+	end
+end
+
+function barebones:OnDisableDireMeleeCreepsButtonPressed(keys)
+	if self.DireMeleeEnabled == true then
+		self.DireMeleeEnabled = false
+		local ents = self:FindEnemyCreeps(self.PlayerHero,9999)
+		for _,v in pairs(ents) do
+			if v:GetUnitName() == "npc_dota_creep_badguys_melee" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+	else
+		self.DireMeleeEnabled = true
+	end
+end
+-- **********End block
 
 function barebones:OnLevelUpButtonPressed(keys)
 	self.PlayerHero:HeroLevelUp(true)

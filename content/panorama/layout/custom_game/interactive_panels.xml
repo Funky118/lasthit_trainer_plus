@@ -70,8 +70,32 @@
 						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
 							<Label text="Nemesis mode"></Label>
 						</ToggleButton>
-						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableSiegeCreepsButtonPressed )">
-							<Label text="Disable siege creeps"></Label>
+						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( NemesisEnabled )">
+							<Label text="Bot enable"></Label>
+						</ToggleButton>
+					</Panel>
+					<Panel class="horizontal_container">
+						<ToggleButton id="DireSiegeButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableDireSiegeCreepsButtonPressed )">
+							<Label text="Dire siege"></Label>
+						</ToggleButton>
+						<ToggleButton id="RadiantSiegeButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableRadiantSiegeCreepsButtonPressed )">
+							<Label text="Radiant siege"></Label>
+						</ToggleButton>
+					</Panel>
+					<Panel class="horizontal_container">
+						<ToggleButton id="DireRangedButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableDireRangedCreepsButtonPressed )">
+							<Label text="Dire ranged"></Label>
+						</ToggleButton>
+						<ToggleButton id="RadiantRangedButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableRadiantRangedCreepsButtonPressed )">
+							<Label text="Radiant ranged"></Label>
+						</ToggleButton>
+					</Panel>
+					<Panel class="horizontal_container">
+						<ToggleButton id="DireMeleeButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableDireMeleeCreepsButtonPressed )">
+							<Label text="Dire melee"></Label>
+						</ToggleButton>
+						<ToggleButton id="RadiantMeleeButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableRadiantMeleeCreepsButtonPressed )">
+							<Label text="Radiant melee"></Label>
 						</ToggleButton>
 					</Panel>
 					<Panel class="AdvancedSlider">

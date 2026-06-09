@@ -291,6 +291,12 @@ function PauseButtonPressed()
 
 (function()
 {
+	$("#DireSiegeButton").SetSelected(true);
+	$("#RadiantSiegeButton").SetSelected(true);
+	$("#DireRangedButton").SetSelected(true);
+	$("#RadiantRangedButton").SetSelected(true);
+	$("#DireMeleeButton").SetSelected(true);
+	$("#RadiantMeleeButton").SetSelected(true);
 	$( "#ControlPanel" ).ToggleClass( "Minimized" );
 	initSliders()
 	GameEvents.Subscribe( "round_ended", OnRoundEnded );
