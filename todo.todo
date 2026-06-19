@@ -1,10 +1,6 @@
 ☐ Debug [SoundSystem] Failed to start voice for sounds\vo\puck\puck_move_03.vsnd
 ☐ Differenciate missed lasthit and nemesis lasthit
 Likely add:
-    ✔ Radiant and dire range, melee, catapult enable @done(26-05-27 21:32)
-    ✔ Disable friendly/enemy creep spawn @done(26-05-27 21:32)
-    ☐ Delay friendly creep spawn to practice under tower (also delay spawning until all creeps dead)
-    ☐ T1, T2, T3 tower damage
     ☐ Move creep meet point
     ☐ Add minimap awareness practice
     ☐ Add rune control
@@ -12,14 +8,20 @@ Likely add:
 
     ☐ All starting items available during strategy time
     ☐ Clear all particles before deleting hero (dumpparticlelist)
-    ☐ Disable nemesis
     ☐ Option to remember items
-    ☐ Automatically increase/decrease Nemesis attack speed with each succesful lasthit
-    ☐ Lane upgrade option
     ☐ Disable lane upgrade option
     ☐ Fix flipped hud
 
 Archive:
+  ✔ Radiant and dire range, melee, catapult enable @done(26-05-27 21:32) @project(Likely add)
+  ✔ Disable friendly/enemy creep spawn @done(26-05-27 21:32) @project(Likely add)
+  ✔ Disable bot @done(26-06-19 13:31) @project(Likely add)
+  ✔ Fix think calling while bot is disabled @done(26-06-19 16:30) @project(Likely add)
+  ✘ Delay friendly creep spawn to practice under tower (also delay spawning until all creeps dead) @cancelled(26-06-19 16:37) @project(Likely add)
+  ✔ T1, T2, T3 tower damage @done(26-06-19 12:34) @project(Likely add)
+  ✔ Disable nemesis @done(26-06-19 16:36) @project(Likely add)
+  ✘ Automatically increase/decrease Nemesis attack speed with each succesful lasthit @cancelled(26-06-19 16:36) @project(Likely add)
+  ✘ Lane upgrade option @cancelled(26-06-19 16:36) @project(Likely add)
   ✔ Hide stats when hero picker opens @done(26-01-30 22:23)
   ✔ Pausing @done(26-01-30 22:23) @project(Likely add)
   ✔ Keep items between timed practice rounds @done(26-01-30 22:23) @project(Likely add)

@@ -825,6 +825,10 @@ function barebones:SpawnNemesis(sHero)
 	-- Reset Nemesis' target and hitlist
 	self.LowHealthTargets = {}
 	self.CurrentTarget = nil
+
+	if self.NemesisEnabled == false then
+		return
+	end
 	
 	-- Spawn enemy unit to contest last hits
 	-- Regen and armor are set same as in Polygon, range and damage are set with a modifier (see gamemode.lua)
@@ -893,24 +897,26 @@ end
 
 function barebones:NemesisThink()
 	-- Looks for the oldest target on hitlist and executes attack order
-	for k, v in pairs(self.LowHealthTargets) do
-		if self.CurrentTarget == nil then
-			self.CurrentTarget = v[1]
-			ExecuteOrderFromTable({
-				UnitIndex = self.NemesisHero:entindex(),
-				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
-				TargetIndex = self.CurrentTarget:entindex()
-			})
-			--DebugDrawCircle(self.CurrentTarget:GetAbsOrigin(), Vector(0,0,255), 20, 20, true, 5)
-			print("Nemesis attacked at: "..(Time() - v[2]))
-		elseif not self.NemesisHero:IsAttacking() then
-			ExecuteOrderFromTable({
-				UnitIndex = self.NemesisHero:entindex(),
-				OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
-				TargetIndex = self.CurrentTarget:entindex()
-			})
-		end
+	if self.NemesisEnabled then
+		for k, v in pairs(self.LowHealthTargets) do
+			if self.CurrentTarget == nil then
+				self.CurrentTarget = v[1]
+				ExecuteOrderFromTable({
+					UnitIndex = self.NemesisHero:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
+					TargetIndex = self.CurrentTarget:entindex()
+				})
+				--DebugDrawCircle(self.CurrentTarget:GetAbsOrigin(), Vector(0,0,255), 20, 20, true, 5)
+				print("Nemesis attacked at: "..(Time() - v[2]))
+			elseif not self.NemesisHero:IsAttacking() then
+				ExecuteOrderFromTable({
+					UnitIndex = self.NemesisHero:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_TARGET,
+					TargetIndex = self.CurrentTarget:entindex()
+				})
+			end
 
+		end
 	end
 	return 0
 end
@@ -918,7 +924,7 @@ end
 function barebones:NemesisMove()
 	-- Nemesis tries to stay const_distance range from the mean of positions of all creeps
 	-- There is some asymetrical hysterisis in this range to vary the lasthit timing
-	if self.NemesisHero == nil then
+	if self.NemesisHero == nil or self.NemesisEnabled == false then
 		return 1
 	end
 	local range = self.NemesisHero:GetBaseAttackRange()
@@ -1111,6 +1117,26 @@ function barebones:ReturnItems()
 		end
 	end
 	self.PlayerItemList = {}
+end
+
+function barebones:UpdateTowerTier()
+	local towers = Entities:FindAllByClassname("npc_dota_tower")
+	for _,v in pairs(towers) do
+		if self.TowerTier == 1 then
+			v:SetBaseDamageMin(88)
+			v:SetBaseDamageMax(92)	
+		elseif self.TowerTier == 2 then
+			v:SetBaseDamageMin(170)
+			v:SetBaseDamageMax(174)
+		elseif self.TowerTier == 3 then
+			v:SetBaseDamageMin(170)
+			v:SetBaseDamageMax(174)
+		else
+			print("ERROR: Undefined tower tier!")
+			v:SetBaseDamageMin(88)
+			v:SetBaseDamageMax(92)	
+		end
+	end
 end
 
 function barebones:OnEntityHurt(keys)
@@ -1308,6 +1334,11 @@ function barebones:OnHeroDamageChange(keys, data)
 	self.LasthitThreshold = 0+data.str/100
 end
 
+function barebones:OnTowerDamageChange(keys, data)
+	self.TowerTier = 0+data.str;
+	self:UpdateTowerTier()
+end
+
 function barebones:OnTimedPracticeChanged(keys, data)
 	self.TimedPractice = 0+data.str
 end
@@ -1337,6 +1368,8 @@ function barebones:OnEnableExperienceButtonPressed(keys)
 	
 
 end
+
+
 -- **********Disable siege creeps block
 function barebones:OnDisableRadiantSiegeCreepsButtonPressed(keys)
 	if self.RadiantSiegeEnabled == true then
@@ -1403,7 +1436,7 @@ function barebones:OnDisableRadiantMeleeCreepsButtonPressed(keys)
 		self.RadiantMeleeEnabled = false
 		local ents = self:FindFriendlyCreeps(self.PlayerHero)
 		for _,v in pairs(ents) do
-			if v:GetUnitName() == "npc_dota_creep_goodguys_melee" then
+			if v:GetUnitName() == "npc_dota_creep_goodguys_melee" or v:GetUnitName() == "npc_dota_creep_goodguys_flagbearer" then
 				v:SetDeathXP(0)
 				v:ForceKill(false)
 			end
@@ -1418,7 +1451,7 @@ function barebones:OnDisableDireMeleeCreepsButtonPressed(keys)
 		self.DireMeleeEnabled = false
 		local ents = self:FindEnemyCreeps(self.PlayerHero,9999)
 		for _,v in pairs(ents) do
-			if v:GetUnitName() == "npc_dota_creep_badguys_melee" then
+			if v:GetUnitName() == "npc_dota_creep_badguys_melee" or v:GetUnitName() == "npc_dota_creep_badguys_flagbearer" then
 				v:SetDeathXP(0)
 				v:ForceKill(false)
 			end
@@ -1526,6 +1559,17 @@ function barebones:OnEnableUnfairButtonPressed(keys)
 		self.NemesisUnfair = false
 	else
 		self.NemesisUnfair = true
+	end
+	self.CurrentTarget = nil
+	local nemesis = "npc_dota_hero_sniper"
+	PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
+end
+
+function barebones:OnDisableNemesisButtonPressed(keys)
+	if self.NemesisEnabled == true then
+		self.NemesisEnabled = false
+	else
+		self.NemesisEnabled = true
 	end
 	self.CurrentTarget = nil
 	local nemesis = "npc_dota_hero_sniper"

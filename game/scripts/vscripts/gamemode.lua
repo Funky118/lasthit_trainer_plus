@@ -89,6 +89,7 @@ function barebones:InitGameMode()
 	self.NemesisBonusHealth = 0
 	self.NemesisUnfair = false
 	self.NemesisNotSniper = false
+	self.NemesisEnabled = true
 
 	-- Starting positions of the creeps defined in Hammer
 	local rms = Entities:FindByName(nil,"radiant_melee")
@@ -239,10 +240,12 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "RoundRestartButtonPressed", function(...) return self:OnRoundRestartButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
 	CustomGameEventManager:RegisterListener( "HeroDamageChange", function(...) return self:OnHeroDamageChange( ... ) end )
+	CustomGameEventManager:RegisterListener( "TowerDamageChange", function(...) return self:OnTowerDamageChange( ... ) end )
 	CustomGameEventManager:RegisterListener( "TimedPracticeChanged", function(...) return self:OnTimedPracticeChanged( ... ) end )
 	CustomGameEventManager:RegisterListener( "GameSpeedChanged", function(...) return self:OnGameSpeedChanged( ... ) end )
 	CustomGameEventManager:RegisterListener( "HighlightCreepsButtonPressed", function(...) return self:OnHighlightCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "EnableExperienceButtonPressed", function(...) return self:OnEnableExperienceButtonPressed( ... ) end )
+		CustomGameEventManager:RegisterListener( "DisableNemesisButtonPressed", function(...) return self:OnDisableNemesisButtonPressed( ... ) end )
 	-- START Creep disabling block
 	CustomGameEventManager:RegisterListener( "DisableRadiantSiegeCreepsButtonPressed", function(...) return self:OnDisableRadiantSiegeCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "DisableDireSiegeCreepsButtonPressed", function(...) return self:OnDisableDireSiegeCreepsButtonPressed( ... ) end )
@@ -436,22 +439,23 @@ function barebones:SpawnLaneCreeps()
 	-- Spawn flagbearers
 	if self.CreepWavesSpawned >= 5 then
 		if ((self.CreepWavesSpawned - 5) % 2) == 0 then
-			local creep_flag_good = CreateUnitByName("npc_dota_creep_goodguys_flagbearer", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
-			creep_flag_good:AddNewModifier(creep_flag_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
-			
 			if self.RadiantMeleeEnabled then
-				if creep_flag_good ~= nil then
-					Timers:CreateTimer(spawn_delay, function ()
-						ExecuteOrderFromTable({
-						UnitIndex = creep_flag_good:entindex(),
-						OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
-						Position = self.DireMeeleePos,
-						Queue = true
-					})
-					end)
-					self.FlagbearerCreepsSpawned = self.FlagbearerCreepsSpawned + 1
-					--self.NetTableStats["FlagCreepsBadguysMissed"] = self.NetTableStats["FlagCreepsBadguysMissed"] + 1
-				end
+				local creep_flag_good = CreateUnitByName("npc_dota_creep_goodguys_flagbearer", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+				creep_flag_good:AddNewModifier(creep_flag_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
+				
+				
+					if creep_flag_good ~= nil then
+						Timers:CreateTimer(spawn_delay, function ()
+							ExecuteOrderFromTable({
+							UnitIndex = creep_flag_good:entindex(),
+							OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+							Position = self.DireMeeleePos,
+							Queue = true
+						})
+						end)
+						self.FlagbearerCreepsSpawned = self.FlagbearerCreepsSpawned + 1
+						--self.NetTableStats["FlagCreepsBadguysMissed"] = self.NetTableStats["FlagCreepsBadguysMissed"] + 1
+					end
 			end
 			if self.DireMeleeEnabled then
 				local creep_flag_bad = CreateUnitByName("npc_dota_creep_badguys_flagbearer", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)

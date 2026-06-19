@@ -267,6 +267,30 @@ function AttackSpeedValueChanged()
 	
 }
 
+
+function TowerDamageValueChanged()
+{
+	var slider = $("#TowerDamageSlider");
+	var value = slider.value;
+	var value = Math.round((value*2)+1);
+
+	var tier = "T1";
+	if (value == 1)
+		tier = "T1";
+	else if(value == 2)
+		tier = "T2";
+	else if(value == 3)
+		tier = "T3";
+	else
+		tier = "Undefined";
+
+	$.Msg("Tier = "+value);
+
+	var text = "Tower tier: " + tier;
+	SetText("#TowerDamageText",text);
+	$.DispatchEvent('FireCustomGameEvent_Str', "TowerDamageChange", value)
+}
+
 function SendAttackSpeedChange()
 {
 	var value = nemesisAttackSpeedToSend;

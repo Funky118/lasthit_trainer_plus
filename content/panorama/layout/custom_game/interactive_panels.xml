@@ -70,8 +70,8 @@
 						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="NemesisModeActivate()">
 							<Label text="Nemesis mode"></Label>
 						</ToggleButton>
-						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( NemesisEnabled )">
-							<Label text="Bot enable"></Label>
+						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableNemesisButtonPressed )">
+							<Label text="Disable bot"></Label>
 						</ToggleButton>
 					</Panel>
 					<Panel class="horizontal_container">
@@ -113,6 +113,14 @@
 							direction= "Horizontal"
 							id="AttackSpeedSlider"
 							onvaluechanged="AttackSpeedValueChanged()"/>
+					</Panel>
+					<Panel class="AdvancedSlider">
+						<Label id="TowerDamageText" text="Tower tier: T1" />
+						<Slider
+							class="HorizontalSlider"
+							direction= "Horizontal"
+							id="TowerDamageSlider"
+							onvaluechanged="TowerDamageValueChanged()"/>
 					</Panel>
 					<Panel class="horizontal_container CenteredSection">
 						<Button class="AdvancedButton" onactivate="FireCustomGameEvent_Str(LevelUpButtonPressed)">
