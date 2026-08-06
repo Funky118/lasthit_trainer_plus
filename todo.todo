@@ -1,11 +1,7 @@
-☐ Debug [SoundSystem] Failed to start voice for sounds\vo\puck\puck_move_03.vsnd
-☐ Differenciate missed lasthit and nemesis lasthit
 Likely add:
-    ☐ Move creep meet point
     ☐ Add minimap awareness practice
     ☐ Add rune control
     ☐ Tutorial map for absolutely new players (teach blocking, aggro etc.)
-
     ☐ All starting items available during strategy time
     ☐ Clear all particles before deleting hero (dumpparticlelist)
     ☐ Option to remember items
@@ -13,6 +9,13 @@ Likely add:
     ☐ Fix flipped hud
 
 Archive:
+  ✘ Debug [SoundSystem] Failed to start voice for sounds\vo\puck\puck_move_03.vsnd @cancelled(26-07-27 23:10)
+  ✘ Differenciate missed lasthit and nemesis lasthit @cancelled(26-07-27 23:11)
+  ✔ Add dark mode level map @done(26-07-27 23:09)
+  ✔ Adjustable creep meeting point @done(26-07-31 16:24)
+  ✔ Button to send a new wave @done(26-07-31 15:06)
+  ✔ Enable/disable spawning @done(26-07-31 15:06)
+  ✔ Move creep meet point @done(26-07-31 20:20) @project(Likely add)
   ✔ Radiant and dire range, melee, catapult enable @done(26-05-27 21:32) @project(Likely add)
   ✔ Disable friendly/enemy creep spawn @done(26-05-27 21:32) @project(Likely add)
   ✔ Disable bot @done(26-06-19 13:31) @project(Likely add)

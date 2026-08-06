@@ -116,6 +116,10 @@ function barebones:InitGameMode()
 
 	-- Counter initialization
 	self.CreepSpawnInterval = 30
+	self.EnableCreepWaves = true
+	self.AllowMultipleWaves = false
+	self.RadiantCreepDelay = 0.5
+	self.DireCreepDelay = 0.5
 	self.TimedPractice = 30
 	self.PauseTraining = true
 	self.TimedPracticeEnabled = false
@@ -241,11 +245,14 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "NemesisAttackSpeedChange", function(...) return self:OnNemesisAttackSpeedChange( ... ) end )
 	CustomGameEventManager:RegisterListener( "HeroDamageChange", function(...) return self:OnHeroDamageChange( ... ) end )
 	CustomGameEventManager:RegisterListener( "TowerDamageChange", function(...) return self:OnTowerDamageChange( ... ) end )
+	CustomGameEventManager:RegisterListener( "CreepMeetingPointChange", function(...) return self:OnCreepMeetingPointChange( ... ) end )
 	CustomGameEventManager:RegisterListener( "TimedPracticeChanged", function(...) return self:OnTimedPracticeChanged( ... ) end )
 	CustomGameEventManager:RegisterListener( "GameSpeedChanged", function(...) return self:OnGameSpeedChanged( ... ) end )
 	CustomGameEventManager:RegisterListener( "HighlightCreepsButtonPressed", function(...) return self:OnHighlightCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "EnableExperienceButtonPressed", function(...) return self:OnEnableExperienceButtonPressed( ... ) end )
-		CustomGameEventManager:RegisterListener( "DisableNemesisButtonPressed", function(...) return self:OnDisableNemesisButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "DisableNemesisButtonPressed", function(...) return self:OnDisableNemesisButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "SendNewWaveButtonPressed", function(...) return self:OnSendNewWaveButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "AllowMultipleWavesButtonPressed", function(...) return self:OnAllowMultipleWavesButtonPressed( ... ) end )
 	-- START Creep disabling block
 	CustomGameEventManager:RegisterListener( "DisableRadiantSiegeCreepsButtonPressed", function(...) return self:OnDisableRadiantSiegeCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "DisableDireSiegeCreepsButtonPressed", function(...) return self:OnDisableDireSiegeCreepsButtonPressed( ... ) end )
@@ -253,6 +260,7 @@ function barebones:InitGameMode()
 	CustomGameEventManager:RegisterListener( "DisableDireRangedCreepsButtonPressed", function(...) return self:OnDisableDireRangedCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "DisableRadiantMeleeCreepsButtonPressed", function(...) return self:OnDisableRadiantMeleeCreepsButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "DisableDireMeleeCreepsButtonPressed", function(...) return self:OnDisableDireMeleeCreepsButtonPressed( ... ) end )
+	CustomGameEventManager:RegisterListener( "DisableCreepWavesButtonPressed", function(...) return self:OnDisableCreepWavesButtonPressed( ... ) end )
 	-- END Creep disabling block
 	CustomGameEventManager:RegisterListener( "LevelUpButtonPressed", function(...) return self:OnLevelUpButtonPressed( ... ) end )
 	CustomGameEventManager:RegisterListener( "ResetLevelButtonPressed", function(...) return self:OnResetLevelButtonPressed( ... ) end )
@@ -424,10 +432,10 @@ end
 
 -- Creep spawning function, I am using Timers to delay attack orders because otherwise they didn't go through at game start
 function barebones:SpawnLaneCreeps()
-	if self.PauseTraining then
+	if self.PauseTraining or self.EnableCreepWaves == false then
+		self.LastWaveSpawnTime = GameRules:GetGameTime()
 		return
 	end
-	local spawn_delay = 0.5
 	local meleeToSpawn = 3
 	self.CreepWavesSpawned = self.CreepWavesSpawned + 1
 	-- Lane upgrade every 7 minutes (real game does it 7:30 but whatever)
@@ -445,7 +453,7 @@ function barebones:SpawnLaneCreeps()
 				
 				
 					if creep_flag_good ~= nil then
-						Timers:CreateTimer(spawn_delay, function ()
+						Timers:CreateTimer(self.RadiantCreepDelay + self.RadiantCreepDelay, function ()
 							ExecuteOrderFromTable({
 							UnitIndex = creep_flag_good:entindex(),
 							OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
@@ -461,7 +469,7 @@ function barebones:SpawnLaneCreeps()
 				local creep_flag_bad = CreateUnitByName("npc_dota_creep_badguys_flagbearer", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
 				creep_flag_bad:AddNewModifier(creep_flag_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
 				if creep_flag_bad ~= nil then
-					Timers:CreateTimer(spawn_delay, function ()
+					Timers:CreateTimer(self.DireCreepDelay + self.DireCreepDelay, function ()
 						ExecuteOrderFromTable({
 						UnitIndex = creep_flag_bad:entindex(),
 						OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
@@ -484,7 +492,7 @@ function barebones:SpawnLaneCreeps()
 			local creep_melee_good = CreateUnitByName("npc_dota_creep_goodguys_melee", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
 			creep_melee_good:AddNewModifier(creep_melee_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
 			if creep_melee_good ~= nil then
-				Timers:CreateTimer(spawn_delay, function ()
+				Timers:CreateTimer(self.RadiantCreepDelay + self.RadiantCreepDelay, function ()
 					ExecuteOrderFromTable({
 					UnitIndex = creep_melee_good:entindex(),
 					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
@@ -505,7 +513,7 @@ function barebones:SpawnLaneCreeps()
 		local creep_ranged_good = CreateUnitByName("npc_dota_creep_goodguys_ranged", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
 		creep_ranged_good:AddNewModifier(creep_ranged_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 2*self.LaneUpgrade})
 		if creep_ranged_good ~= nil then
-			Timers:CreateTimer(spawn_delay, function ()
+			Timers:CreateTimer(self.RadiantCreepDelay + self.RadiantCreepDelay, function ()
 				ExecuteOrderFromTable({
 				UnitIndex = creep_ranged_good:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
@@ -526,7 +534,7 @@ function barebones:SpawnLaneCreeps()
 			local creep_melee_bad = CreateUnitByName("npc_dota_creep_badguys_melee", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
 			creep_melee_bad:AddNewModifier(creep_melee_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
 			if creep_melee_bad ~= nil then
-				Timers:CreateTimer(1, function ()
+				Timers:CreateTimer(self.DireCreepDelay, function ()
 					ExecuteOrderFromTable({
 					UnitIndex = creep_melee_bad:entindex(),
 					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
@@ -547,7 +555,7 @@ function barebones:SpawnLaneCreeps()
 		local creep_ranged_bad = CreateUnitByName("npc_dota_creep_badguys_ranged", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
 		creep_ranged_bad:AddNewModifier(creep_ranged_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 2*self.LaneUpgrade})
 		if creep_ranged_bad ~= nil then
-			Timers:CreateTimer(1, function ()
+			Timers:CreateTimer(self.DireCreepDelay, function ()
 				ExecuteOrderFromTable({
 				UnitIndex = creep_ranged_bad:entindex(),
 				OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
@@ -568,7 +576,7 @@ function barebones:SpawnLaneCreeps()
 			if self.RadiantSiegeEnabled then
 				local creep_siege_good = CreateUnitByName("npc_dota_goodguys_siege", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
 				if creep_siege_good ~= nil then
-					Timers:CreateTimer(spawn_delay, function ()
+					Timers:CreateTimer(self.RadiantCreepDelay + self.RadiantCreepDelay, function ()
 						ExecuteOrderFromTable({
 						UnitIndex = creep_siege_good:entindex(),
 						OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
@@ -584,7 +592,7 @@ function barebones:SpawnLaneCreeps()
 			if self.DireSiegeEnabled then
 				local creep_siege_bad = CreateUnitByName("npc_dota_badguys_siege", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
 				if creep_siege_bad ~= nil then
-					Timers:CreateTimer(spawn_delay, function ()
+					Timers:CreateTimer(self.DireCreepDelay, function ()
 						ExecuteOrderFromTable({
 						UnitIndex = creep_siege_bad:entindex(),
 						OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,

@@ -5,6 +5,7 @@
 	[
 		"midlane_river",
 		"midlane_flat",
+		"midlane_flat_dark",
 		"midlane_river_old",
 	]
 	IsPlayable = 1
@@ -20,6 +21,10 @@
 		{
 			MaxPlayers = 1
 			map = "midlane_flat"
+		},
+		{
+			MaxPlayers = 1
+			map = "midlane_flat_dark"
 		},
 		{
 			MaxPlayers = 1

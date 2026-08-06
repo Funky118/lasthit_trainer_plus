@@ -35,6 +35,9 @@
 						<Button class="DemoButton" onactivate="ToggleAdvancedSettings()">
 							<Label text="Advanced Settings" />
 						</Button>
+						<Button class="DemoButton" onactivate="FireCustomGameEvent_Str( SendNewWaveButtonPressed )">
+							<Label text="Send New Wave" />
+						</Button>
 					</Panel>
 					<Panel class="Category">
 						<Label text="" />
@@ -72,6 +75,14 @@
 						</ToggleButton>
 						<ToggleButton class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableNemesisButtonPressed )">
 							<Label text="Disable bot"></Label>
+						</ToggleButton>
+					</Panel>
+					<Panel class="horizontal_container">
+						<ToggleButton id="AutoWaveButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( DisableCreepWavesButtonPressed )">
+							<Label text="Periodic waves"></Label>
+						</ToggleButton>
+						<ToggleButton id="MultipleWaveButton" class="AdvancedOptionsToggleButton" acceptsjoyfocus="true" onactivate="FireCustomGameEvent_Str( AllowMultipleWavesButtonPressed )">
+							<Label text="Allow multiple waves"></Label>
 						</ToggleButton>
 					</Panel>
 					<Panel class="horizontal_container">
@@ -121,6 +132,14 @@
 							direction= "Horizontal"
 							id="TowerDamageSlider"
 							onvaluechanged="TowerDamageValueChanged()"/>
+					</Panel>
+					<Panel class="AdvancedSlider">
+						<Label id="CreepMeetingText" text="Creep meeting point: 0" />
+						<Slider
+							class="HorizontalSlider"
+							direction= "Horizontal"
+							id="MeetingPointSlider"
+							onvaluechanged="CreepMeetingPointChanged()"/>
 					</Panel>
 					<Panel class="horizontal_container CenteredSection">
 						<Button class="AdvancedButton" onactivate="FireCustomGameEvent_Str(LevelUpButtonPressed)">

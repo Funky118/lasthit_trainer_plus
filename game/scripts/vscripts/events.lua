@@ -104,7 +104,9 @@ function barebones:OnNPCSpawned(keys)
 			local nemesis = "npc_dota_hero_sniper"
 			PrecacheUnitByNameAsync(nemesis, function() self:SpawnNemesis(nemesis) end)
 			self.PauseTraining = false -- No creeps spawning while in strategy
-			self:SpawnLaneCreeps()
+			if self.EnableCreepWaves then
+				self:SpawnLaneCreeps()
+			end
 			Timers:CreateTimer(0.5, function ()
 				self.HeroDamage = self.PlayerHero:GetAverageTrueAttackDamage(nil)
 				self.HeroDamageMin = self.PlayerHero:GetDamageMin()
@@ -1339,6 +1341,17 @@ function barebones:OnTowerDamageChange(keys, data)
 	self:UpdateTowerTier()
 end
 
+function barebones:OnCreepMeetingPointChange(keys, data)
+	local tmp = 0+data.str
+	if tmp < 0 then
+		self.RadiantCreepDelay = -1*tmp*10+0.5
+		self.DireCreepDelay = 0.5
+	else
+		self.DireCreepDelay = tmp*10+0.5
+		self.RadiantCreepDelay = 0.5
+	end
+end
+
 function barebones:OnTimedPracticeChanged(keys, data)
 	self.TimedPractice = 0+data.str
 end
@@ -1381,6 +1394,9 @@ function barebones:OnDisableRadiantSiegeCreepsButtonPressed(keys)
 				v:ForceKill(false)
 			end
 		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
 	else
 		self.RadiantSiegeEnabled = true
 	end
@@ -1396,6 +1412,9 @@ function barebones:OnDisableDireSiegeCreepsButtonPressed(keys)
 				v:ForceKill(false)
 			end
 		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
 	else
 		self.DireSiegeEnabled = true
 	end
@@ -1411,6 +1430,9 @@ function barebones:OnDisableRadiantRangedCreepsButtonPressed(keys)
 				v:ForceKill(false)
 			end
 		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
 	else
 		self.RadiantRangedEnabled = true
 	end
@@ -1426,6 +1448,9 @@ function barebones:OnDisableDireRangedCreepsButtonPressed(keys)
 				v:ForceKill(false)
 			end
 		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
 	else
 		self.DireRangedEnabled = true
 	end
@@ -1441,6 +1466,9 @@ function barebones:OnDisableRadiantMeleeCreepsButtonPressed(keys)
 				v:ForceKill(false)
 			end
 		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
 	else
 		self.RadiantMeleeEnabled = true
 	end
@@ -1456,11 +1484,70 @@ function barebones:OnDisableDireMeleeCreepsButtonPressed(keys)
 				v:ForceKill(false)
 			end
 		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
 	else
 		self.DireMeleeEnabled = true
 	end
 end
+
+function barebones:OnDisableCreepWavesButtonPressed(keys)
+	if self.EnableCreepWaves == true then
+		self.EnableCreepWaves = false
+		local enemy_ents = self:FindEnemyCreeps(self.PlayerHero,9999)
+		local friendly_ents = self:FindFriendlyCreeps(self.PlayerHero)
+		for _,v in pairs(enemy_ents) do
+			if v:GetClassname() == "npc_dota_creep_lane" or v:GetClassname() == "npc_dota_creep_siege" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+		for _,v in pairs(friendly_ents) do
+			if v:GetClassname() == "npc_dota_creep_lane" or v:GetClassname() == "npc_dota_creep_siege" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
+	else
+		self.EnableCreepWaves = true
+	end
+end
+
+function barebones:OnAllowMultipleWavesButtonPressed(keys)
+	if self.AllowMultipleWaves == true then
+		self.AllowMultipleWaves = false
+	else
+		self.AllowMultipleWaves = true
+	end
+end
 -- **********End block
+
+function barebones:OnSendNewWaveButtonPressed(keys)
+	if self.AllowMultipleWaves == false then
+		local enemy_ents = self:FindEnemyCreeps(self.PlayerHero,9999)
+		local friendly_ents = self:FindFriendlyCreeps(self.PlayerHero)
+		for _,v in pairs(enemy_ents) do
+			if v:GetClassname() == "npc_dota_creep_lane" or v:GetClassname() == "npc_dota_creep_siege" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+		for _,v in pairs(friendly_ents) do
+			if v:GetClassname() == "npc_dota_creep_lane" or v:GetClassname() == "npc_dota_creep_siege" then
+				v:SetDeathXP(0)
+				v:ForceKill(false)
+			end
+		end
+		-- Reset nemesis target list
+		self.LowHealthTargets = {}
+		self.CurrentTarget = nil
+	end
+	self:SpawnWave(keys)
+end
 
 function barebones:OnLevelUpButtonPressed(keys)
 	self.PlayerHero:HeroLevelUp(true)
@@ -1593,4 +1680,96 @@ function barebones:OnLasthitTrainerPause(keys)
 	--print("Pausing the game through event")
 	self.GamePaused = not self.GamePaused
 	PauseGame(self.GamePaused)
+end
+
+function barebones:SpawnWave(keys)
+	local meleeToSpawn = 3
+	self.CreepWavesSpawned = self.CreepWavesSpawned + 1
+	if (self.CreepWavesSpawned % 15) == 0 then
+		-- Let's keep this uncapped just for fun :P
+		self.LaneUpgrade = self.LaneUpgrade + 1
+	end
+	-- Spawn 3 melee radiant creeps and send them to attack dire spawn point
+	if self.RadiantMeleeEnabled then
+		for i = 1, meleeToSpawn do
+			local creep_melee_good = CreateUnitByName("npc_dota_creep_goodguys_melee", self.RadiantMeeleePos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+			creep_melee_good:AddNewModifier(creep_melee_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
+			if creep_melee_good ~= nil then
+				Timers:CreateTimer(self.RadiantCreepDelay, function ()
+					ExecuteOrderFromTable({
+					UnitIndex = creep_melee_good:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+					Position = self.DireMeeleePos,
+					Queue = true
+				})
+					
+				end)
+
+				self.MeleeCreepsSpawned = self.MeleeCreepsSpawned+ 1
+				--self.NetTableStats["MeleeCreepsBadguysMissed"] = self.NetTableStats["MeleeCreepsBadguysMissed"] + 1
+			end
+		end
+	end
+
+	if self.RadiantRangedEnabled then
+		-- Spawn 1 ranged randiant creep
+		local creep_ranged_good = CreateUnitByName("npc_dota_creep_goodguys_ranged", self.RadiantRangedPos, true, nil, nil, DOTA_TEAM_GOODGUYS)
+		creep_ranged_good:AddNewModifier(creep_ranged_good, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 2*self.LaneUpgrade})
+		if creep_ranged_good ~= nil then
+			Timers:CreateTimer(self.RadiantCreepDelay, function ()
+				ExecuteOrderFromTable({
+				UnitIndex = creep_ranged_good:entindex(),
+				OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+				Position = self.DireMeeleePos,
+				Queue = true
+			})
+				
+			end)
+
+			self.RangedCreepsSpawned = self.RangedCreepsSpawned	+ 1
+			--self.NetTableStats["RangedCreepsBadguysMissed"] = self.NetTableStats["RangedCreepsBadguysMissed"] + 1
+		end
+	end
+
+	-- Spawn 3 melee dire creeps and send them to attack radiant spawn point
+	if self.DireMeleeEnabled then
+		for i = 1, meleeToSpawn do
+			local creep_melee_bad = CreateUnitByName("npc_dota_creep_badguys_melee", self.DireMeeleePos, true, nil, nil, DOTA_TEAM_BADGUYS)
+			creep_melee_bad:AddNewModifier(creep_melee_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 1*self.LaneUpgrade})
+			if creep_melee_bad ~= nil then
+				Timers:CreateTimer(self.DireCreepDelay, function ()
+					ExecuteOrderFromTable({
+					UnitIndex = creep_melee_bad:entindex(),
+					OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+					Position = self.RadiantMeeleePos,
+					Queue = true
+				})
+					
+				end)
+
+				self.MeleeCreepsSpawned = self.MeleeCreepsSpawned+ 1
+				--self.NetTableStats["MeleeCreepsBadguysMissed"] = self.NetTableStats["MeleeCreepsBadguysMissed"] + 1
+			end
+		end
+	end
+
+	-- Spawn 1 ranged dire creep
+	if self.DireRangedEnabled then
+		local creep_ranged_bad = CreateUnitByName("npc_dota_creep_badguys_ranged", self.DireRangedPos, true, nil, nil, DOTA_TEAM_BADGUYS)
+		creep_ranged_bad:AddNewModifier(creep_ranged_bad, nil, "modifier_creep_upgrade", {bonus_health = 12*self.LaneUpgrade, bonus_damage = 2*self.LaneUpgrade})
+		if creep_ranged_bad ~= nil then
+			Timers:CreateTimer(self.DireCreepDelay, function ()
+				ExecuteOrderFromTable({
+				UnitIndex = creep_ranged_bad:entindex(),
+				OrderType = DOTA_UNIT_ORDER_ATTACK_MOVE,
+				Position = self.RadiantMeeleePos,
+				Queue = true
+			})
+				
+			end)
+
+			self.RangedCreepsSpawned = self.RangedCreepsSpawned	+ 1
+			--self.NetTableStats["RangedCreepsBadguysMissed"] = self.NetTableStats["RangedCreepsBadguysMissed"] + 1
+		end
+	end
 end

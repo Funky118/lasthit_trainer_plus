@@ -267,7 +267,6 @@ function AttackSpeedValueChanged()
 	
 }
 
-
 function TowerDamageValueChanged()
 {
 	var slider = $("#TowerDamageSlider");
@@ -291,6 +290,17 @@ function TowerDamageValueChanged()
 	$.DispatchEvent('FireCustomGameEvent_Str', "TowerDamageChange", value)
 }
 
+function CreepMeetingPointChanged()
+{
+	var slider = $("#MeetingPointSlider");
+	var value = slider.value;
+	value = ((value * 2)-1);
+
+	var text = "Creep meeting point: " + Math.round(value*100)/100;
+	SetText("#CreepMeetingText",text);
+	$.DispatchEvent('FireCustomGameEvent_Str', "CreepMeetingPointChange", value*0.8)
+}
+
 function SendAttackSpeedChange()
 {
 	var value = nemesisAttackSpeedToSend;
@@ -302,9 +312,10 @@ function initSliders()
 {
 	var slider_thrs = $("#DamageSlider");
 	var slider_atck = $("#AttackSpeedSlider");
+	var slider_meet = $("#MeetingPointSlider");
 	slider_thrs.value = 0.5;
 	slider_atck.value = 0.5;
-
+	slider_meet.value = 0.5;
 }
 
 function PauseButtonPressed()
@@ -315,6 +326,7 @@ function PauseButtonPressed()
 
 (function()
 {
+	$("#AutoWaveButton").SetSelected(true);
 	$("#DireSiegeButton").SetSelected(true);
 	$("#RadiantSiegeButton").SetSelected(true);
 	$("#DireRangedButton").SetSelected(true);
